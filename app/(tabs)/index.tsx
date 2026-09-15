@@ -1,20 +1,18 @@
-// src/app/index.tsx
-import { View, ScrollView } from "react-native";
+// app/(tabs)/index.tsx
 import { useState, useEffect } from "react";
-
+import { useWindowDimensions } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import WeatherCard from "../../components/WeatherCard";
 import SearchBox from "../../components/SearchBox";
 import RiwayatList from "../../components/RiwayatList";
-
-// 1. Import komponen IndikatorAQI dan interface LaporanUdara
-import { IndikatorAQI } from "../../components/IndikatorAQI";
-import { LaporanUdara } from "../../types/udara";
 
 export default function HalamanUtama() {
   const [kotaAktif, setKotaAktif] = useState("Pekalongan");
   const [riwayat, setRiwayat] = useState<string[]>(["Pekalongan"]);
 
-  // Tambahkan useEffect untuk mencatat perubahan kota aktif
+  const { width } = useWindowDimensions();
+  const isTablet = width > 768;
+
   useEffect(() => {
     console.log("Kota aktif berubah menjadi:", kotaAktif);
   }, [kotaAktif]);
@@ -26,29 +24,11 @@ export default function HalamanUtama() {
     }
   }
 
-  // 2. Siapkan data laporan udara sesuai interface LaporanUdara
-  const dataLaporanUdara: LaporanUdara = {
-    kota: kotaAktif,
-    indeksAQI: 42,
-    tingkat: "BAIK", // Coba ganti ke "SEDANG", "TIDAK_SEHAT", atau "BERBAHAYA" untuk melihat perubahan warna
-    diperbaruiPada: "11:30 WIB",
-  };
-
   return (
-    <ScrollView
-      contentContainerStyle={{ padding: 16, paddingTop: 50, gap: 16 }}
-    >
-      {/* Kolom Pencarian */}
+    <SafeAreaView style={{ flex: 1, padding: isTablet ? 32 : 16, gap: 16 }}>
       <SearchBox onCari={handleCari} />
-
-      {/* Kartu Cuaca */}
       <WeatherCard kota={kotaAktif} suhu={29} tingkatAQI="BAIK" />
-
-      {/* 3. Tampilkan Komponen IndikatorAQI */}
-      <IndikatorAQI data={dataLaporanUdara} />
-
-      {/* Daftar Riwayat */}
       <RiwayatList daftarKota={riwayat} />
-    </ScrollView>
+    </SafeAreaView>
   );
 }
