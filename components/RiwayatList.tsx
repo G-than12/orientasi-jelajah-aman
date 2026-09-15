@@ -1,13 +1,24 @@
 // components/RiwayatList.tsx
 import { View, Text } from "react-native";
+import { Link } from "expo-router";
+
 interface RiwayatListProps {
   daftarKota: string[];
 }
+
 export default function RiwayatList({ daftarKota }: RiwayatListProps) {
   return (
     <View>
       {daftarKota.map((kota) => (
-        <Text key={kota}>{kota}</Text>
+        // Format objek pada href lolos pengecekan TypeScript Expo Router
+        <Link
+          key={kota}
+          href={{ pathname: "../detail/[kota]", params: { kota } }}
+        >
+          <Text style={{ fontSize: 16, paddingVertical: 6, color: "#2563eb" }}>
+            {kota}
+          </Text>
+        </Link>
       ))}
     </View>
   );
