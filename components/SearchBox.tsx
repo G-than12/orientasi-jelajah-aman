@@ -1,6 +1,12 @@
 // components/SearchBox.tsx
 import React, { useState } from "react";
-import { View, TextInput, Button, StyleSheet } from "react-native";
+import {
+  View,
+  TextInput,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+} from "react-native";
 
 interface SearchBoxProps {
   onCari: (kota: string) => void;
@@ -12,7 +18,7 @@ export default function SearchBox({ onCari }: SearchBoxProps) {
   const handleSubmit = () => {
     if (inputKota.trim()) {
       onCari(inputKota.trim());
-      setInputKota(""); // Kosongkan input setelah cari
+      setInputKota("");
     }
   };
 
@@ -20,16 +26,20 @@ export default function SearchBox({ onCari }: SearchBoxProps) {
     <View style={styles.container}>
       <TextInput
         style={styles.input}
-        placeholder="Masukkan nama kota..."
+        placeholder="Cari nama kota..."
+        placeholderTextColor="#94a3b8"
         value={inputKota}
         onChangeText={setInputKota}
         onSubmitEditing={handleSubmit}
       />
-      <Button
-        title="Cari"
+      <TouchableOpacity
+        style={styles.button}
         onPress={handleSubmit}
+        accessibilityRole="button"
         accessibilityLabel="Cari cuaca untuk kota yang dimasukkan"
-      />
+      >
+        <Text style={styles.buttonText}>Cari</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -37,16 +47,31 @@ export default function SearchBox({ onCari }: SearchBoxProps) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    gap: 8,
+    gap: 10,
     alignItems: "center",
   },
   input: {
     flex: 1,
-    borderWidth: 1,
-    borderColor: "#cbd5e1",
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    height: 48,
     backgroundColor: "#ffffff",
+    borderWidth: 1.5,
+    borderColor: "#e2e8f0",
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    fontSize: 15,
+    color: "#0f172a",
+  },
+  button: {
+    height: 48,
+    paddingHorizontal: 20,
+    backgroundColor: "#2563eb",
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#ffffff",
+    fontWeight: "600",
+    fontSize: 15,
   },
 });
