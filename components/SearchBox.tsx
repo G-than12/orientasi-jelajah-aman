@@ -1,20 +1,52 @@
 // components/SearchBox.tsx
-import { useState } from "react";
-import { View, TextInput, Button } from "react-native";
+import React, { useState } from "react";
+import { View, TextInput, Button, StyleSheet } from "react-native";
+
 interface SearchBoxProps {
   onCari: (kota: string) => void;
 }
+
 export default function SearchBox({ onCari }: SearchBoxProps) {
-  const [teks, setTeks] = useState("");
+  const [inputKota, setInputKota] = useState("");
+
+  const handleSubmit = () => {
+    if (inputKota.trim()) {
+      onCari(inputKota.trim());
+      setInputKota(""); // Kosongkan input setelah cari
+    }
+  };
+
   return (
-    <View style={{ flexDirection: "row", gap: 8 }}>
+    <View style={styles.container}>
       <TextInput
-        placeholder="kota"
-        value={teks}
-        onChangeText={setTeks}
-        style={{ flex: 1, borderWidth: 1, padding: 8 }}
+        style={styles.input}
+        placeholder="Masukkan nama kota..."
+        value={inputKota}
+        onChangeText={setInputKota}
+        onSubmitEditing={handleSubmit}
       />
-      <Button title="Cari" onPress={() => onCari(teks)} />
+      <Button
+        title="Cari"
+        onPress={handleSubmit}
+        accessibilityLabel="Cari cuaca untuk kota yang dimasukkan"
+      />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    gap: 8,
+    alignItems: "center",
+  },
+  input: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: "#cbd5e1",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: "#ffffff",
+  },
+});

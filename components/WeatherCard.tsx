@@ -12,6 +12,8 @@ export default function WeatherCard({
 
   return (
     <View
+      accessible
+      accessibilityLabel={`Cuaca ${kota}, suhu ${suhu} derajat, kualitas udara ${tingkatAQI}`}
       style={{
         padding: spacing.sedang,
         borderRadius: 8,
