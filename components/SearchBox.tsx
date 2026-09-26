@@ -1,5 +1,5 @@
 // components/SearchBox.tsx
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   View,
   TextInput,
@@ -9,37 +9,42 @@ import {
 } from "react-native";
 
 interface SearchBoxProps {
-  onCari: (kota: string) => void;
+  onCari: (teks: string) => void;
 }
 
 export default function SearchBox({ onCari }: SearchBoxProps) {
-  const [inputKota, setInputKota] = useState("");
+  const [teks, setTeks] = useState("");
 
-  const handleSubmit = () => {
-    if (inputKota.trim()) {
-      onCari(inputKota.trim());
-      setInputKota("");
-    }
-  };
+  function handleChange(nilaiBaru: string) {
+    setTeks(nilaiBaru);
+    onCari(nilaiBaru); // kirim setiap perubahan, debounce diatur di pemanggilnya
+  }
+
+  function handleClear() {
+    setTeks("");
+    onCari("");
+  }
 
   return (
     <View style={styles.container}>
+      <Text style={styles.searchIcon}>🔍</Text>
       <TextInput
         style={styles.input}
         placeholder="Cari nama kota..."
         placeholderTextColor="#94a3b8"
-        value={inputKota}
-        onChangeText={setInputKota}
-        onSubmitEditing={handleSubmit}
-      />
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handleSubmit}
-        accessibilityRole="button"
+        value={teks}
+        onChangeText={handleChange}
         accessibilityLabel="Cari cuaca untuk kota yang dimasukkan"
-      >
-        <Text style={styles.buttonText}>Cari</Text>
-      </TouchableOpacity>
+      />
+      {teks.length > 0 && (
+        <TouchableOpacity
+          onPress={handleClear}
+          style={styles.clearButton}
+          accessibilityLabel="Bersihkan teks pencarian"
+        >
+          <Text style={styles.clearText}>✕</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
@@ -47,31 +52,36 @@ export default function SearchBox({ onCari }: SearchBoxProps) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    gap: 10,
     alignItems: "center",
-  },
-  input: {
-    flex: 1,
-    height: 48,
     backgroundColor: "#ffffff",
     borderWidth: 1.5,
     borderColor: "#e2e8f0",
     borderRadius: 12,
-    paddingHorizontal: 16,
+    paddingHorizontal: 14,
+    height: 50,
+    shadowColor: "#0f172a",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  searchIcon: {
+    fontSize: 16,
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
     fontSize: 15,
     color: "#0f172a",
+    height: "100%",
   },
-  button: {
-    height: 48,
-    paddingHorizontal: 20,
-    backgroundColor: "#2563eb",
-    borderRadius: 12,
-    justifyContent: "center",
-    alignItems: "center",
+  clearButton: {
+    padding: 6,
+    marginLeft: 4,
   },
-  buttonText: {
-    color: "#ffffff",
-    fontWeight: "600",
-    fontSize: 15,
+  clearText: {
+    fontSize: 14,
+    color: "#94a3b8",
+    fontWeight: "700",
   },
 });
