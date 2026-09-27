@@ -1,5 +1,5 @@
 // components/SearchBox.tsx
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   TextInput,
@@ -15,36 +15,48 @@ interface SearchBoxProps {
 export default function SearchBox({ onCari }: SearchBoxProps) {
   const [teks, setTeks] = useState("");
 
+  // Tetap mendukung Live Search Pertemuan 4 (mengirim teks setiap mengetik)
   function handleChange(nilaiBaru: string) {
     setTeks(nilaiBaru);
-    onCari(nilaiBaru); // kirim setiap perubahan, debounce diatur di pemanggilnya
+    onCari(nilaiBaru);
   }
 
-  function handleClear() {
-    setTeks("");
-    onCari("");
+  // Fungsi saat tombol biru "Cari" ditekan
+  function handleSubmit() {
+    onCari(teks.trim());
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.searchIcon}>🔍</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Cari nama kota..."
-        placeholderTextColor="#94a3b8"
-        value={teks}
-        onChangeText={handleChange}
-        accessibilityLabel="Cari cuaca untuk kota yang dimasukkan"
-      />
-      {teks.length > 0 && (
-        <TouchableOpacity
-          onPress={handleClear}
-          style={styles.clearButton}
-          accessibilityLabel="Bersihkan teks pencarian"
-        >
-          <Text style={styles.clearText}>✕</Text>
-        </TouchableOpacity>
-      )}
+      <View style={styles.inputWrapper}>
+        <TextInput
+          style={styles.input}
+          placeholder="Cari nama kota..."
+          placeholderTextColor="#94a3b8"
+          value={teks}
+          onChangeText={handleChange}
+          onSubmitEditing={handleSubmit}
+          accessibilityLabel="Cari cuaca untuk kota yang dimasukkan"
+        />
+        {teks.length > 0 && (
+          <TouchableOpacity
+            onPress={() => handleChange("")}
+            style={styles.clearBtn}
+          >
+            <Text style={styles.clearText}>✕</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+
+      {/* Tombol Biru "Cari" Seperti Pertemuan 3 */}
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handleSubmit}
+        accessibilityRole="button"
+        accessibilityLabel="Tombol cari kota"
+      >
+        <Text style={styles.buttonText}>Cari</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -52,22 +64,19 @@ export default function SearchBox({ onCari }: SearchBoxProps) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
+    gap: 10,
     alignItems: "center",
+  },
+  inputWrapper: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    height: 48,
     backgroundColor: "#ffffff",
     borderWidth: 1.5,
     borderColor: "#e2e8f0",
     borderRadius: 12,
-    paddingHorizontal: 14,
-    height: 50,
-    shadowColor: "#0f172a",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 6,
-    elevation: 2,
-  },
-  searchIcon: {
-    fontSize: 16,
-    marginRight: 10,
+    paddingHorizontal: 16,
   },
   input: {
     flex: 1,
@@ -75,13 +84,25 @@ const styles = StyleSheet.create({
     color: "#0f172a",
     height: "100%",
   },
-  clearButton: {
-    padding: 6,
-    marginLeft: 4,
+  clearBtn: {
+    padding: 4,
   },
   clearText: {
-    fontSize: 14,
     color: "#94a3b8",
+    fontSize: 14,
     fontWeight: "700",
+  },
+  button: {
+    height: 48,
+    paddingHorizontal: 20,
+    backgroundColor: "#2563eb",
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#ffffff",
+    fontWeight: "600",
+    fontSize: 15,
   },
 });
