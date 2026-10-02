@@ -1,5 +1,5 @@
 // components/SearchBox.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   TextInput,
@@ -10,12 +10,20 @@ import {
 
 interface SearchBoxProps {
   onCari: (teks: string) => void;
+  nilai?: string;
 }
 
-export default function SearchBox({ onCari }: SearchBoxProps) {
-  const [teks, setTeks] = useState("");
+export default function SearchBox({ onCari, nilai }: SearchBoxProps) {
+  const [teks, setTeks] = useState(nilai ?? "");
 
-  // Tetap mendukung Live Search Pertemuan 4 (mengirim teks setiap mengetik)
+  // Sinkronisasi teks input jika nilai dari parent berubah (misal saat kota dipilih)
+  useEffect(() => {
+    if (nilai !== undefined) {
+      setTeks(nilai);
+    }
+  }, [nilai]);
+
+  // Mengirim teks setiap kali pengguna mengetik (Live Search)
   function handleChange(nilaiBaru: string) {
     setTeks(nilaiBaru);
     onCari(nilaiBaru);
@@ -42,13 +50,14 @@ export default function SearchBox({ onCari }: SearchBoxProps) {
           <TouchableOpacity
             onPress={() => handleChange("")}
             style={styles.clearBtn}
+            accessibilityLabel="Hapus teks pencarian"
           >
             <Text style={styles.clearText}>✕</Text>
           </TouchableOpacity>
         )}
       </View>
 
-      {/* Tombol Biru "Cari" Seperti Pertemuan 3 */}
+      {/* Tombol Biru "Cari" */}
       <TouchableOpacity
         style={styles.button}
         onPress={handleSubmit}
