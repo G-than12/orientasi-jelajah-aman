@@ -1,8 +1,8 @@
 // app/(tabs)/pengaturan.tsx
-import React, { useState } from "react";
-import { View, Text, Switch, StyleSheet, ScrollView } from "react-native";
+import { useState } from "react";
+import { ScrollView, StyleSheet, Switch, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { typeScale, spacing } from "../../constants/styles";
+import { spacing } from "../../constants/styles";
 
 export default function TabPengaturan() {
   const [notifikasi, setNotifikasi] = useState(true);
