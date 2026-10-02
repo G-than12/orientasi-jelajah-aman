@@ -2,7 +2,7 @@
 import { DataCuacaLengkap } from "../types/weather";
 
 const BASE_URL = "https://api.open-meteo.com/v1/forecast";
-const BATAS_WAKTU_MS = 8000; // Pada Tahap 13, ubah menjadi 3000
+const BATAS_WAKTU_MS = 3000; // Tahap 13: Diubah menjadi 3000 (3 detik) untuk mengamati timeout saat koneksi lambat
 
 export async function ambilCuaca(
   latitude: number,

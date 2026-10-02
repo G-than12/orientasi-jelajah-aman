@@ -1,30 +1,30 @@
 // app/(tabs)/index.tsx
-import { useState, useEffect, useRef } from "react";
+import { router } from "expo-router";
+import { useEffect, useRef, useState } from "react";
 import {
-  View,
-  Text,
   ActivityIndicator,
   Button,
   ScrollView,
-  TouchableOpacity,
   StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
 
+import AtribusiCuaca from "../../components/AtribusiCuaca";
+import RiwayatList from "../../components/RiwayatList";
 import SearchBox from "../../components/SearchBox";
 import WeatherCard from "../../components/WeatherCard";
-import RiwayatList from "../../components/RiwayatList";
-import AtribusiCuaca from "../../components/AtribusiCuaca";
-import { useDebounce } from "../../hooks/use-debounce";
-import { cariKota } from "../../services/geocodingService";
-import { ambilCuaca } from "../../services/weatherService";
-import { ambilKualitasUdara } from "../../services/airQualityService";
-import { konversiTingkatAQI } from "../../services/weatherAdapter";
 import { labelKodeCuaca } from "../../constants/weatherCodes";
+import { useRiwayat } from "../../contexts/RiwayatContext";
+import { useDebounce } from "../../hooks/use-debounce";
+import { ambilKualitasUdara } from "../../services/airQualityService";
+import { cariKota } from "../../services/geocodingService";
+import { konversiTingkatAQI } from "../../services/weatherAdapter";
+import { ambilCuaca } from "../../services/weatherService";
 import { HasilGeocoding } from "../../types/geocoding";
 import { DataCuacaLengkap, DataKualitasUdara } from "../../types/weather";
-import { useRiwayat } from "../../contexts/RiwayatContext";
 
 export default function HalamanUtama() {
   const { riwayat, tambahRiwayat } = useRiwayat();
@@ -40,7 +40,7 @@ export default function HalamanUtama() {
   // State data cuaca & AQI realtime
   const [cuaca, setCuaca] = useState<DataCuacaLengkap | null>(null);
   const [kualitasUdara, setKualitasUdara] = useState<DataKualitasUdara | null>(
-    null
+    null,
   );
   const [sedangMemuatCuaca, setSedangMemuatCuaca] = useState(false);
   const [pesanErrorCuaca, setPesanErrorCuaca] = useState<string | null>(null);
@@ -50,7 +50,7 @@ export default function HalamanUtama() {
   const [hasil, setHasil] = useState<HasilGeocoding[]>([]);
   const [sedangMemuatGeocoding, setSedangMemuatGeocoding] = useState(false);
   const [pesanErrorGeocoding, setPesanErrorGeocoding] = useState<string | null>(
-    null
+    null,
   );
 
   const teksTertunda = useDebounce(teksCari, 500);
@@ -81,7 +81,7 @@ export default function HalamanUtama() {
     } catch (err) {
       if (idSaatIni !== requestIdRef.current) return;
       setPesanErrorCuaca(
-        "Gagal memuat data cuaca. Periksa koneksi internet Anda."
+        "Gagal memuat data cuaca. Periksa koneksi internet Anda.",
       );
     } finally {
       if (idSaatIni === requestIdRef.current) {
@@ -109,7 +109,7 @@ export default function HalamanUtama() {
     } catch (err) {
       setHasil([]);
       setPesanErrorGeocoding(
-        "Gagal mencari kota. Periksa koneksi internet Anda."
+        "Gagal mencari kota. Periksa koneksi internet Anda.",
       );
     } finally {
       setSedangMemuatGeocoding(false);
