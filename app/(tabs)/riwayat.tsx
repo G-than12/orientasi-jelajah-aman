@@ -79,7 +79,12 @@ export default function TabRiwayat() {
                   onPress={() =>
                     router.push({
                       pathname: "/detail/[kota]",
-                      params: { kota: kota.nama },
+                      params: {
+                        kota: kota.nama,
+                        id: String(kota.id),
+                        lat: String(kota.latitude),
+                        lon: String(kota.longitude),
+                      },
                     })
                   }
                 >

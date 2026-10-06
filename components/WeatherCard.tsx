@@ -77,13 +77,6 @@ export default function WeatherCard({
         <Text style={styles.suhu}>{suhu}°</Text>
         <View style={styles.satuanContainer}>
           <Text style={styles.satuan}>Celsius</Text>
-          {tampilkanDetail &&
-            suhuMin !== undefined &&
-            suhuMaks !== undefined && (
-              <Text style={styles.rentangSuhuRingkas}>
-                Min {suhuMin}° • Maks {suhuMaks}°
-              </Text>
-            )}
         </View>
       </View>
 

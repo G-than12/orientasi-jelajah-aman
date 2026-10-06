@@ -58,24 +58,31 @@ export default function HalamanUtama() {
   // State status favorit kota aktif
   const [sudahFavorit, setSudahFavorit] = useState(false);
 
-  const cekStatusFavorit = useCallback(async (id: number) => {
-    try {
-      const daftar = await ambilSemuaFavorit();
-      const ditemukan = daftar.some((k) => k.id === id);
-      setSudahFavorit(ditemukan);
-    } catch {
-      setSudahFavorit(false);
-    }
-  }, []);
+  const cekStatusFavorit = useCallback(
+    async (target: { id: number; name: string }) => {
+      try {
+        const daftar = await ambilSemuaFavorit();
+        const ditemukan = daftar.some(
+          (k) =>
+            (k.id !== -1 && target.id !== -1 && k.id === target.id) ||
+            k.nama.trim().toLowerCase() === target.name.trim().toLowerCase()
+        );
+        setSudahFavorit(ditemukan);
+      } catch {
+        setSudahFavorit(false);
+      }
+    },
+    []
+  );
 
   useEffect(() => {
-    cekStatusFavorit(kotaAktif.id);
-  }, [kotaAktif.id, cekStatusFavorit]);
+    cekStatusFavorit({ id: kotaAktif.id, name: kotaAktif.name });
+  }, [kotaAktif.id, kotaAktif.name, cekStatusFavorit]);
 
   useFocusEffect(
     useCallback(() => {
-      cekStatusFavorit(kotaAktif.id);
-    }, [kotaAktif.id, cekStatusFavorit])
+      cekStatusFavorit({ id: kotaAktif.id, name: kotaAktif.name });
+    }, [kotaAktif.id, kotaAktif.name, cekStatusFavorit])
   );
 
   // State Live Search Geocoding
@@ -357,7 +364,12 @@ export default function HalamanUtama() {
                   onPress={() =>
                     router.push({
                       pathname: "/detail/[kota]",
-                      params: { kota: kotaAktif.name },
+                      params: {
+                        kota: kotaAktif.name,
+                        id: String(kotaAktif.id),
+                        lat: String(kotaAktif.latitude),
+                        lon: String(kotaAktif.longitude),
+                      },
                     })
                   }
                 >

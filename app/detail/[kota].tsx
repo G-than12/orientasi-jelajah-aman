@@ -1,5 +1,5 @@
 // app/detail/[kota].tsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -8,7 +8,7 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
-import { useLocalSearchParams, router } from "expo-router";
+import { useLocalSearchParams, router, useFocusEffect } from "expo-router";
 import WeatherCard from "../../components/WeatherCard";
 import { spacing } from "../../constants/styles";
 import { ambilCuaca } from "../../services/weatherService";
@@ -17,10 +17,16 @@ import { cariKota } from "../../services/geocodingService";
 import { konversiTingkatAQI } from "../../services/weatherAdapter";
 import { labelKodeCuaca } from "../../constants/weatherCodes";
 import { useRiwayat } from "../../contexts/RiwayatContext";
+import { ambilSemuaFavorit } from "../../services/favoritStorage";
 import { DataCuacaLengkap, DataKualitasUdara } from "../../types/weather";
 
 export default function HalamanDetail() {
-  const { kota } = useLocalSearchParams<{ kota: string }>();
+  const { kota, id, lat, lon } = useLocalSearchParams<{
+    kota: string;
+    id?: string;
+    lat?: string;
+    lon?: string;
+  }>();
   const namaKota = kota ?? "Kota Pilihan";
 
   const { riwayat } = useRiwayat();
@@ -34,6 +40,7 @@ export default function HalamanDetail() {
   );
   const [sedangMemuat, setSedangMemuat] = useState(true);
   const [pesanError, setPesanError] = useState<string | null>(null);
+  const [sudahFavorit, setSudahFavorit] = useState(false);
 
   const [koordinatAktif, setKoordinatAktif] = useState<{
     id?: number;
@@ -41,22 +48,39 @@ export default function HalamanDetail() {
     lon: number;
   } | null>(null);
 
+  const cekStatusFavorit = useCallback(
+    async (nama: string, idNum?: number) => {
+      try {
+        const daftar = await ambilSemuaFavorit();
+        const ditemukan = daftar.some(
+          (k) =>
+            (idNum !== undefined && idNum !== -1 && k.id !== -1 && k.id === idNum) ||
+            k.nama.trim().toLowerCase() === nama.trim().toLowerCase()
+        );
+        setSudahFavorit(ditemukan);
+      } catch {
+        setSudahFavorit(false);
+      }
+    },
+    []
+  );
+
   useEffect(() => {
     async function inisialisasi() {
       setSedangMemuat(true);
       setPesanError(null);
 
-      let lat = kotaData?.latitude;
-      let lon = kotaData?.longitude;
-      let idKota = 1;
+      let latitude = lat ? Number(lat) : kotaData?.latitude;
+      let longitude = lon ? Number(lon) : kotaData?.longitude;
+      let idKota = id ? Number(id) : 1;
 
-      // Jika koordinat belum ada di riwayat, cari via geocoding
-      if (lat === undefined || lon === undefined) {
+      // Jika koordinat belum ada di params/riwayat, cari via geocoding
+      if (latitude === undefined || longitude === undefined || isNaN(latitude) || isNaN(longitude)) {
         try {
           const hasil = await cariKota(namaKota);
           if (hasil.length > 0) {
-            lat = hasil[0].latitude;
-            lon = hasil[0].longitude;
+            latitude = hasil[0].latitude;
+            longitude = hasil[0].longitude;
             idKota = hasil[0].id;
           }
         } catch (e) {
@@ -64,18 +88,25 @@ export default function HalamanDetail() {
         }
       }
 
-      if (lat === undefined || lon === undefined) {
+      if (latitude === undefined || longitude === undefined || isNaN(latitude) || isNaN(longitude)) {
         setPesanError("Koordinat kota tidak ditemukan.");
         setSedangMemuat(false);
         return;
       }
 
-      setKoordinatAktif({ id: idKota, lat, lon });
-      muatData(lat, lon);
+      setKoordinatAktif({ id: idKota, lat: latitude, lon: longitude });
+      cekStatusFavorit(namaKota, idKota);
+      muatData(latitude, longitude);
     }
 
     inisialisasi();
-  }, [namaKota]);
+  }, [namaKota, id, lat, lon, cekStatusFavorit]);
+
+  useFocusEffect(
+    useCallback(() => {
+      cekStatusFavorit(namaKota, koordinatAktif?.id);
+    }, [namaKota, koordinatAktif?.id, cekStatusFavorit])
+  );
 
   async function muatData(lat: number, lon: number) {
     setSedangMemuat(true);
@@ -146,7 +177,10 @@ export default function HalamanDetail() {
 
       {/* 2. Tombol Tambahkan ke Favorit Langsung di Bawah Kartu */}
       <TouchableOpacity
-        style={styles.favButton}
+        style={[
+          styles.favButton,
+          sudahFavorit && styles.favButtonDisabled,
+        ]}
         onPress={() =>
           router.push({
             pathname: "/tambah-favorit",
@@ -158,12 +192,24 @@ export default function HalamanDetail() {
             },
           })
         }
+        disabled={sudahFavorit}
         activeOpacity={0.8}
         accessibilityRole="button"
-        accessibilityLabel={`Tambahkan ${namaKota} ke daftar favorit`}
+        accessibilityLabel={
+          sudahFavorit
+            ? `${namaKota} sudah ada di daftar favorit`
+            : `Tambahkan ${namaKota} ke daftar favorit`
+        }
       >
-        <Text style={styles.favButtonIcon}>⭐</Text>
-        <Text style={styles.favButtonText}>Tambahkan ke Favorit</Text>
+        <Text style={styles.favButtonIcon}>{sudahFavorit ? "✓" : "⭐"}</Text>
+        <Text
+          style={[
+            styles.favButtonText,
+            sudahFavorit && styles.favButtonTextDisabled,
+          ]}
+        >
+          {sudahFavorit ? "Sudah di Favorit" : "Tambahkan ke Favorit"}
+        </Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -193,6 +239,11 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4,
   },
+  favButtonDisabled: {
+    backgroundColor: "#e2e8f0",
+    shadowOpacity: 0,
+    elevation: 0,
+  },
   favButtonIcon: {
     fontSize: 18,
   },
@@ -200,5 +251,8 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontSize: 15,
     fontWeight: "700",
+  },
+  favButtonTextDisabled: {
+    color: "#64748b",
   },
 });

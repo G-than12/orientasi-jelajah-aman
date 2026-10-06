@@ -11,7 +11,11 @@ export async function ambilSemuaFavorit(): Promise<KotaFavorit[]> {
 
 export async function tambahFavorit(kota: KotaFavorit): Promise<void> {
   const daftar = await ambilSemuaFavorit();
-  const sudahAda = daftar.some((k) => k.id === kota.id);
+  const sudahAda = daftar.some(
+    (k) =>
+      (k.id !== -1 && kota.id !== -1 && k.id === kota.id) ||
+      k.nama.trim().toLowerCase() === kota.nama.trim().toLowerCase()
+  );
   if (sudahAda) return;
   const daftarBaru = [...daftar, kota];
   await AsyncStorage.setItem(KUNCI_PENYIMPANAN, JSON.stringify(daftarBaru));
