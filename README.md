@@ -34,11 +34,11 @@ Proyek ini dikembangkan sebagai bagian dari praktikum mata kuliah **Pemrograman 
 * Jika kota aktif sudah ada di daftar favorit, tombol otomatis dinonaktifkan (`disabled`) dengan status visual **"Sudah di Favorit ✓"**.
 * Penerusan parameter lengkap (`id`, `nama`, `lat`, `lon`) antar rute memastikan integritas data tetap konsisten.
 
-### 4. 🗑️ Manajemen Tab Riwayat & Konfirmasi Hapus Lintas Platform
+### 4. 🗑️ Manajemen Tab Riwayat & Modal Konfirmasi Hapus In-App
 * Tab Riwayat memuat daftar favorit nyata secara dinamis dengan penanda jumlah (*badge*) **"Tersimpan X kota"**.
-* Dilengkapi konfirmasi penghapusan yang aman:
-  * **Mobile (Android/iOS):** Dialog natif interaktif `Alert.alert("Konfirmasi Hapus", "Yakin hapus [nama kota]?", [Batal, Hapus])`.
-  * **Web (Browser):** Kompatibilitas responsif via `window.confirm`.
+* Dilengkapi dialog konfirmasi penghapusan in-app yang modern dan elegan:
+  * Menggantikan alert browser bawaan (`window.confirm`) dan alert sistem dengan **Modal Dialog In-App** yang seragam di seluruh platform (Web, Android, iOS).
+  * Dilengkapi kartu tinjauan kota (*preview card*), indikator memuat (*loading indicator*), serta tombol aksi "Batal" dan "Ya, Hapus" yang aman.
 * Mekanisme penghapusan *dual-check* menjamin item segera terhapus dari memori lokal dan tampilan layar seketika.
 
 ### 5. 🔍 Live Search Geocoding Cerdas
