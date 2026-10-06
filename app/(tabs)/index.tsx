@@ -327,28 +327,54 @@ export default function HalamanUtama() {
 
             {/* Kartu Cuaca Utama di Beranda: Tampilan Ringkas (Ketuk untuk buka detail lengkap) */}
             {!sedangMemuatCuaca && !pesanErrorCuaca && cuaca && (
-              <TouchableOpacity
-                activeOpacity={0.85}
-                onPress={() =>
-                  router.push({
-                    pathname: "/detail/[kota]",
-                    params: { kota: kotaAktif.name },
-                  })
-                }
-              >
-                <WeatherCard
-                  kota={kotaAktif.name}
-                  suhu={Math.round(cuaca.saatIni.suhu)}
-                  tingkatAQI={
-                    kualitasUdara
-                      ? konversiTingkatAQI(kualitasUdara.indeksAQI)
-                      : "BAIK"
+              <View style={styles.cuacaContainer}>
+                <TouchableOpacity
+                  activeOpacity={0.85}
+                  onPress={() =>
+                    router.push({
+                      pathname: "/detail/[kota]",
+                      params: { kota: kotaAktif.name },
+                    })
                   }
-                  indeksAQI={kualitasUdara?.indeksAQI}
-                  kondisi={labelKodeCuaca(cuaca.saatIni.kodeCuaca)}
-                  tampilkanDetail={false}
-                />
-              </TouchableOpacity>
+                >
+                  <WeatherCard
+                    kota={kotaAktif.name}
+                    suhu={Math.round(cuaca.saatIni.suhu)}
+                    tingkatAQI={
+                      kualitasUdara
+                        ? konversiTingkatAQI(kualitasUdara.indeksAQI)
+                        : "BAIK"
+                    }
+                    indeksAQI={kualitasUdara?.indeksAQI}
+                    kondisi={labelKodeCuaca(cuaca.saatIni.kodeCuaca)}
+                    tampilkanDetail={false}
+                  />
+                </TouchableOpacity>
+
+                {/* Tombol Tambahkan ke Favorit */}
+                <TouchableOpacity
+                  style={styles.tombolFavorit}
+                  activeOpacity={0.8}
+                  onPress={() =>
+                    router.push({
+                      pathname: "/tambah-favorit",
+                      params: {
+                        id: String(kotaAktif.id),
+                        nama: kotaAktif.name,
+                        lat: String(kotaAktif.latitude),
+                        lon: String(kotaAktif.longitude),
+                      },
+                    })
+                  }
+                  accessibilityRole="button"
+                  accessibilityLabel="Tambahkan ke Favorit"
+                >
+                  <Text style={styles.tombolFavoritIcon}>⭐</Text>
+                  <Text style={styles.tombolFavoritText}>
+                    Tambahkan ke Favorit
+                  </Text>
+                </TouchableOpacity>
+              </View>
             )}
 
             {/* Riwayat Pencarian Kota yang Terhubung Global */}
@@ -526,5 +552,30 @@ const styles = StyleSheet.create({
     color: "#92400e",
     fontSize: 13,
     fontWeight: "500",
+  },
+  cuacaContainer: {
+    gap: 12,
+  },
+  tombolFavorit: {
+    backgroundColor: "#2563eb",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 8,
+    paddingVertical: 14,
+    borderRadius: 14,
+    shadowColor: "#2563eb",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  tombolFavoritIcon: {
+    fontSize: 16,
+  },
+  tombolFavoritText: {
+    color: "#ffffff",
+    fontSize: 15,
+    fontWeight: "700",
   },
 });
