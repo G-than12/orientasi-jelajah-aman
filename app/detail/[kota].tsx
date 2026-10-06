@@ -119,7 +119,11 @@ export default function HalamanDetail() {
       setCuaca(dataCuaca);
       setKualitasUdara(dataAQI);
     } catch (err) {
-      setPesanError("Gagal memuat data cuaca. Periksa koneksi internet Anda.");
+      const pesan =
+        err instanceof Error
+          ? err.message
+          : "Gagal memuat data cuaca. Periksa koneksi internet Anda.";
+      setPesanError(pesan);
     } finally {
       setSedangMemuat(false);
     }
@@ -146,9 +150,23 @@ export default function HalamanDetail() {
           padding: 24,
         }}
       >
-        <Text style={{ color: "#dc2626", textAlign: "center" }}>
+        <Text style={{ fontSize: 36, marginBottom: 12 }}>⚠️</Text>
+        <Text style={{ color: "#dc2626", textAlign: "center", marginBottom: 16 }}>
           {pesanError}
         </Text>
+        {koordinatAktif && (
+          <TouchableOpacity
+            style={{
+              backgroundColor: "#2563eb",
+              paddingHorizontal: 20,
+              paddingVertical: 10,
+              borderRadius: 8,
+            }}
+            onPress={() => muatData(koordinatAktif.lat, koordinatAktif.lon)}
+          >
+            <Text style={{ color: "#ffffff", fontWeight: "600" }}>Coba Lagi</Text>
+          </TouchableOpacity>
+        )}
       </View>
     );
   }
@@ -183,7 +201,7 @@ export default function HalamanDetail() {
         ]}
         onPress={() =>
           router.push({
-            pathname: "/tambah-favorit",
+            pathname: "/tambah-favorit" as any,
             params: {
               id: String(koordinatAktif?.id ?? 1),
               nama: namaKota,
