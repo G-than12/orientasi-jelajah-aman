@@ -1,4 +1,4 @@
-# 🌤️ Jelajah Aman — Aplikasi Monitoring Cuaca & Kualitas Udara
+# 🌤️ Jelajah Aman — Aplikasi Monitoring Cuaca & Kualitas Udara 
 
 [![Expo](https://img.shields.io/badge/Expo-v57.0-blue.svg?logo=expo&logoColor=white)](https://expo.dev/)
 [![React Native](https://img.shields.io/badge/React_Native-0.74-61DAFB.svg?logo=react&logoColor=black)](https://reactnative.dev/)
