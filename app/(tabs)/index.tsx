@@ -21,6 +21,10 @@ import { useRiwayat } from "../../contexts/RiwayatContext";
 import { useDebounce } from "../../hooks/use-debounce";
 import { ambilKualitasUdara } from "../../services/airQualityService";
 import { cariKota } from "../../services/geocodingService";
+import {
+  ambilKoordinatSaatIni,
+  mintaIzinLokasi,
+} from "../../services/locationService";
 import { konversiTingkatAQI } from "../../services/weatherAdapter";
 import { ambilCuaca } from "../../services/weatherService";
 import { HasilGeocoding } from "../../types/geocoding";
@@ -31,11 +35,16 @@ export default function HalamanUtama() {
 
   // State kota aktif (default Pekalongan)
   const [kotaAktif, setKotaAktif] = useState<{
+    id: number;
     name: string;
     latitude: number;
     longitude: number;
     admin1?: string;
-  }>({ name: "Pekalongan", latitude: -6.8886, longitude: 109.6753 });
+  }>({ id: 1632766, name: "Pekalongan", latitude: -6.8886, longitude: 109.6753 });
+
+  // State pesan dan status perizinan lokasi GPS
+  const [pesanLokasi, setPesanLokasi] = useState<string | null>(null);
+  const [sedangMemuatLokasi, setSedangMemuatLokasi] = useState(false);
 
   // State data cuaca & AQI realtime
   const [cuaca, setCuaca] = useState<DataCuacaLengkap | null>(null);
@@ -125,6 +134,7 @@ export default function HalamanUtama() {
 
     // 2. Set kota aktif & simpan ke riwayat
     const kotaBaru = {
+      id: kota.id,
       name: kota.name,
       latitude: kota.latitude,
       longitude: kota.longitude,
@@ -135,6 +145,42 @@ export default function HalamanUtama() {
 
     // 3. Panggil langsung API cuaca realtime untuk koordinat kota yang dipilih
     muatDataCuaca(kota.latitude, kota.longitude);
+  }
+
+  // Fungsi mengambil lokasi perangkat saat ini dengan penanganan 3 kondisi izin
+  async function gunakanLokasiSaatIni() {
+    setSedangMemuatLokasi(true);
+    setPesanLokasi(null);
+    try {
+      const status = await mintaIzinLokasi();
+      if (status === "denied") {
+        setPesanLokasi(
+          "Izin lokasi ditolak. Silakan cari kota secara manual di atas."
+        );
+        return;
+      }
+      if (status === "unavailable") {
+        setPesanLokasi(
+          "Layanan lokasi tidak aktif di perangkat ini. Silakan cari kota secara manual."
+        );
+        return;
+      }
+      setPesanLokasi(null);
+      const koordinat = await ambilKoordinatSaatIni();
+      pilihKota({
+        id: -1,
+        name: "Lokasi Saat Ini",
+        latitude: koordinat.latitude,
+        longitude: koordinat.longitude,
+        country: "",
+      });
+    } catch (err) {
+      setPesanLokasi(
+        "Gagal mengambil lokasi saat ini. Silakan cari kota secara manual."
+      );
+    } finally {
+      setSedangMemuatLokasi(false);
+    }
   }
 
   // Status pencarian aktif jika kotak input memiliki teks
@@ -157,6 +203,34 @@ export default function HalamanUtama() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <SearchBox onCari={setTeksCari} nilai={teksCari} />
+
+      {/* Tombol Lokasi Saat Ini (GPS) */}
+      <TouchableOpacity
+        style={styles.tombolLokasi}
+        onPress={gunakanLokasiSaatIni}
+        disabled={sedangMemuatLokasi}
+        activeOpacity={0.8}
+        accessibilityRole="button"
+        accessibilityLabel="Gunakan Lokasi Saat Ini"
+      >
+        {sedangMemuatLokasi ? (
+          <ActivityIndicator size="small" color="#2563eb" />
+        ) : (
+          <Text style={styles.tombolLokasiIcon}>📍</Text>
+        )}
+        <Text style={styles.tombolLokasiText}>
+          {sedangMemuatLokasi
+            ? "Mencari Lokasi GPS..."
+            : "Gunakan Lokasi Saat Ini"}
+        </Text>
+      </TouchableOpacity>
+
+      {pesanLokasi && (
+        <View style={styles.pesanLokasiBox}>
+          <Text style={styles.pesanLokasiIcon}>⚠️</Text>
+          <Text style={styles.pesanLokasiText}>{pesanLokasi}</Text>
+        </View>
+      )}
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* --- HASIL PENCARIAN LIVE SEARCH --- */}
@@ -407,5 +481,50 @@ const styles = StyleSheet.create({
     color: "#dc2626",
     textAlign: "center",
     fontSize: 14,
+  },
+  tombolLokasi: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#ffffff",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "#bfdbfe",
+    gap: 8,
+    shadowColor: "#2563eb",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  tombolLokasiIcon: {
+    fontSize: 16,
+  },
+  tombolLokasiText: {
+    color: "#2563eb",
+    fontSize: 14,
+    fontWeight: "700",
+  },
+  pesanLokasiBox: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fffbeb",
+    borderWidth: 1,
+    borderColor: "#fde68a",
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 12,
+    gap: 8,
+  },
+  pesanLokasiIcon: {
+    fontSize: 14,
+  },
+  pesanLokasiText: {
+    flex: 1,
+    color: "#92400e",
+    fontSize: 13,
+    fontWeight: "500",
   },
 });
