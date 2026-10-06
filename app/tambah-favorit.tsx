@@ -24,11 +24,13 @@ export default function ModalTambahFavorit() {
   async function simpan() {
     setSedangMenyimpan(true);
     try {
+      const parsedId = id ? Number(id) : NaN;
+      const validId = Number.isFinite(parsedId) ? parsedId : Date.now();
       await tambahFavorit({
-        id: Number(id),
+        id: validId,
         nama: nama || "Kota Pilihan",
-        latitude: Number(lat),
-        longitude: Number(lon),
+        latitude: Number(lat) || 0,
+        longitude: Number(lon) || 0,
       });
       router.back();
     } catch (error) {

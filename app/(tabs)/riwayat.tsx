@@ -2,6 +2,7 @@
 import { useCallback, useState } from "react";
 import {
   Alert,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -23,12 +24,30 @@ export default function TabRiwayat() {
     }, [])
   );
 
-  async function hapus(id: number) {
-    await hapusFavorit(id);
-    setDaftarFavorit((prev) => prev.filter((k) => k.id !== id));
+  async function hapus(kota: KotaFavorit) {
+    await hapusFavorit(kota.id, kota.nama);
+    setDaftarFavorit((prev) =>
+      prev.filter(
+        (k) =>
+          !(
+            (Number.isFinite(kota.id) &&
+              Number.isFinite(k.id) &&
+              k.id === kota.id) ||
+            k.nama.trim().toLowerCase() === kota.nama.trim().toLowerCase()
+          )
+      )
+    );
   }
 
   function konfirmasiHapus(kota: KotaFavorit) {
+    if (Platform.OS === "web") {
+      const setuju = window.confirm(`Yakin hapus ${kota.nama}?`);
+      if (setuju) {
+        hapus(kota);
+      }
+      return;
+    }
+
     Alert.alert(
       "Konfirmasi Hapus",
       `Yakin hapus ${kota.nama}?`,
@@ -40,7 +59,7 @@ export default function TabRiwayat() {
         {
           text: "Hapus",
           style: "destructive",
-          onPress: () => hapus(kota.id),
+          onPress: () => hapus(kota),
         },
       ]
     );
@@ -71,8 +90,8 @@ export default function TabRiwayat() {
           </View>
         ) : (
           <View style={styles.list}>
-            {daftarFavorit.map((kota) => (
-              <View key={kota.id} style={styles.cardItem}>
+            {daftarFavorit.map((kota, index) => (
+              <View key={`${kota.id}-${kota.nama}-${index}`} style={styles.cardItem}>
                 <TouchableOpacity
                   style={styles.kotaLeft}
                   activeOpacity={0.7}
