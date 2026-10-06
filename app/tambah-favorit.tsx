@@ -1,10 +1,43 @@
 // app/tambah-favorit.tsx
-import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { router } from "expo-router";
-import { typeScale, spacing } from "../constants/styles";
+import React, { useState } from "react";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { router, useLocalSearchParams } from "expo-router";
+import { spacing, typeScale } from "../constants/styles";
+import { tambahFavorit } from "../services/favoritStorage";
 
 export default function ModalTambahFavorit() {
+  const { id, nama, lat, lon } = useLocalSearchParams<{
+    id: string;
+    nama: string;
+    lat: string;
+    lon: string;
+  }>();
+
+  const [sedangMenyimpan, setSedangMenyimpan] = useState(false);
+
+  async function simpan() {
+    setSedangMenyimpan(true);
+    try {
+      await tambahFavorit({
+        id: Number(id),
+        nama: nama || "Kota Pilihan",
+        latitude: Number(lat),
+        longitude: Number(lon),
+      });
+      router.back();
+    } catch (error) {
+      console.error("Gagal menyimpan favorit:", error);
+    } finally {
+      setSedangMenyimpan(false);
+    }
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.card}>
@@ -14,23 +47,31 @@ export default function ModalTambahFavorit() {
 
         <Text style={styles.judul}>Simpan ke Favorit</Text>
         <Text style={styles.deskripsi}>
-          Tambahkan kota ini ke daftar favorit Anda agar dapat dipantau cuacanya
-          dengan cepat setiap saat.
+          Tambahkan <Text style={{ fontWeight: "700", color: "#1e293b" }}>{nama || "kota ini"}</Text> ke daftar favorit?
         </Text>
 
         <View style={styles.buttonGroup}>
           <TouchableOpacity
             style={styles.simpanButton}
-            onPress={() => router.back()}
+            onPress={simpan}
+            disabled={sedangMenyimpan}
             activeOpacity={0.8}
+            accessibilityRole="button"
+            accessibilityLabel="Simpan ke Favorit"
           >
-            <Text style={styles.simpanButtonText}>Simpan</Text>
+            {sedangMenyimpan ? (
+              <ActivityIndicator color="#ffffff" size="small" />
+            ) : (
+              <Text style={styles.simpanButtonText}>Simpan</Text>
+            )}
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.batalButton}
             onPress={() => router.back()}
             activeOpacity={0.7}
+            accessibilityRole="button"
+            accessibilityLabel="Batal"
           >
             <Text style={styles.batalButtonText}>Batal</Text>
           </TouchableOpacity>

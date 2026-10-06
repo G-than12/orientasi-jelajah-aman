@@ -35,6 +35,12 @@ export default function HalamanDetail() {
   const [sedangMemuat, setSedangMemuat] = useState(true);
   const [pesanError, setPesanError] = useState<string | null>(null);
 
+  const [koordinatAktif, setKoordinatAktif] = useState<{
+    id?: number;
+    lat: number;
+    lon: number;
+  } | null>(null);
+
   useEffect(() => {
     async function inisialisasi() {
       setSedangMemuat(true);
@@ -42,6 +48,7 @@ export default function HalamanDetail() {
 
       let lat = kotaData?.latitude;
       let lon = kotaData?.longitude;
+      let idKota = 1;
 
       // Jika koordinat belum ada di riwayat, cari via geocoding
       if (lat === undefined || lon === undefined) {
@@ -50,6 +57,7 @@ export default function HalamanDetail() {
           if (hasil.length > 0) {
             lat = hasil[0].latitude;
             lon = hasil[0].longitude;
+            idKota = hasil[0].id;
           }
         } catch (e) {
           // Abaikan error geocoding fallback
@@ -62,6 +70,7 @@ export default function HalamanDetail() {
         return;
       }
 
+      setKoordinatAktif({ id: idKota, lat, lon });
       muatData(lat, lon);
     }
 
@@ -138,7 +147,17 @@ export default function HalamanDetail() {
       {/* 2. Tombol Tambahkan ke Favorit Langsung di Bawah Kartu */}
       <TouchableOpacity
         style={styles.favButton}
-        onPress={() => router.push("/tambah-favorit")}
+        onPress={() =>
+          router.push({
+            pathname: "/tambah-favorit",
+            params: {
+              id: String(koordinatAktif?.id ?? 1),
+              nama: namaKota,
+              lat: String(koordinatAktif?.lat ?? 0),
+              lon: String(koordinatAktif?.lon ?? 0),
+            },
+          })
+        }
         activeOpacity={0.8}
         accessibilityRole="button"
         accessibilityLabel={`Tambahkan ${namaKota} ke daftar favorit`}
