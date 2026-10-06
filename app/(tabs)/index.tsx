@@ -120,9 +120,11 @@ export default function HalamanUtama() {
       setKualitasUdara(dataAQI);
     } catch (err) {
       if (idSaatIni !== requestIdRef.current) return;
-      setPesanErrorCuaca(
-        "Gagal memuat data cuaca. Periksa koneksi internet Anda.",
-      );
+      const pesan =
+        err instanceof Error
+          ? err.message
+          : "Gagal memuat data cuaca. Periksa koneksi internet Anda.";
+      setPesanErrorCuaca(pesan);
     } finally {
       if (idSaatIni === requestIdRef.current) {
         setSedangMemuatCuaca(false);
@@ -148,9 +150,11 @@ export default function HalamanUtama() {
       setHasil(data);
     } catch (err) {
       setHasil([]);
-      setPesanErrorGeocoding(
-        "Gagal mencari kota. Periksa koneksi internet Anda.",
-      );
+      const pesan =
+        err instanceof Error
+          ? err.message
+          : "Gagal mencari kota. Periksa koneksi internet Anda.";
+      setPesanErrorGeocoding(pesan);
     } finally {
       setSedangMemuatGeocoding(false);
     }
@@ -363,7 +367,7 @@ export default function HalamanUtama() {
                   activeOpacity={0.85}
                   onPress={() =>
                     router.push({
-                      pathname: "/detail/[kota]",
+                      pathname: "/detail/[kota]" as any,
                       params: {
                         kota: kotaAktif.name,
                         id: String(kotaAktif.id),
@@ -397,7 +401,7 @@ export default function HalamanUtama() {
                   disabled={sudahFavorit}
                   onPress={() =>
                     router.push({
-                      pathname: "/tambah-favorit",
+                      pathname: "/tambah-favorit" as any,
                       params: {
                         id: String(kotaAktif.id),
                         nama: kotaAktif.name,
