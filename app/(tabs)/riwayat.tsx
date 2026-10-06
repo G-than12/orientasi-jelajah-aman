@@ -1,6 +1,7 @@
 // app/(tabs)/riwayat.tsx
 import { useCallback, useState } from "react";
 import {
+  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -27,6 +28,24 @@ export default function TabRiwayat() {
     setDaftarFavorit((prev) => prev.filter((k) => k.id !== id));
   }
 
+  function konfirmasiHapus(kota: KotaFavorit) {
+    Alert.alert(
+      "Konfirmasi Hapus",
+      `Yakin hapus ${kota.nama}?`,
+      [
+        {
+          text: "Batal",
+          style: "cancel",
+        },
+        {
+          text: "Hapus",
+          style: "destructive",
+          onPress: () => hapus(kota.id),
+        },
+      ]
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
       <ScrollView
@@ -35,6 +54,11 @@ export default function TabRiwayat() {
       >
         <View style={styles.headerRow}>
           <Text style={styles.judulSection}>Kota Favorit</Text>
+          <View style={styles.badgeJumlah}>
+            <Text style={styles.badgeJumlahText}>
+              Tersimpan {daftarFavorit.length} kota
+            </Text>
+          </View>
         </View>
 
         {daftarFavorit.length === 0 ? (
@@ -72,7 +96,7 @@ export default function TabRiwayat() {
 
                 <TouchableOpacity
                   style={styles.hapusButton}
-                  onPress={() => hapus(kota.id)}
+                  onPress={() => konfirmasiHapus(kota)}
                   activeOpacity={0.7}
                   accessibilityRole="button"
                   accessibilityLabel={`Hapus ${kota.nama} dari favorit`}
@@ -108,6 +132,19 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#0f172a",
     letterSpacing: 0.2,
+  },
+  badgeJumlah: {
+    backgroundColor: "#eff6ff",
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#bfdbfe",
+  },
+  badgeJumlahText: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#2563eb",
   },
   list: {
     gap: 10,

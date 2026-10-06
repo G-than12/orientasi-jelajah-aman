@@ -1,6 +1,6 @@
 // app/(tabs)/index.tsx
-import { router } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Button,
@@ -20,6 +20,7 @@ import { labelKodeCuaca } from "../../constants/weatherCodes";
 import { useRiwayat } from "../../contexts/RiwayatContext";
 import { useDebounce } from "../../hooks/use-debounce";
 import { ambilKualitasUdara } from "../../services/airQualityService";
+import { ambilSemuaFavorit } from "../../services/favoritStorage";
 import { cariKota } from "../../services/geocodingService";
 import {
   ambilKoordinatSaatIni,
@@ -53,6 +54,29 @@ export default function HalamanUtama() {
   );
   const [sedangMemuatCuaca, setSedangMemuatCuaca] = useState(false);
   const [pesanErrorCuaca, setPesanErrorCuaca] = useState<string | null>(null);
+
+  // State status favorit kota aktif
+  const [sudahFavorit, setSudahFavorit] = useState(false);
+
+  const cekStatusFavorit = useCallback(async (id: number) => {
+    try {
+      const daftar = await ambilSemuaFavorit();
+      const ditemukan = daftar.some((k) => k.id === id);
+      setSudahFavorit(ditemukan);
+    } catch {
+      setSudahFavorit(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    cekStatusFavorit(kotaAktif.id);
+  }, [kotaAktif.id, cekStatusFavorit]);
+
+  useFocusEffect(
+    useCallback(() => {
+      cekStatusFavorit(kotaAktif.id);
+    }, [kotaAktif.id, cekStatusFavorit])
+  );
 
   // State Live Search Geocoding
   const [teksCari, setTeksCari] = useState("");
@@ -351,10 +375,14 @@ export default function HalamanUtama() {
                   />
                 </TouchableOpacity>
 
-                {/* Tombol Tambahkan ke Favorit */}
+                {/* Tombol Tambahkan ke Favorit (dinonaktifkan jika sudah tersimpan) */}
                 <TouchableOpacity
-                  style={styles.tombolFavorit}
+                  style={[
+                    styles.tombolFavorit,
+                    sudahFavorit && styles.tombolFavoritDisabled,
+                  ]}
                   activeOpacity={0.8}
+                  disabled={sudahFavorit}
                   onPress={() =>
                     router.push({
                       pathname: "/tambah-favorit",
@@ -367,11 +395,24 @@ export default function HalamanUtama() {
                     })
                   }
                   accessibilityRole="button"
-                  accessibilityLabel="Tambahkan ke Favorit"
+                  accessibilityLabel={
+                    sudahFavorit
+                      ? "Kota ini sudah ada di daftar favorit"
+                      : "Tambahkan ke Favorit"
+                  }
                 >
-                  <Text style={styles.tombolFavoritIcon}>⭐</Text>
-                  <Text style={styles.tombolFavoritText}>
-                    Tambahkan ke Favorit
+                  <Text style={styles.tombolFavoritIcon}>
+                    {sudahFavorit ? "✓" : "⭐"}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.tombolFavoritText,
+                      sudahFavorit && styles.tombolFavoritTextDisabled,
+                    ]}
+                  >
+                    {sudahFavorit
+                      ? "Sudah di Favorit"
+                      : "Tambahkan ke Favorit"}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -577,5 +618,13 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontSize: 15,
     fontWeight: "700",
+  },
+  tombolFavoritDisabled: {
+    backgroundColor: "#e2e8f0",
+    shadowOpacity: 0,
+    elevation: 0,
+  },
+  tombolFavoritTextDisabled: {
+    color: "#64748b",
   },
 });
