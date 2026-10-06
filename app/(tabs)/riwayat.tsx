@@ -97,7 +97,7 @@ export default function TabRiwayat() {
                   activeOpacity={0.7}
                   onPress={() =>
                     router.push({
-                      pathname: "/detail/[kota]",
+                      pathname: "/detail/[kota]" as any,
                       params: {
                         kota: kota.nama,
                         id: String(kota.id),

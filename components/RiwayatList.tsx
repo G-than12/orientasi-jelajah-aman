@@ -25,7 +25,7 @@ export default function RiwayatList({ daftarKota }: RiwayatListProps) {
           {daftarKota.map((kota) => (
             <Link
               key={kota}
-              href={{ pathname: "/detail/[kota]", params: { kota } }}
+              href={{ pathname: "/detail/[kota]" as any, params: { kota } } as any}
               style={styles.cardItem}
             >
               <View style={styles.itemRow}>
