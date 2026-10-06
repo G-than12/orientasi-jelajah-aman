@@ -2,7 +2,7 @@
 import { DataCuacaLengkap } from "../types/weather";
 
 const BASE_URL = "https://api.open-meteo.com/v1/forecast";
-const BATAS_WAKTU_MS = 3000; // Tahap 13: Diubah menjadi 3000 (3 detik) untuk mengamati timeout saat koneksi lambat
+const BATAS_WAKTU_MS = 10000; // Batas waktu 10 detik agar tidak mudah timeout pada koneksi seluler / jaringan Indonesia
 
 export async function ambilCuaca(
   latitude: number,
