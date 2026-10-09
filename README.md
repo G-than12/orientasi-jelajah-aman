@@ -174,7 +174,7 @@ Data disediakan di bawah ketentuan lisensi non-komersial Open-Meteo dengan menca
 ## 👤 Pengembang
 
 * **Nama:** Gathan Hilabi
-* **NIM / Email:** `gathan.hilabi24059@mhs.uingusdur.ac.id`
+* **NIM / Email:** `059`/`gathan.hilabi24059@mhs.uingusdur.ac.id`
 * **Program Studi:** Informatika
 * **Perguruan Tinggi:** UIN K.H. Abdurrahman Wahid Pekalongan
 * **Dosen Pengampu:** Reza Iqbal Pramudya, M.Kom
