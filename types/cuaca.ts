@@ -12,7 +12,8 @@ export interface WeatherCardProps {
   suhu: number;
   tingkatAQI: TingkatAQI;
   indeksAQI?: number; // Nilai angka indeks AQI asli dari API
-  kondisi?: string; // Keterangan kondisi cuaca (misal: "☀️ Cerah")
+  kodeCuaca?: number; // Kode WMO Open-Meteo untuk menampilkan icon vektor cuaca
+  kondisi?: string; // Keterangan kondisi cuaca teks
   kecepatanAngin?: number; // Kecepatan angin dalam km/j
   suhuMaks?: number; // Suhu maksimal harian (°C)
   suhuMin?: number; // Suhu minimal harian (°C)
