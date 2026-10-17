@@ -10,15 +10,17 @@ import {
 } from "react-native";
 import { useLocalSearchParams, router, useFocusEffect } from "expo-router";
 import WeatherCard from "../../components/WeatherCard";
+import StatusData from "../../components/StatusData";
+import { Ionicons } from "@expo/vector-icons";
 import { spacing } from "../../constants/styles";
-import { ambilCuaca } from "../../services/weatherService";
-import { ambilKualitasUdara } from "../../services/airQualityService";
+import { ambilCuacaOfflineFirst } from "../../src/services/cuacaRepository";
 import { cariKota } from "../../services/geocodingService";
 import { konversiTingkatAQI } from "../../services/weatherAdapter";
 import { labelKodeCuaca } from "../../constants/weatherCodes";
 import { useRiwayat } from "../../contexts/RiwayatContext";
 import { ambilSemuaFavorit } from "../../services/favoritStorage";
 import { DataCuacaLengkap, DataKualitasUdara } from "../../types/weather";
+import { HasilCuacaOffline } from "../../src/types/cache";
 
 export default function HalamanDetail() {
   const { kota, id, lat, lon } = useLocalSearchParams<{
@@ -34,6 +36,7 @@ export default function HalamanDetail() {
     (k) => k.name.toLowerCase() === namaKota.toLowerCase()
   );
 
+  const [hasilOffline, setHasilOffline] = useState<HasilCuacaOffline | null>(null);
   const [cuaca, setCuaca] = useState<DataCuacaLengkap | null>(null);
   const [kualitasUdara, setKualitasUdara] = useState<DataKualitasUdara | null>(
     null
@@ -96,7 +99,7 @@ export default function HalamanDetail() {
 
       setKoordinatAktif({ id: idKota, lat: latitude, lon: longitude });
       cekStatusFavorit(namaKota, idKota);
-      muatData(latitude, longitude);
+      muatData(latitude, longitude, idKota);
     }
 
     inisialisasi();
@@ -108,21 +111,33 @@ export default function HalamanDetail() {
     }, [namaKota, koordinatAktif?.id, cekStatusFavorit])
   );
 
-  async function muatData(lat: number, lon: number) {
+  async function muatData(lat: number, lon: number, idKota?: number) {
     setSedangMemuat(true);
     setPesanError(null);
     try {
-      const [dataCuaca, dataAQI] = await Promise.all([
-        ambilCuaca(lat, lon),
-        ambilKualitasUdara(lat, lon),
-      ]);
-      setCuaca(dataCuaca);
-      setKualitasUdara(dataAQI);
+      const hasil = await ambilCuacaOfflineFirst({
+        id: idKota ?? 1,
+        nama: namaKota,
+        latitude: lat,
+        longitude: lon,
+      });
+      setHasilOffline(hasil);
+      setCuaca(hasil.cuaca);
+      setKualitasUdara(hasil.kualitasUdara);
     } catch (err) {
-      const pesan =
-        err instanceof Error
-          ? err.message
-          : "Gagal memuat data cuaca. Periksa koneksi internet Anda.";
+      let pesan =
+        "Tidak ada koneksi internet dan belum ada data tersimpan. Silakan nyalakan data seluler atau Wi-Fi Anda.";
+      if (err instanceof Error) {
+        const pesanAsli = err.message.toLowerCase();
+        if (
+          !pesanAsli.includes("failed to fetch") &&
+          !pesanAsli.includes("network request failed") &&
+          !pesanAsli.includes("networkerror") &&
+          !pesanAsli.includes("tidak ada koneksi")
+        ) {
+          pesan = err.message;
+        }
+      }
       setPesanError(pesan);
     } finally {
       setSedangMemuat(false);
@@ -150,7 +165,12 @@ export default function HalamanDetail() {
           padding: 24,
         }}
       >
-        <Text style={{ fontSize: 36, marginBottom: 12 }}>⚠️</Text>
+        <Ionicons
+          name="alert-circle-outline"
+          size={48}
+          color="#dc2626"
+          style={{ marginBottom: 12 }}
+        />
         <Text style={{ color: "#dc2626", textAlign: "center", marginBottom: 16 }}>
           {pesanError}
         </Text>
@@ -162,7 +182,13 @@ export default function HalamanDetail() {
               paddingVertical: 10,
               borderRadius: 8,
             }}
-            onPress={() => muatData(koordinatAktif.lat, koordinatAktif.lon)}
+            onPress={() =>
+              muatData(
+                koordinatAktif.lat,
+                koordinatAktif.lon,
+                koordinatAktif.id
+              )
+            }
           >
             <Text style={{ color: "#ffffff", fontWeight: "600" }}>Coba Lagi</Text>
           </TouchableOpacity>
@@ -178,12 +204,23 @@ export default function HalamanDetail() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      {/* Indikator Status Data (Online/Cache Segar/Cache Basi) */}
+      {hasilOffline && (
+        <View style={{ marginBottom: 12 }}>
+          <StatusData
+            sumber={hasilOffline.sumber}
+            disimpanPada={hasilOffline.disimpanPada}
+          />
+        </View>
+      )}
+
       {/* 1. Kartu Cuaca Utama dengan Informasi Lengkap Sesuai Desain */}
       <WeatherCard
         kota={namaKota}
         suhu={suhu}
         tingkatAQI={tingkatAQI}
         indeksAQI={kualitasUdara?.indeksAQI}
+        kodeCuaca={cuaca?.saatIni.kodeCuaca}
         kondisi={cuaca ? labelKodeCuaca(cuaca.saatIni.kodeCuaca) : undefined}
         kecepatanAngin={cuaca?.saatIni.kecepatanAngin}
         suhuMaks={cuaca?.harian.suhuMaksimal?.[0]}
@@ -219,7 +256,11 @@ export default function HalamanDetail() {
             : `Tambahkan ${namaKota} ke daftar favorit`
         }
       >
-        <Text style={styles.favButtonIcon}>{sudahFavorit ? "✓" : "⭐"}</Text>
+        <Ionicons
+          name={sudahFavorit ? "checkmark-circle" : "star"}
+          size={18}
+          color={sudahFavorit ? "#64748b" : "#ffffff"}
+        />
         <Text
           style={[
             styles.favButtonText,
