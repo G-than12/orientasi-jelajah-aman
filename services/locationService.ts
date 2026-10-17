@@ -20,3 +20,21 @@ export async function ambilKoordinatSaatIni() {
     longitude: lokasi.coords.longitude,
   };
 }
+
+export async function ambilNamaKotaDariKoordinat(
+  latitude: number,
+  longitude: number
+): Promise<string> {
+  try {
+    const hasil = await Location.reverseGeocodeAsync({ latitude, longitude });
+    if (hasil && hasil.length > 0) {
+      const item = hasil[0];
+      const nama = item.city || item.subregion || item.region || item.district;
+      if (nama) return nama;
+    }
+  } catch {
+    // Abaikan jika platform (seperti web) tidak mendukung atau terjadi kegagalan jaringan
+  }
+  return "Lokasi Saat Ini";
+}
+
