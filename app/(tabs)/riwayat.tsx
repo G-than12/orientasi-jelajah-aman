@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { router, useFocusEffect } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 import { spacing } from "../../constants/styles";
 import { ambilSemuaFavorit, hapusFavorit } from "../../services/favoritStorage";
 import { KotaFavorit } from "../../types/favorit";
@@ -73,7 +74,7 @@ export default function TabRiwayat() {
 
         {daftarFavorit.length === 0 ? (
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyIcon}>⭐</Text>
+            <Ionicons name="star-outline" size={48} color="#94a3b8" style={{ marginBottom: 8 }} />
             <Text style={styles.emptyText}>Belum ada kota favorit</Text>
             <Text style={styles.emptySubtext}>
               Tambahkan kota favorit Anda dari Beranda atau Detail Cuaca.
@@ -99,7 +100,7 @@ export default function TabRiwayat() {
                   }
                 >
                   <View style={styles.iconBg}>
-                    <Text style={{ fontSize: 16 }}>⭐</Text>
+                    <Ionicons name="star" size={16} color="#eab308" />
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={styles.kotaText}>{kota.nama}</Text>

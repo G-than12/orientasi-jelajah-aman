@@ -10,6 +10,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 import { spacing } from "../../constants/styles";
 import { hapusSemuaCache } from "../../services/cacheRepository";
 
@@ -87,7 +88,7 @@ export default function TabPengaturan() {
               <ActivityIndicator size="small" color="#dc2626" />
             ) : (
               <>
-                <Text style={styles.tombolHapusCacheIcon}>🗑️</Text>
+                <Ionicons name="trash-outline" size={16} color="#dc2626" />
                 <Text style={styles.tombolHapusCacheText}>
                   Hapus Data Cuaca Tersimpan
                 </Text>

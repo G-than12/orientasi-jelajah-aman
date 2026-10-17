@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { spacing, typeScale } from "../constants/styles";
 import { tambahFavorit } from "../services/favoritStorage";
@@ -44,7 +45,7 @@ export default function ModalTambahFavorit() {
     <View style={styles.container}>
       <View style={styles.card}>
         <View style={styles.iconContainer}>
-          <Text style={{ fontSize: 36 }}>⭐</Text>
+          <Ionicons name="star" size={36} color="#eab308" />
         </View>
 
         <Text style={styles.judul}>Simpan ke Favorit</Text>

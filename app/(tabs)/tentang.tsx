@@ -1,5 +1,5 @@
-// app/(tabs)/tentang.tsx
 import { View, Text, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { typeScale, spacing } from "../../constants/styles";
 
@@ -9,7 +9,7 @@ export default function TabTentang() {
       {/* Header Aplikasi */}
       <View style={styles.cardHeader}>
         <View style={styles.iconPlaceholder}>
-          <Text style={{ fontSize: 32 }}>🌤️</Text>
+          <Ionicons name="partly-sunny" size={38} color="#2563eb" />
         </View>
         <Text
           accessible
@@ -54,10 +54,12 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sedang,
   },
   iconPlaceholder: {
-    width: 64,
-    height: 64,
-    borderRadius: 20,
-    backgroundColor: "#dbeafe",
+    width: 72,
+    height: 72,
+    borderRadius: 22,
+    backgroundColor: "#eff6ff",
+    borderWidth: 1.5,
+    borderColor: "#bfdbfe",
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 12,
