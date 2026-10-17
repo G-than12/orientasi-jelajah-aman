@@ -158,6 +158,17 @@ orientasi-jelajah-aman/
 | **Pertemuan 4** | Geocoding & Live Search | Integrasi Open-Meteo Geocoding API, custom hook `useDebounce`, serta routing dinamis `/detail/[kota]`. |
 | **Pertemuan 5** | API Realtime Cuaca & AQI | Integrasi API Cuaca & Kualitas Udara ganda paralel, pencegahan race condition, kamus WMO, dan timeout handler. |
 | **Pertemuan 6** | Lokasi, Permission & AsyncStorage | Integrasi GPS `expo-location` (3 kondisi izin), persistensi `AsyncStorage`, modal tambah favorit berbasis parameter, tab riwayat dinamis, konfirmasi hapus lintas platform, dan sinkronisasi status duplikat. |
+| **Pertemuan 7** | SQLite, Cache & Mode Offline | Integrasi SQLite (`expo-sqlite`) dengan migrasi skema v1 & v2 (`PRAGMA user_version`), caching offline-first dengan TTL 30 menit, komponen `StatusData` (asal & umur data), fallback data basi saat offline, dan fitur invalidasi cache manual di tab Pengaturan. |
+
+---
+
+## ⚡ Arsitektur Offline-First & Dokumentasi Status Data (Pertemuan 7)
+
+Aplikasi Jelajah Aman menerapkan strategi penyimpanan cerdas **Offline-First** berbasis **SQLite (`expo-sqlite`)** untuk menjamin ketersediaan informasi cuaca di setiap kondisi jaringan:
+* **Cache Segar (`cache-segar`):** Data cuaca dan kualitas udara yang tersimpan di database lokal dengan umur di bawah batas TTL (*Time To Live* 30 menit); data ini disajikan seketika tanpa melakukan panggilan jaringan berulang.
+* **Cache Basi (`cache-basi`):** Data cadangan lokal yang umurnya telah melebihi 30 menit namun tetap aman ditampilkan sebagai *graceful fallback* saat jaringan internet terputus atau mode pesawat aktif.
+* **First-Run Offline:** Kondisi ketika aplikasi pertama kali dibuka tanpa koneksi internet dan belum memiliki riwayat penyimpanan cache lokal sama sekali, ditangani secara elegan melalui pesan informatif dan tombol *Coba Lagi* tanpa menyebabkan aplikasi terhenti (*crash*).
+* **Urgensi Label Status Data:** Penyajian label status data (`sumber`) dan stempel waktu (*timestamp*) sangat penting bagi pengguna guna memberikan transparansi dan kejujuran informasi, sehingga pengguna mengetahui secara pasti apakah angka cuaca merupakan kondisi aktual terkini atau perkiraan sebelumnya saat merencanakan perjalanan.
 
 ---
 
