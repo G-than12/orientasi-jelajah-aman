@@ -7,6 +7,7 @@ import {
   Text,
   StyleSheet,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 interface SearchBoxProps {
   onCari: (teks: string) => void;
@@ -37,6 +38,7 @@ export default function SearchBox({ onCari, nilai }: SearchBoxProps) {
   return (
     <View style={styles.container}>
       <View style={styles.inputWrapper}>
+        <Ionicons name="search-outline" size={18} color="#94a3b8" style={{ marginRight: 8 }} />
         <TextInput
           style={styles.input}
           placeholder="Cari nama kota..."
@@ -52,7 +54,7 @@ export default function SearchBox({ onCari, nilai }: SearchBoxProps) {
             style={styles.clearBtn}
             accessibilityLabel="Hapus teks pencarian"
           >
-            <Text style={styles.clearText}>✕</Text>
+            <Ionicons name="close-circle" size={18} color="#94a3b8" />
           </TouchableOpacity>
         )}
       </View>

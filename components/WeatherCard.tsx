@@ -1,7 +1,8 @@
-// components/WeatherCard.tsx
 import { View, Text, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { WeatherCardProps } from "../types/cuaca";
 import { typeScale, spacing } from "../constants/styles";
+import { infoCuaca } from "../constants/weatherCodes";
 
 const getTemaAQI = (tingkat: string) => {
   switch (tingkat) {
@@ -21,6 +22,7 @@ export default function WeatherCard({
   suhu,
   tingkatAQI,
   indeksAQI,
+  kodeCuaca,
   kondisi,
   kecepatanAngin,
   suhuMaks,
@@ -30,6 +32,8 @@ export default function WeatherCard({
   tampilkanDetail = true,
 }: WeatherCardProps) {
   const tema = getTemaAQI(tingkatAQI);
+  const info = kodeCuaca !== undefined ? infoCuaca(kodeCuaca) : null;
+  const labelKondisiTeks = info ? info.label : kondisi;
 
   const teksAQI =
     indeksAQI !== undefined
@@ -39,10 +43,10 @@ export default function WeatherCard({
   const labelAksesibilitas =
     indeksAQI !== undefined
       ? `Cuaca ${kota}, suhu ${suhu} derajat Celsius${
-          kondisi ? `, cuaca ${kondisi}` : ""
+          labelKondisiTeks ? `, cuaca ${labelKondisiTeks}` : ""
         }, indeks kualitas udara ${indeksAQI}, kategori ${tingkatAQI}`
       : `Cuaca ${kota}, suhu ${suhu} derajat Celsius${
-          kondisi ? `, cuaca ${kondisi}` : ""
+          labelKondisiTeks ? `, cuaca ${labelKondisiTeks}` : ""
         }, kualitas udara ${tingkatAQI}`;
 
   const adaInfoTambahan =
@@ -63,7 +67,14 @@ export default function WeatherCard({
       <View style={styles.header}>
         <View style={styles.kotaWrapper}>
           <Text style={styles.kota}>{kota}</Text>
-          {kondisi ? <Text style={styles.kondisiText}>{kondisi}</Text> : null}
+          {info ? (
+            <View style={styles.kondisiWrapper}>
+              <Ionicons name={info.iconName} size={16} color={info.iconColor} />
+              <Text style={styles.kondisiText}>{info.label}</Text>
+            </View>
+          ) : kondisi ? (
+            <Text style={styles.kondisiText}>{kondisi}</Text>
+          ) : null}
         </View>
         <View style={[styles.badge, { backgroundColor: tema.bg }]}>
           <Text style={[styles.badgeText, { color: tema.teks }]}>
@@ -98,14 +109,20 @@ export default function WeatherCard({
           <View style={styles.infoGridRow}>
             {kecepatanAngin !== undefined && (
               <View style={styles.infoGridItem}>
-                <Text style={styles.infoItemLabel}>💨 Angin</Text>
+                <View style={styles.infoItemHeader}>
+                  <Ionicons name="speedometer-outline" size={14} color="#0284c7" />
+                  <Text style={styles.infoItemLabel}>Angin</Text>
+                </View>
                 <Text style={styles.infoItemValue}>{kecepatanAngin} km/j</Text>
               </View>
             )}
 
             {suhuMaks !== undefined && suhuMin !== undefined && (
               <View style={styles.infoGridItem}>
-                <Text style={styles.infoItemLabel}>🌡️ Min / Maks</Text>
+                <View style={styles.infoItemHeader}>
+                  <Ionicons name="thermometer-outline" size={14} color="#ea580c" />
+                  <Text style={styles.infoItemLabel}>Min / Maks</Text>
+                </View>
                 <Text style={styles.infoItemValue}>
                   {suhuMin}° / {suhuMaks}°
                 </Text>
@@ -118,14 +135,20 @@ export default function WeatherCard({
             <View style={[styles.infoGridRow, { marginTop: 10 }]}>
               {pm25 !== undefined && (
                 <View style={styles.infoGridItem}>
-                  <Text style={styles.infoItemLabel}>🍃 PM2.5</Text>
+                  <View style={styles.infoItemHeader}>
+                    <Ionicons name="leaf-outline" size={14} color="#16a34a" />
+                    <Text style={styles.infoItemLabel}>PM2.5</Text>
+                  </View>
                   <Text style={styles.infoItemValue}>{pm25} µg/m³</Text>
                 </View>
               )}
 
               {pm10 !== undefined && (
                 <View style={styles.infoGridItem}>
-                  <Text style={styles.infoItemLabel}>🌫️ PM10</Text>
+                  <View style={styles.infoItemHeader}>
+                    <Ionicons name="cloudy-outline" size={14} color="#64748b" />
+                    <Text style={styles.infoItemLabel}>PM10</Text>
+                  </View>
                   <Text style={styles.infoItemValue}>{pm10} µg/m³</Text>
                 </View>
               )}
@@ -165,11 +188,16 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#0f172a",
   },
+  kondisiWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginTop: 4,
+  },
   kondisiText: {
     fontSize: 13,
     fontWeight: "600",
     color: "#64748b",
-    marginTop: 3,
   },
   badge: {
     paddingHorizontal: 12,
@@ -237,11 +265,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#e2e8f0",
   },
+  infoItemHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    marginBottom: 4,
+  },
   infoItemLabel: {
     fontSize: 12,
     fontWeight: "600",
     color: "#64748b",
-    marginBottom: 4,
   },
   infoItemValue: {
     fontSize: 14,

@@ -1,5 +1,6 @@
 // src/components/StatusData.tsx
 import { View, Text, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { SumberData } from "../types/cache";
 
 interface StatusDataProps {
@@ -35,7 +36,7 @@ export default function StatusData({ sumber, disimpanPada }: StatusDataProps) {
         border: "#fde68a",
         text: "#b45309",
         subtext: "#92400e",
-        icon: "⚠️",
+        iconName: "alert-circle-outline" as const,
       };
     }
     if (segar) {
@@ -44,7 +45,7 @@ export default function StatusData({ sumber, disimpanPada }: StatusDataProps) {
         border: "#a7f3d0",
         text: "#065f46",
         subtext: "#047857",
-        icon: "⚡",
+        iconName: "flash-outline" as const,
       };
     }
     return {
@@ -52,7 +53,7 @@ export default function StatusData({ sumber, disimpanPada }: StatusDataProps) {
       border: "#bfdbfe",
       text: "#1e40af",
       subtext: "#2563eb",
-      icon: "🌐",
+      iconName: "globe-outline" as const,
     };
   };
 
@@ -70,7 +71,7 @@ export default function StatusData({ sumber, disimpanPada }: StatusDataProps) {
         },
       ]}
     >
-      <Text style={styles.icon}>{theme.icon}</Text>
+      <Ionicons name={theme.iconName} size={20} color={theme.text} />
       <View style={styles.textContainer}>
         <Text style={[styles.label, { color: theme.text }]}>{label}</Text>
         <Text style={[styles.umur, { color: theme.subtext }]}>
