@@ -382,8 +382,7 @@ export default function HalamanUtama() {
                 accessibilityLabel={`Ditemukan ${hasilPencarian.length} kota`}
                 style={styles.hasilPencarianHeader}
               >
-                Ditemukan {hasilPencarian.length} kota (Ketuk untuk melihat
-                cuaca):
+                Ditemukan {hasilPencarian.length} kota:
               </Text>
 
               {hasilPencarian.map((kota) => (
@@ -419,7 +418,7 @@ export default function HalamanUtama() {
                 <View style={styles.kotaTersimpanHeaderRow}>
                   <Ionicons name="cloud-offline-outline" size={18} color="#1e40af" />
                   <Text style={styles.kotaTersimpanHeaderTitle}>
-                    Tersimpan di perangkat (bisa dibuka offline)
+                    Tersimpan offline di perangkat
                   </Text>
                 </View>
                 <View style={styles.kotaTersimpanList}>
