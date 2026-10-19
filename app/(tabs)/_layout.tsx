@@ -1,25 +1,46 @@
 // app/(tabs)/_layout.tsx
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
+import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { usePengaturan } from "../../contexts/PengaturanContext";
+import AnimatedThemeToggle from "../../components/AnimatedThemeToggle";
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
+  const { theme } = usePengaturan();
 
   return (
     <Tabs
       screenOptions={{
         headerShown: true,
-        tabBarActiveTintColor: "#2563eb",
-        tabBarInactiveTintColor: "#94a3b8",
+        headerStyle: {
+          backgroundColor: theme.card,
+          borderBottomWidth: 1,
+          borderBottomColor: theme.cardBorder,
+          shadowOpacity: 0,
+          elevation: 0,
+        },
+        headerTitleStyle: {
+          fontWeight: "700",
+          color: theme.text,
+        },
+        headerTintColor: theme.text,
+        headerRight: () => (
+          <View style={{ marginRight: 16 }}>
+            <AnimatedThemeToggle size="compact" />
+          </View>
+        ),
+        tabBarActiveTintColor: theme.tabBarActive,
+        tabBarInactiveTintColor: theme.tabBarInactive,
         tabBarStyle: {
           // Menyesuaikan tinggi dan jarak bawah secara dinamis sesuai dagu layar HP
           height: 65 + (insets.bottom > 0 ? insets.bottom : 12),
           paddingBottom: (insets.bottom > 0 ? insets.bottom : 12) + 4,
           paddingTop: 8,
-          backgroundColor: "#ffffff",
+          backgroundColor: theme.tabBar,
           borderTopWidth: 1,
-          borderTopColor: "#e2e8f0",
+          borderTopColor: theme.tabBarBorder,
         },
         tabBarLabelStyle: {
           fontSize: 12,

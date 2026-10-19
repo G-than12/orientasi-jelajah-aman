@@ -20,4 +20,5 @@ export interface WeatherCardProps {
   pm25?: number; // Partikel debu halus PM2.5 (µg/m³)
   pm10?: number; // Partikel debu kasar PM10 (µg/m³)
   tampilkanDetail?: boolean; // false untuk ringkas di Beranda, true untuk lengkap di halaman Detail
+  celcius?: boolean; // Opsional: override preferensi satuan suhu (°C vs °F)
 }

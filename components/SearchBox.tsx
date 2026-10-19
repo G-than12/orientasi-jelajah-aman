@@ -1,4 +1,3 @@
-// components/SearchBox.tsx
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -8,6 +7,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { usePengaturan } from "../contexts/PengaturanContext";
 
 interface SearchBoxProps {
   onCari: (teks: string) => void;
@@ -15,6 +15,7 @@ interface SearchBoxProps {
 }
 
 export default function SearchBox({ onCari, nilai }: SearchBoxProps) {
+  const { theme } = usePengaturan();
   const [teks, setTeks] = useState(nilai ?? "");
 
   // Sinkronisasi teks input jika nilai dari parent berubah (misal saat kota dipilih)
@@ -37,12 +38,25 @@ export default function SearchBox({ onCari, nilai }: SearchBoxProps) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.inputWrapper}>
-        <Ionicons name="search-outline" size={18} color="#94a3b8" style={{ marginRight: 8 }} />
+      <View
+        style={[
+          styles.inputWrapper,
+          {
+            backgroundColor: theme.inputBg,
+            borderColor: theme.inputBorder,
+          },
+        ]}
+      >
+        <Ionicons
+          name="search-outline"
+          size={18}
+          color={theme.textMuted}
+          style={{ marginRight: 8 }}
+        />
         <TextInput
-          style={styles.input}
+          style={[styles.input, { color: theme.text }]}
           placeholder="Cari nama kota..."
-          placeholderTextColor="#94a3b8"
+          placeholderTextColor={theme.textMuted}
           value={teks}
           onChangeText={handleChange}
           onSubmitEditing={handleSubmit}

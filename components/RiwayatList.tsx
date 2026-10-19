@@ -1,24 +1,48 @@
-// components/RiwayatList.tsx
 import { View, Text, StyleSheet } from "react-native";
 import { Link } from "expo-router";
+import { usePengaturan } from "../contexts/PengaturanContext";
 
 interface RiwayatListProps {
   daftarKota: string[];
 }
 
 export default function RiwayatList({ daftarKota }: RiwayatListProps) {
+  const { theme } = usePengaturan();
+
   return (
     <View style={styles.container}>
       <View style={styles.headerRow}>
-        <Text style={styles.judulSection}>Riwayat Pencarian</Text>
+        <Text style={[styles.judulSection, { color: theme.textMuted }]}>
+          Riwayat Pencarian
+        </Text>
         {daftarKota.length > 0 && (
-          <Text style={styles.jumlahBadge}>{daftarKota.length} Kota</Text>
+          <Text
+            style={[
+              styles.jumlahBadge,
+              {
+                backgroundColor: theme.badgeBg,
+                color: theme.badgeText,
+              },
+            ]}
+          >
+            {daftarKota.length} Kota
+          </Text>
         )}
       </View>
 
       {daftarKota.length === 0 ? (
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>Belum ada riwayat pencarian kota.</Text>
+        <View
+          style={[
+            styles.emptyContainer,
+            {
+              backgroundColor: theme.card,
+              borderColor: theme.cardBorder,
+            },
+          ]}
+        >
+          <Text style={[styles.emptyText, { color: theme.textMuted }]}>
+            Belum ada riwayat pencarian kota.
+          </Text>
         </View>
       ) : (
         <View style={styles.list}>
@@ -26,14 +50,24 @@ export default function RiwayatList({ daftarKota }: RiwayatListProps) {
             <Link
               key={kota}
               href={{ pathname: "/detail/[kota]" as any, params: { kota } } as any}
-              style={styles.cardItem}
+              style={[
+                styles.cardItem,
+                {
+                  backgroundColor: theme.card,
+                  borderColor: theme.cardBorder,
+                },
+              ]}
             >
               <View style={styles.itemRow}>
                 <View style={styles.kotaLeft}>
                   <Text style={styles.pinIcon}>📍</Text>
-                  <Text style={styles.kotaText}>{kota}</Text>
+                  <Text style={[styles.kotaText, { color: theme.text }]}>
+                    {kota}
+                  </Text>
                 </View>
-                <Text style={styles.arrowText}>→</Text>
+                <Text style={[styles.arrowText, { color: theme.textMuted }]}>
+                  →
+                </Text>
               </View>
             </Link>
           ))}

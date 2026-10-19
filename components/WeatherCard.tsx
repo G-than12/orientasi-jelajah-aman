@@ -3,6 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { WeatherCardProps } from "../types/cuaca";
 import { typeScale, spacing } from "../constants/styles";
 import { infoCuaca } from "../constants/weatherCodes";
+import { usePengaturan } from "../contexts/PengaturanContext";
 
 const getTemaAQI = (tingkat: string) => {
   switch (tingkat) {
@@ -30,7 +31,18 @@ export default function WeatherCard({
   pm25,
   pm10,
   tampilkanDetail = true,
+  celcius: celciusProp,
 }: WeatherCardProps) {
+  const { celcius: celciusGlobal, konversiSuhu, theme } = usePengaturan();
+  const celciusAktif = celciusProp !== undefined ? celciusProp : celciusGlobal;
+
+  const suhuTampil = konversiSuhu(suhu, celciusAktif);
+  const suhuMaksTampil =
+    suhuMaks !== undefined ? konversiSuhu(suhuMaks, celciusAktif) : undefined;
+  const suhuMinTampil =
+    suhuMin !== undefined ? konversiSuhu(suhuMin, celciusAktif) : undefined;
+  const namaSatuan = celciusAktif ? "Celsius" : "Fahrenheit";
+
   const tema = getTemaAQI(tingkatAQI);
   const info = kodeCuaca !== undefined ? infoCuaca(kodeCuaca) : null;
   const labelKondisiTeks = info ? info.label : kondisi;
@@ -42,10 +54,10 @@ export default function WeatherCard({
 
   const labelAksesibilitas =
     indeksAQI !== undefined
-      ? `Cuaca ${kota}, suhu ${suhu} derajat Celsius${
+      ? `Cuaca ${kota}, suhu ${suhuTampil} derajat ${namaSatuan}${
           labelKondisiTeks ? `, cuaca ${labelKondisiTeks}` : ""
         }, indeks kualitas udara ${indeksAQI}, kategori ${tingkatAQI}`
-      : `Cuaca ${kota}, suhu ${suhu} derajat Celsius${
+      : `Cuaca ${kota}, suhu ${suhuTampil} derajat ${namaSatuan}${
           labelKondisiTeks ? `, cuaca ${labelKondisiTeks}` : ""
         }, kualitas udara ${tingkatAQI}`;
 
@@ -61,19 +73,29 @@ export default function WeatherCard({
     <View
       accessible
       accessibilityLabel={labelAksesibilitas}
-      style={styles.card}
+      style={[
+        styles.card,
+        {
+          backgroundColor: theme.card,
+          borderColor: theme.cardBorder,
+        },
+      ]}
     >
       {/* 1. Header: Nama Kota, Kondisi Cuaca & Badge AQI */}
       <View style={styles.header}>
         <View style={styles.kotaWrapper}>
-          <Text style={styles.kota}>{kota}</Text>
+          <Text style={[styles.kota, { color: theme.text }]}>{kota}</Text>
           {info ? (
             <View style={styles.kondisiWrapper}>
               <Ionicons name={info.iconName} size={16} color={info.iconColor} />
-              <Text style={styles.kondisiText}>{info.label}</Text>
+              <Text style={[styles.kondisiText, { color: theme.textSecondary }]}>
+                {info.label}
+              </Text>
             </View>
           ) : kondisi ? (
-            <Text style={styles.kondisiText}>{kondisi}</Text>
+            <Text style={[styles.kondisiText, { color: theme.textSecondary }]}>
+              {kondisi}
+            </Text>
           ) : null}
         </View>
         <View style={[styles.badge, { backgroundColor: tema.bg }]}>
@@ -85,16 +107,18 @@ export default function WeatherCard({
 
       {/* 2. Suhu Utama & Satuan */}
       <View style={styles.content}>
-        <Text style={styles.suhu}>{suhu}°</Text>
+        <Text style={[styles.suhu, { color: theme.text }]}>{suhuTampil}°</Text>
         <View style={styles.satuanContainer}>
-          <Text style={styles.satuan}>Celsius</Text>
+          <Text style={[styles.satuan, { color: theme.textSecondary }]}>
+            {namaSatuan}
+          </Text>
         </View>
       </View>
 
       {/* 3. Footer Petunjuk untuk Tampilan Ringkas di Beranda */}
       {!tampilkanDetail && (
-        <View style={styles.ringkasFooter}>
-          <Text style={styles.ringkasFooterText}>
+        <View style={[styles.ringkasFooter, { borderTopColor: theme.divider }]}>
+          <Text style={[styles.ringkasFooterText, { color: theme.primary }]}>
             Ketuk untuk melihat detail cuaca →
           </Text>
         </View>
@@ -103,28 +127,50 @@ export default function WeatherCard({
       {/* 4. Informasi Lingkungan Terpadu & Simetris (Grid 2x2) untuk Tampilan Detail */}
       {adaInfoTambahan && (
         <View style={styles.infoTambahanContainer}>
-          <View style={styles.divider} />
+          <View style={[styles.divider, { backgroundColor: theme.divider }]} />
 
           {/* Baris 1: Angin & Rentang Suhu */}
           <View style={styles.infoGridRow}>
             {kecepatanAngin !== undefined && (
-              <View style={styles.infoGridItem}>
+              <View
+                style={[
+                  styles.infoGridItem,
+                  {
+                    backgroundColor: theme.cardSecondary,
+                    borderColor: theme.cardBorder,
+                  },
+                ]}
+              >
                 <View style={styles.infoItemHeader}>
                   <Ionicons name="speedometer-outline" size={14} color="#0284c7" />
-                  <Text style={styles.infoItemLabel}>Angin</Text>
+                  <Text style={[styles.infoItemLabel, { color: theme.textSecondary }]}>
+                    Angin
+                  </Text>
                 </View>
-                <Text style={styles.infoItemValue}>{kecepatanAngin} km/j</Text>
+                <Text style={[styles.infoItemValue, { color: theme.text }]}>
+                  {kecepatanAngin} km/j
+                </Text>
               </View>
             )}
 
-            {suhuMaks !== undefined && suhuMin !== undefined && (
-              <View style={styles.infoGridItem}>
+            {suhuMaksTampil !== undefined && suhuMinTampil !== undefined && (
+              <View
+                style={[
+                  styles.infoGridItem,
+                  {
+                    backgroundColor: theme.cardSecondary,
+                    borderColor: theme.cardBorder,
+                  },
+                ]}
+              >
                 <View style={styles.infoItemHeader}>
                   <Ionicons name="thermometer-outline" size={14} color="#ea580c" />
-                  <Text style={styles.infoItemLabel}>Min / Maks</Text>
+                  <Text style={[styles.infoItemLabel, { color: theme.textSecondary }]}>
+                    Min / Maks
+                  </Text>
                 </View>
-                <Text style={styles.infoItemValue}>
-                  {suhuMin}° / {suhuMaks}°
+                <Text style={[styles.infoItemValue, { color: theme.text }]}>
+                  {suhuMinTampil}° / {suhuMaksTampil}°
                 </Text>
               </View>
             )}
@@ -134,22 +180,46 @@ export default function WeatherCard({
           {(pm25 !== undefined || pm10 !== undefined) && (
             <View style={[styles.infoGridRow, { marginTop: 10 }]}>
               {pm25 !== undefined && (
-                <View style={styles.infoGridItem}>
+                <View
+                  style={[
+                    styles.infoGridItem,
+                    {
+                      backgroundColor: theme.cardSecondary,
+                      borderColor: theme.cardBorder,
+                    },
+                  ]}
+                >
                   <View style={styles.infoItemHeader}>
                     <Ionicons name="leaf-outline" size={14} color="#16a34a" />
-                    <Text style={styles.infoItemLabel}>PM2.5</Text>
+                    <Text style={[styles.infoItemLabel, { color: theme.textSecondary }]}>
+                      PM2.5
+                    </Text>
                   </View>
-                  <Text style={styles.infoItemValue}>{pm25} µg/m³</Text>
+                  <Text style={[styles.infoItemValue, { color: theme.text }]}>
+                    {pm25} µg/m³
+                  </Text>
                 </View>
               )}
 
               {pm10 !== undefined && (
-                <View style={styles.infoGridItem}>
+                <View
+                  style={[
+                    styles.infoGridItem,
+                    {
+                      backgroundColor: theme.cardSecondary,
+                      borderColor: theme.cardBorder,
+                    },
+                  ]}
+                >
                   <View style={styles.infoItemHeader}>
                     <Ionicons name="cloudy-outline" size={14} color="#64748b" />
-                    <Text style={styles.infoItemLabel}>PM10</Text>
+                    <Text style={[styles.infoItemLabel, { color: theme.textSecondary }]}>
+                      PM10
+                    </Text>
                   </View>
-                  <Text style={styles.infoItemValue}>{pm10} µg/m³</Text>
+                  <Text style={[styles.infoItemValue, { color: theme.text }]}>
+                    {pm10} µg/m³
+                  </Text>
                 </View>
               )}
             </View>

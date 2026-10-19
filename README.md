@@ -61,6 +61,11 @@ Proyek ini dikembangkan sebagai bagian dari praktikum mata kuliah **Pemrograman 
 * Standar aksesibilitas lengkap (`accessibilityLabel`, `accessibilityRole`) untuk mendukung pembaca layar (*screen reader* / TalkBack).
 * Sistem token desain terstruktur (*type scale* dan *spacing system*).
 
+### 9. 🌙 Mode Gelap Interaktif & Circular Reveal Transition
+* **Toggle Beranimasi:** Switch bertema siang/malam interaktif dengan rotasi 360° ikon matahari/bulan serta detail partikel bintang dan awan.
+* **Efek Circular Reveal:** Transisi perubahan tema meluas secara melingkar (*ripple wave expansion*) dari titik sentuh tombol toggle menutupi layar tanpa *screen flashing* atau *flicker*.
+* **Persistensi Tema:** Pilihan tema (Terang / Gelap) tersimpan persisten di `AsyncStorage` melalui `PengaturanContext`.
+
 ---
 
 ## 📱 Struktur Navigasi Aplikasi
@@ -69,12 +74,12 @@ Aplikasi dibangun menggunakan struktur **Expo Router** (*file-based routing*):
 
 ```
 app/
-├── _layout.tsx              # Root Layout dibungkus RiwayatProvider
+├── _layout.tsx              # Root Layout dibungkus PengaturanProvider & RiwayatProvider
 ├── (tabs)/                  # Bottom Tab Navigator
 │   ├── _layout.tsx          # Konfigurasi Icon & Tab Bar
 │   ├── index.tsx            # Tab Beranda (Pencarian, GPS Lokasi, Cuaca & Tambah Favorit)
 │   ├── riwayat.tsx          # Tab Riwayat Favorit (Daftar Tersimpan & Konfirmasi Hapus)
-│   ├── pengaturan.tsx       # Tab Preferensi Suhu & Notifikasi
+│   ├── pengaturan.tsx       # Tab Preferensi Suhu, Mode Gelap & Notifikasi
 │   └── tentang.tsx          # Tab Informasi Pengembang & Aplikasi
 ├── detail/
 │   └── [kota].tsx           # Halaman Detail Cuaca Lengkap & Status Favorit Terhubung
@@ -89,14 +94,18 @@ app/
 orientasi-jelajah-aman/
 ├── app/                     # Halaman & Routing (Expo Router)
 ├── components/              # Komponen UI Reusable
+│   ├── AnimatedThemeToggle.tsx # Switch Mode Gelap Beranimasi (Sun/Moon Morphing)
 │   ├── AtribusiCuaca.tsx    # Komponen Atribusi Lisensi Open-Meteo
+│   ├── CircularThemeOverlay.tsx# Overlay Efek Gelombang Melingkar (Circular Reveal)
 │   ├── RiwayatList.tsx      # Komponen Daftar Riwayat Pencarian
 │   ├── SearchBox.tsx        # Kotak Pencarian dengan Live Search & Clear Button
 │   └── WeatherCard.tsx      # Kartu Cuaca Utama & Grid Metrik Simetris
 ├── constants/               # Konstanta Desain & Kamus Data
 │   ├── styles.ts            # Type Scale & Spacing System
+│   ├── theme.ts             # Skema Warna Tema Light & Dark
 │   └── weatherCodes.ts      # Kamus Terjemahan Kode Cuaca WMO & Ikon
 ├── contexts/                # State Global Aplikasi
+│   ├── PengaturanContext.tsx# Context Preferensi Satuan Suhu (°C/°F), Mode Gelap & Notifikasi
 │   └── RiwayatContext.tsx   # Context Penyimpan Riwayat Pencarian Kota
 ├── hooks/                   # Custom React Hooks
 │   └── use-debounce.ts      # Hook Debounce untuk Live Search API
@@ -105,6 +114,7 @@ orientasi-jelajah-aman/
 │   ├── favoritStorage.ts    # Service Persistensi Favorit via AsyncStorage
 │   ├── geocodingService.ts  # Pemanggil Open-Meteo Geocoding API
 │   ├── locationService.ts   # Service Izin & Pengambilan Koordinat GPS Expo
+│   ├── pengaturanStorage.ts # Service Persistensi Pengaturan via AsyncStorage
 │   ├── weatherAdapter.ts    # Adapter Konversi Skala AQI ke Kategori
 │   └── weatherService.ts    # Pemanggil Open-Meteo Forecast API + Timeout
 └── types/                   # Definisi Tipe Data TypeScript

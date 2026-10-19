@@ -1,11 +1,28 @@
 // app/_layout.tsx (root layout)
 import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { View } from "react-native";
 import { RiwayatProvider } from "../contexts/RiwayatContext";
+import {
+  PengaturanProvider,
+  usePengaturan,
+} from "../contexts/PengaturanContext";
+import CircularThemeOverlay from "../components/CircularThemeOverlay";
 
-export default function RootLayout() {
+function RootContent() {
+  const { theme, transition, applyThemeChange, completeTransition } =
+    usePengaturan();
+
   return (
-    <RiwayatProvider>
-      <Stack>
+    <View style={{ flex: 1, backgroundColor: theme.bg }}>
+      <StatusBar style={theme.statusBarStyle} />
+      <Stack
+        screenOptions={{
+          headerStyle: { backgroundColor: theme.card },
+          headerTintColor: theme.text,
+          contentStyle: { backgroundColor: theme.bg },
+        }}
+      >
         {/* 1. Navigasi Tab Utama (header disembunyikan karena tab punya header sendiri) */}
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 
@@ -18,6 +35,23 @@ export default function RootLayout() {
           options={{ presentation: "modal", title: "Tambah Favorit" }}
         />
       </Stack>
-    </RiwayatProvider>
+
+      {/* Efek Animasi Melingkar (Circular Reveal Transition) */}
+      <CircularThemeOverlay
+        transition={transition}
+        onApplyTheme={applyThemeChange}
+        onComplete={completeTransition}
+      />
+    </View>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <PengaturanProvider>
+      <RiwayatProvider>
+        <RootContent />
+      </RiwayatProvider>
+    </PengaturanProvider>
   );
 }

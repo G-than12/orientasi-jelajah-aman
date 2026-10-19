@@ -21,8 +21,10 @@ import { useRiwayat } from "../../contexts/RiwayatContext";
 import { ambilSemuaFavorit } from "../../services/favoritStorage";
 import { DataCuacaLengkap, DataKualitasUdara } from "../../types/weather";
 import { HasilCuacaOffline } from "../../src/types/cache";
+import { usePengaturan } from "../../contexts/PengaturanContext";
 
 export default function HalamanDetail() {
+  const { theme } = usePengaturan();
   const { kota, id, lat, lon } = useLocalSearchParams<{
     kota: string;
     id?: string;
@@ -146,9 +148,16 @@ export default function HalamanDetail() {
 
   if (sedangMemuat) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#2563eb" />
-        <Text style={{ marginTop: 12, color: "#64748b" }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: theme.bg,
+        }}
+      >
+        <ActivityIndicator size="large" color={theme.primary} />
+        <Text style={{ marginTop: 12, color: theme.textSecondary }}>
           Memuat data cuaca {namaKota}...
         </Text>
       </View>
@@ -163,21 +172,22 @@ export default function HalamanDetail() {
           justifyContent: "center",
           alignItems: "center",
           padding: 24,
+          backgroundColor: theme.bg,
         }}
       >
         <Ionicons
           name="alert-circle-outline"
           size={48}
-          color="#dc2626"
+          color="#ef4444"
           style={{ marginBottom: 12 }}
         />
-        <Text style={{ color: "#dc2626", textAlign: "center", marginBottom: 16 }}>
+        <Text style={{ color: "#ef4444", textAlign: "center", marginBottom: 16 }}>
           {pesanError}
         </Text>
         {koordinatAktif && (
           <TouchableOpacity
             style={{
-              backgroundColor: "#2563eb",
+              backgroundColor: theme.primary,
               paddingHorizontal: 20,
               paddingVertical: 10,
               borderRadius: 8,
@@ -197,13 +207,16 @@ export default function HalamanDetail() {
     );
   }
 
-  const suhu = cuaca ? Math.round(cuaca.saatIni.suhu) : 0;
+  const suhu = cuaca ? cuaca.saatIni.suhu : 0;
   const tingkatAQI = kualitasUdara
     ? konversiTingkatAQI(kualitasUdara.indeksAQI)
     : "BAIK";
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={[styles.container, { backgroundColor: theme.bg }]}
+      contentContainerStyle={styles.content}
+    >
       {/* Indikator Status Data (Online/Cache Segar/Cache Basi) */}
       {hasilOffline && (
         <View style={{ marginBottom: 12 }}>

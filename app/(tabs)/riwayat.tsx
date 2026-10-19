@@ -1,4 +1,3 @@
-// app/(tabs)/riwayat.tsx
 import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
@@ -16,8 +15,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { spacing } from "../../constants/styles";
 import { ambilSemuaFavorit, hapusFavorit } from "../../services/favoritStorage";
 import { KotaFavorit } from "../../types/favorit";
+import { usePengaturan } from "../../contexts/PengaturanContext";
 
 export default function TabRiwayat() {
+  const { theme } = usePengaturan();
   const [daftarFavorit, setDaftarFavorit] = useState<KotaFavorit[]>([]);
   const [targetHapus, setTargetHapus] = useState<KotaFavorit | null>(null);
   const [sedangMenghapus, setSedangMenghapus] = useState(false);
@@ -58,32 +59,74 @@ export default function TabRiwayat() {
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.bg }]}
+      edges={["top", "left", "right"]}
+    >
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.headerRow}>
-          <Text style={styles.judulSection}>Kota Favorit</Text>
-          <View style={styles.badgeJumlah}>
-            <Text style={styles.badgeJumlahText}>
+          <Text style={[styles.judulSection, { color: theme.text }]}>
+            Kota Favorit
+          </Text>
+          <View
+            style={[
+              styles.badgeJumlah,
+              {
+                backgroundColor: theme.badgeBg,
+                borderColor: theme.cardBorder,
+              },
+            ]}
+          >
+            <Text
+              style={[
+                styles.badgeJumlahText,
+                { color: theme.badgeText },
+              ]}
+            >
               Tersimpan {daftarFavorit.length} kota
             </Text>
           </View>
         </View>
 
         {daftarFavorit.length === 0 ? (
-          <View style={styles.emptyContainer}>
-            <Ionicons name="star-outline" size={48} color="#94a3b8" style={{ marginBottom: 8 }} />
-            <Text style={styles.emptyText}>Belum ada kota favorit</Text>
-            <Text style={styles.emptySubtext}>
+          <View
+            style={[
+              styles.emptyContainer,
+              {
+                backgroundColor: theme.card,
+                borderColor: theme.cardBorder,
+              },
+            ]}
+          >
+            <Ionicons
+              name="star-outline"
+              size={48}
+              color={theme.textMuted}
+              style={{ marginBottom: 8 }}
+            />
+            <Text style={[styles.emptyText, { color: theme.text }]}>
+              Belum ada kota favorit
+            </Text>
+            <Text style={[styles.emptySubtext, { color: theme.textSecondary }]}>
               Tambahkan kota favorit Anda dari Beranda atau Detail Cuaca.
             </Text>
           </View>
         ) : (
           <View style={styles.list}>
             {daftarFavorit.map((kota, index) => (
-              <View key={`${kota.id}-${kota.nama}-${index}`} style={styles.cardItem}>
+              <View
+                key={`${kota.id}-${kota.nama}-${index}`}
+                style={[
+                  styles.cardItem,
+                  {
+                    backgroundColor: theme.card,
+                    borderColor: theme.cardBorder,
+                  },
+                ]}
+              >
                 <TouchableOpacity
                   style={styles.kotaLeft}
                   activeOpacity={0.7}
@@ -99,19 +142,37 @@ export default function TabRiwayat() {
                     })
                   }
                 >
-                  <View style={styles.iconBg}>
+                  <View
+                    style={[
+                      styles.iconBg,
+                      { backgroundColor: theme.primaryBg },
+                    ]}
+                  >
                     <Ionicons name="star" size={16} color="#eab308" />
                   </View>
                   <View style={{ flex: 1 }}>
-                    <Text style={styles.kotaText}>{kota.nama}</Text>
-                    <Text style={styles.koordinatText}>
+                    <Text style={[styles.kotaText, { color: theme.text }]}>
+                      {kota.nama}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.koordinatText,
+                        { color: theme.textSecondary },
+                      ]}
+                    >
                       {kota.latitude.toFixed(2)}°, {kota.longitude.toFixed(2)}°
                     </Text>
                   </View>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={styles.hapusButton}
+                  style={[
+                    styles.hapusButton,
+                    {
+                      backgroundColor: theme.tombolHapusBg,
+                      borderColor: theme.tombolHapusBorder,
+                    },
+                  ]}
                   onPress={() => setTargetHapus(kota)}
                   activeOpacity={0.7}
                   accessibilityRole="button"
@@ -139,7 +200,13 @@ export default function TabRiwayat() {
             accessibilityLabel="Tutup dialog konfirmasi"
           />
           <View
-            style={styles.modalContent}
+            style={[
+              styles.modalContent,
+              {
+                backgroundColor: theme.card,
+                borderColor: theme.cardBorder,
+              },
+            ]}
             accessibilityRole="alert"
             accessibilityLiveRegion="assertive"
           >
@@ -147,19 +214,36 @@ export default function TabRiwayat() {
               <Text style={styles.modalIcon}>🗑️</Text>
             </View>
 
-            <Text style={styles.modalJudul}>Hapus Kota Favorit?</Text>
-            <Text style={styles.modalKeterangan}>
+            <Text style={[styles.modalJudul, { color: theme.text }]}>
+              Hapus Kota Favorit?
+            </Text>
+            <Text style={[styles.modalKeterangan, { color: theme.textSecondary }]}>
               Apakah Anda yakin ingin menghapus kota ini dari daftar favorit?
             </Text>
 
             {targetHapus && (
-              <View style={styles.modalPreviewCard}>
+              <View
+                style={[
+                  styles.modalPreviewCard,
+                  {
+                    backgroundColor: theme.cardSecondary,
+                    borderColor: theme.cardBorder,
+                  },
+                ]}
+              >
                 <View style={styles.modalPreviewIconWrapper}>
                   <Text style={{ fontSize: 15 }}>📍</Text>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.modalPreviewNama}>{targetHapus.nama}</Text>
-                  <Text style={styles.modalPreviewKoordinat}>
+                  <Text style={[styles.modalPreviewNama, { color: theme.text }]}>
+                    {targetHapus.nama}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.modalPreviewKoordinat,
+                      { color: theme.textSecondary },
+                    ]}
+                  >
                     {targetHapus.latitude.toFixed(2)}°, {targetHapus.longitude.toFixed(2)}°
                   </Text>
                 </View>
@@ -168,14 +252,19 @@ export default function TabRiwayat() {
 
             <View style={styles.modalButtonGroup}>
               <TouchableOpacity
-                style={styles.modalBatalButton}
+                style={[
+                  styles.modalBatalButton,
+                  { backgroundColor: theme.cardSecondary },
+                ]}
                 onPress={batalkanHapus}
                 disabled={sedangMenghapus}
                 activeOpacity={0.7}
                 accessibilityRole="button"
                 accessibilityLabel="Batal menghapus"
               >
-                <Text style={styles.modalBatalButtonText}>Batal</Text>
+                <Text style={[styles.modalBatalButtonText, { color: theme.text }]}>
+                  Batal
+                </Text>
               </TouchableOpacity>
 
               <TouchableOpacity

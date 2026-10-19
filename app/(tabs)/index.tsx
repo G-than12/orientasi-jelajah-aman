@@ -18,6 +18,7 @@ import StatusData from "../../components/StatusData";
 import WeatherCard from "../../components/WeatherCard";
 import { labelKodeCuaca } from "../../constants/weatherCodes";
 import { useRiwayat } from "../../contexts/RiwayatContext";
+import { usePengaturan } from "../../contexts/PengaturanContext";
 import { useDebounce } from "../../hooks/use-debounce";
 import {
   bersihkanCacheLama,
@@ -39,6 +40,7 @@ import { HasilCuacaOffline, RingkasanKotaTersimpan } from "../../types/cache";
 import { HasilGeocoding } from "../../types/geocoding";
 
 export default function HalamanUtama() {
+  const { theme } = usePengaturan();
   const { tambahRiwayat } = useRiwayat();
 
   // State kota aktif (default Pekalongan)
@@ -309,12 +311,18 @@ export default function HalamanUtama() {
     hasilPencarian.length === 0;
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.bg }]}>
       <SearchBox onCari={setTeksCari} nilai={teksCari} />
 
       {/* Tombol Lokasi Saat Ini (GPS) */}
       <TouchableOpacity
-        style={styles.tombolLokasi}
+        style={[
+          styles.tombolLokasi,
+          {
+            backgroundColor: theme.card,
+            borderColor: theme.cardBorder,
+          },
+        ]}
         onPress={gunakanLokasiSaatIni}
         disabled={sedangMemuatLokasi}
         activeOpacity={0.8}
@@ -351,7 +359,9 @@ export default function HalamanUtama() {
         {sedangMemuatGeocoding && (
           <View style={styles.loadingPencarian}>
             <ActivityIndicator size="small" color="#2563eb" />
-            <Text style={styles.loadingPencarianText}>Mencari kota...</Text>
+            <Text style={[styles.loadingPencarianText, { color: theme.textSecondary }]}>
+              Mencari kota...
+            </Text>
           </View>
         )}
 
@@ -366,7 +376,7 @@ export default function HalamanUtama() {
             <Text
               accessible
               accessibilityLabel="Kota tidak ditemukan"
-              style={styles.tidakDitemukanText}
+              style={[styles.tidakDitemukanText, { color: theme.textSecondary }]}
             >
               Kota tidak ditemukan
             </Text>
@@ -380,7 +390,7 @@ export default function HalamanUtama() {
               <Text
                 accessible
                 accessibilityLabel={`Ditemukan ${hasilPencarian.length} kota`}
-                style={styles.hasilPencarianHeader}
+                style={[styles.hasilPencarianHeader, { color: theme.textMuted }]}
               >
                 Ditemukan {hasilPencarian.length} kota:
               </Text>
@@ -390,19 +400,49 @@ export default function HalamanUtama() {
                   key={kota.id}
                   onPress={() => pilihKota(kota)}
                   activeOpacity={0.7}
-                  style={styles.hasilItem}
+                  style={[
+                    styles.hasilItem,
+                    {
+                      backgroundColor: theme.card,
+                      borderColor: theme.cardBorder,
+                    },
+                  ]}
                 >
-                  <View style={styles.hasilIconBg}>
+                  <View
+                    style={[
+                      styles.hasilIconBg,
+                      { backgroundColor: theme.primaryBg },
+                    ]}
+                  >
                     <Ionicons name="location-outline" size={18} color="#2563eb" />
                   </View>
                   <View style={{ flex: 1 }}>
-                    <Text style={styles.hasilNamaKota}>{kota.name}</Text>
-                    <Text style={styles.hasilWilayahKota}>
+                    <Text style={[styles.hasilNamaKota, { color: theme.text }]}>
+                      {kota.name}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.hasilWilayahKota,
+                        { color: theme.textSecondary },
+                      ]}
+                    >
                       {[kota.admin1, kota.country].filter(Boolean).join(", ")}
                     </Text>
                   </View>
-                  <View style={styles.hasilPilihBadge}>
-                    <Text style={styles.hasilPilihText}>Pilih →</Text>
+                  <View
+                    style={[
+                      styles.hasilPilihBadge,
+                      { backgroundColor: theme.badgeBg },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.hasilPilihText,
+                        { color: theme.badgeText },
+                      ]}
+                    >
+                      Pilih →
+                    </Text>
                   </View>
                 </TouchableOpacity>
               ))}
@@ -414,10 +454,23 @@ export default function HalamanUtama() {
           <View style={styles.mainContainer}>
             {/* Daftar Kota Tersimpan di SQLite (Bisa dibuka offline) */}
             {kotaTersimpan.length > 0 && (
-              <View style={styles.kotaTersimpanCard}>
+              <View
+                style={[
+                  styles.kotaTersimpanCard,
+                  {
+                    backgroundColor: theme.card,
+                    borderColor: theme.cardBorder,
+                  },
+                ]}
+              >
                 <View style={styles.kotaTersimpanHeaderRow}>
-                  <Ionicons name="cloud-offline-outline" size={18} color="#1e40af" />
-                  <Text style={styles.kotaTersimpanHeaderTitle}>
+                  <Ionicons name="cloud-offline-outline" size={18} color={theme.primary} />
+                  <Text
+                    style={[
+                      styles.kotaTersimpanHeaderTitle,
+                      { color: theme.text },
+                    ]}
+                  >
                     Tersimpan offline di perangkat
                   </Text>
                 </View>
@@ -425,7 +478,13 @@ export default function HalamanUtama() {
                   {kotaTersimpan.map((k) => (
                     <TouchableOpacity
                       key={k.kunci}
-                      style={styles.kotaTersimpanItem}
+                      style={[
+                        styles.kotaTersimpanItem,
+                        {
+                          backgroundColor: theme.cardSecondary,
+                          borderColor: theme.cardBorder,
+                        },
+                      ]}
                       activeOpacity={0.7}
                       onPress={() => {
                         pilihKota({
@@ -439,13 +498,28 @@ export default function HalamanUtama() {
                       }}
                     >
                       <View style={styles.kotaTersimpanItemLeft}>
-                        <Ionicons name="location-outline" size={16} color="#64748b" />
-                        <Text style={styles.kotaTersimpanItemNama}>
+                        <Ionicons name="location-outline" size={16} color={theme.textMuted} />
+                        <Text
+                          style={[
+                            styles.kotaTersimpanItemNama,
+                            { color: theme.text },
+                          ]}
+                        >
                           {k.nama}
                         </Text>
                       </View>
-                      <View style={styles.kotaTersimpanBadge}>
-                        <Text style={styles.kotaTersimpanBadgeText}>
+                      <View
+                        style={[
+                          styles.kotaTersimpanBadge,
+                          { backgroundColor: theme.badgeBg },
+                        ]}
+                      >
+                        <Text
+                          style={[
+                            styles.kotaTersimpanBadgeText,
+                            { color: theme.badgeText },
+                          ]}
+                        >
                           Buka Offline →
                         </Text>
                       </View>
@@ -464,9 +538,22 @@ export default function HalamanUtama() {
             >
               {/* Loading Indicator Cuaca */}
               {sedangMemuatCuaca && (
-                <View style={styles.cardLoading}>
+                <View
+                  style={[
+                    styles.cardLoading,
+                    {
+                      backgroundColor: theme.card,
+                      borderColor: theme.cardBorder,
+                    },
+                  ]}
+                >
                   <ActivityIndicator size="large" color="#2563eb" />
-                  <Text style={styles.cardLoadingText}>
+                  <Text
+                    style={[
+                      styles.cardLoadingText,
+                      { color: theme.textSecondary },
+                    ]}
+                  >
                     Memuat data cuaca {kotaAktif.name}...
                   </Text>
                 </View>
@@ -518,7 +605,7 @@ export default function HalamanUtama() {
                   >
                     <WeatherCard
                       kota={kotaAktif.name}
-                      suhu={Math.round(hasil.cuaca.saatIni.suhu)}
+                      suhu={hasil.cuaca.saatIni.suhu}
                       tingkatAQI={konversiTingkatAQI(
                         hasil.kualitasUdara.indeksAQI,
                       )}
@@ -531,7 +618,13 @@ export default function HalamanUtama() {
 
                   {/* 3. Tombol Perbarui Sekarang (Paksa Memanggil Jaringan Internet) */}
                   <TouchableOpacity
-                    style={styles.tombolPerbarui}
+                    style={[
+                      styles.tombolPerbarui,
+                      {
+                        backgroundColor: theme.card,
+                        borderColor: theme.cardBorder,
+                      },
+                    ]}
                     activeOpacity={0.8}
                     onPress={() => pilihKota(kotaAktif, true)}
                     accessibilityRole="button"
@@ -547,7 +640,10 @@ export default function HalamanUtama() {
                   <TouchableOpacity
                     style={[
                       styles.tombolFavorit,
-                      sudahFavorit && styles.tombolFavoritDisabled,
+                      sudahFavorit && {
+                        backgroundColor: theme.cardSecondary,
+                        borderColor: theme.cardBorder,
+                      },
                     ]}
                     activeOpacity={0.8}
                     disabled={sudahFavorit}

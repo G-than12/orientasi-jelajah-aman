@@ -11,8 +11,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { spacing, typeScale } from "../constants/styles";
 import { tambahFavorit } from "../services/favoritStorage";
+import { usePengaturan } from "../contexts/PengaturanContext";
 
 export default function ModalTambahFavorit() {
+  const { theme } = usePengaturan();
   const { id, nama, lat, lon } = useLocalSearchParams<{
     id: string;
     nama: string;
@@ -42,15 +44,29 @@ export default function ModalTambahFavorit() {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.card}>
+    <View style={[styles.container, { backgroundColor: theme.bg }]}>
+      <View
+        style={[
+          styles.card,
+          {
+            backgroundColor: theme.card,
+            borderColor: theme.cardBorder,
+          },
+        ]}
+      >
         <View style={styles.iconContainer}>
           <Ionicons name="star" size={36} color="#eab308" />
         </View>
 
-        <Text style={styles.judul}>Simpan ke Favorit</Text>
-        <Text style={styles.deskripsi}>
-          Tambahkan <Text style={{ fontWeight: "700", color: "#1e293b" }}>{nama || "kota ini"}</Text> ke daftar favorit?
+        <Text style={[styles.judul, { color: theme.text }]}>
+          Simpan ke Favorit
+        </Text>
+        <Text style={[styles.deskripsi, { color: theme.textSecondary }]}>
+          Tambahkan{" "}
+          <Text style={{ fontWeight: "700", color: theme.text }}>
+            {nama || "kota ini"}
+          </Text>{" "}
+          ke daftar favorit?
         </Text>
 
         <View style={styles.buttonGroup}>
@@ -70,13 +86,18 @@ export default function ModalTambahFavorit() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.batalButton}
+            style={[
+              styles.batalButton,
+              { backgroundColor: theme.cardSecondary },
+            ]}
             onPress={() => router.back()}
             activeOpacity={0.7}
             accessibilityRole="button"
             accessibilityLabel="Batal"
           >
-            <Text style={styles.batalButtonText}>Batal</Text>
+            <Text style={[styles.batalButtonText, { color: theme.text }]}>
+              Batal
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
