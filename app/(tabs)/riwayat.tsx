@@ -549,3 +549,5 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
 });
+
+// refactor(riwayat): perbarui kartu item aktivitas dengan informasi koordinat dan navigasi
