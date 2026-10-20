@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import { useLocalSearchParams, router, useFocusEffect } from "expo-router";
 import WeatherCard from "../../components/WeatherCard";
-import StatusData from "../../components/StatusData";
 import { Ionicons } from "@expo/vector-icons";
 import { spacing } from "../../constants/styles";
 import { ambilCuacaOfflineFirst } from "../../src/services/cuacaRepository";
@@ -217,17 +216,7 @@ export default function HalamanDetail() {
       style={[styles.container, { backgroundColor: theme.bg }]}
       contentContainerStyle={styles.content}
     >
-      {/* Indikator Status Data (Online/Cache Segar/Cache Basi) */}
-      {hasilOffline && (
-        <View style={{ marginBottom: 12 }}>
-          <StatusData
-            sumber={hasilOffline.sumber}
-            disimpanPada={hasilOffline.disimpanPada}
-          />
-        </View>
-      )}
-
-      {/* 1. Kartu Cuaca Utama dengan Informasi Lengkap Sesuai Desain */}
+      {/* 1. Kartu Cuaca Utama dengan Informasi Lengkap Terpadu Status Data Minimalis */}
       <WeatherCard
         kota={namaKota}
         suhu={suhu}
@@ -241,6 +230,8 @@ export default function HalamanDetail() {
         pm25={kualitasUdara?.pm25}
         pm10={kualitasUdara?.pm10}
         tampilkanDetail={true}
+        sumberData={hasilOffline?.sumber}
+        disimpanPada={hasilOffline?.disimpanPada}
       />
 
       {/* 2. Tombol Tambahkan ke Favorit Langsung di Bawah Kartu */}
