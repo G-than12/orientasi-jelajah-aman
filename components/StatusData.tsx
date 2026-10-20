@@ -1,2 +1,2 @@
 // components/StatusData.tsx
-export { default, formatUmur, labelSumber } from "../src/components/StatusData";
+export { default, formatUmur, labelSumber, labelSumberMinimalis } from "../src/components/StatusData";
