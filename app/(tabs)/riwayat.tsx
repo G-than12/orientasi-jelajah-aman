@@ -1,3 +1,4 @@
+// app/(tabs)/riwayat.tsx
 import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
@@ -16,23 +17,26 @@ import { spacing } from "../../constants/styles";
 import { ambilSemuaFavorit, hapusFavorit } from "../../services/favoritStorage";
 import { KotaFavorit } from "../../types/favorit";
 import { usePengaturan } from "../../contexts/PengaturanContext";
-import { useRiwayat } from "../../contexts/RiwayatContext";
-import { useRiwayat } from "../../contexts/RiwayatContext";
+import { useRiwayat, KotaRiwayat } from "../../contexts/RiwayatContext";
 
-// Tab Aktivitas Pengguna (Favorit & Riwayat Pencarian)
-// Tab Aktivitas Pengguna (Favorit & Riwayat Pencarian)
 export default function TabRiwayat() {
   const { theme } = usePengaturan();
+  const { riwayat, hapusRiwayat } = useRiwayat();
+
+  // State tab kapsul aktif: "riwayat" (pencarian terakhir) atau "favorit" (kota favorit)
+  const [tabAktif, setTabAktif] = useState<"riwayat" | "favorit">("riwayat");
+
+  // State daftar favorit
   const [daftarFavorit, setDaftarFavorit] = useState<KotaFavorit[]>([]);
-  const [targetHapus, setTargetHapus] = useState<any | null>(null);
-  const [targetHapusSemua, setTargetHapusSemua] = useState(false);
-  const [sedangMenghapus, setSedangMenghapus] = useState(false);
-  const { riwayat, hapusRiwayat, hapusSemuaRiwayat } = useRiwayat();
-  const [filterAktif, setFilterAktif] = useState<"semua" | "favorit" | "riwayat">("semua");
-  const [cariTeks, setCariTeks] = useState("");
-  const { riwayat, hapusRiwayat, hapusSemuaRiwayat } = useRiwayat();
-  const [filterAktif, setFilterAktif] = useState<"semua" | "favorit" | "riwayat">("semua");
-  const [cariTeks, setCariTeks] = useState("");
+  const [targetHapusFavorit, setTargetHapusFavorit] =
+    useState<KotaFavorit | null>(null);
+  const [sedangMenghapusFavorit, setSedangMenghapusFavorit] = useState(false);
+
+  // State konfirmasi hapus riwayat
+  const [targetHapusRiwayat, setTargetHapusRiwayat] = useState<KotaRiwayat | null>(
+    null
+  );
+  const [sedangMenghapusRiwayat, setSedangMenghapusRiwayat] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -40,43 +44,67 @@ export default function TabRiwayat() {
     }, [])
   );
 
-  const daftarGabungan = [
-    ...daftarFavorit.map((f) => ({ ...f, tipe: "favorit" as const })),
-    ...riwayat.map((r) => ({ id: r.id || 0, name: r.name, latitude: r.latitude, longitude: r.longitude, country: r.country || "", tipe: "riwayat" as const })),
-  ];
+  // Navigasi langsung ke Detail Cuaca untuk kota yang dipilih dari riwayat
+  function pilihKotaDariRiwayat(kota: KotaRiwayat) {
+    router.push({
+      pathname: "/detail/[kota]" as any,
+      params: {
+        kota: kota.name,
+        id: kota.id !== undefined ? String(kota.id) : undefined,
+        lat: String(kota.latitude),
+        lon: String(kota.longitude),
+      },
+    });
+  }
 
-  const daftarGabungan = [
-    ...daftarFavorit.map((f) => ({ ...f, tipe: "favorit" as const })),
-    ...riwayat.map((r) => ({ id: r.id || 0, name: r.name, latitude: r.latitude, longitude: r.longitude, country: r.country || "", tipe: "riwayat" as const })),
-  ];
-
-  async function eksekusiHapus() {
-    if (!targetHapus) return;
-    setSedangMenghapus(true);
+  // Eksekusi hapus satu item riwayat pencarian (hanya menghapus riwayat, tidak menyentuh cache offline)
+  async function eksekusiHapusRiwayat() {
+    if (!targetHapusRiwayat) return;
+    setSedangMenghapusRiwayat(true);
     try {
-      await hapusFavorit(targetHapus.id, targetHapus.nama);
+      await hapusRiwayat(targetHapusRiwayat.name);
+      setTargetHapusRiwayat(null);
+    } catch (error) {
+      console.error("Gagal menghapus item riwayat:", error);
+    } finally {
+      setSedangMenghapusRiwayat(false);
+    }
+  }
+
+  function batalkanHapusRiwayat() {
+    if (sedangMenghapusRiwayat) return;
+    setTargetHapusRiwayat(null);
+  }
+
+  // Eksekusi hapus kota dari daftar favorit SQLite
+  async function eksekusiHapusFavorit() {
+    if (!targetHapusFavorit) return;
+    setSedangMenghapusFavorit(true);
+    try {
+      await hapusFavorit(targetHapusFavorit.id, targetHapusFavorit.nama);
       setDaftarFavorit((prev) =>
         prev.filter(
           (k) =>
             !(
-              (Number.isFinite(targetHapus.id) &&
+              (Number.isFinite(targetHapusFavorit.id) &&
                 Number.isFinite(k.id) &&
-                k.id === targetHapus.id) ||
-              k.nama.trim().toLowerCase() === targetHapus.nama.trim().toLowerCase()
+                k.id === targetHapusFavorit.id) ||
+              k.nama.trim().toLowerCase() ===
+              targetHapusFavorit.nama.trim().toLowerCase()
             )
         )
       );
-      setTargetHapus(null);
+      setTargetHapusFavorit(null);
     } catch (error) {
       console.error("Gagal menghapus kota favorit:", error);
     } finally {
-      setSedangMenghapus(false);
+      setSedangMenghapusFavorit(false);
     }
   }
 
-  function batalkanHapus() {
-    if (sedangMenghapus) return;
-    setTargetHapus(null);
+  function batalkanHapusFavorit() {
+    if (sedangMenghapusFavorit) return;
+    setTargetHapusFavorit(null);
   }
 
   return (
@@ -88,136 +116,334 @@ export default function TabRiwayat() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.headerRow}>
-          <Text style={[styles.judulSection, { color: theme.text }]}>
-            Kota Favorit
+        {/* Header Layar */}
+        <View style={styles.topHeader}>
+          <Text style={[styles.mainTitle, { color: theme.text }]}>
+            Aktivitas
           </Text>
-          <View
-            style={[
-              styles.badgeJumlah,
-              {
-                backgroundColor: theme.badgeBg,
-                borderColor: theme.cardBorder,
-              },
-            ]}
-          >
-            <Text
-              style={[
-                styles.badgeJumlahText,
-                { color: theme.badgeText },
-              ]}
-            >
-              Tersimpan {daftarFavorit.length} kota
-            </Text>
-          </View>
+          <Text style={[styles.mainSubtitle, { color: theme.textSecondary }]}>
+            Kelola riwayat pencarian terakhir & koleksi kota favorit Anda
+          </Text>
         </View>
 
-        {daftarFavorit.length === 0 ? (
-          <View
+        {/* Tab Kapsul Switcher (Riwayat Pencarian vs Kota Favorit) */}
+        <View
+          style={[
+            styles.tabSwitcher,
+            {
+              backgroundColor: theme.card,
+              borderColor: theme.cardBorder,
+            },
+          ]}
+        >
+          <TouchableOpacity
             style={[
-              styles.emptyContainer,
-              {
-                backgroundColor: theme.card,
-                borderColor: theme.cardBorder,
+              styles.tabSwitcherBtn,
+              tabAktif === "riwayat" && {
+                backgroundColor: theme.primary,
+                shadowColor: theme.primary,
+                shadowOpacity: 0.25,
+                shadowRadius: 6,
+                elevation: 3,
               },
             ]}
+            onPress={() => setTabAktif("riwayat")}
+            activeOpacity={0.8}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: tabAktif === "riwayat" }}
+          >
+            <Ionicons
+              name="time-outline"
+              size={16}
+              color={tabAktif === "riwayat" ? "#ffffff" : theme.textSecondary}
+              style={{ marginRight: 6 }}
+            />
+            <Text
+              style={[
+                styles.tabSwitcherText,
+                {
+                  color:
+                    tabAktif === "riwayat" ? "#ffffff" : theme.textSecondary,
+                  fontWeight: tabAktif === "riwayat" ? "700" : "600",
+                },
+              ]}
+            >
+              Riwayat ({riwayat.length})
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.tabSwitcherBtn,
+              tabAktif === "favorit" && {
+                backgroundColor: theme.primary,
+                shadowColor: theme.primary,
+                shadowOpacity: 0.25,
+                shadowRadius: 6,
+                elevation: 3,
+              },
+            ]}
+            onPress={() => setTabAktif("favorit")}
+            activeOpacity={0.8}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: tabAktif === "favorit" }}
           >
             <Ionicons
               name="star-outline"
-              size={48}
-              color={theme.textMuted}
-              style={{ marginBottom: 8 }}
+              size={16}
+              color={tabAktif === "favorit" ? "#ffffff" : theme.textSecondary}
+              style={{ marginRight: 6 }}
             />
-            <Text style={[styles.emptyText, { color: theme.text }]}>
-              Belum ada kota favorit
+            <Text
+              style={[
+                styles.tabSwitcherText,
+                {
+                  color:
+                    tabAktif === "favorit" ? "#ffffff" : theme.textSecondary,
+                  fontWeight: tabAktif === "favorit" ? "700" : "600",
+                },
+              ]}
+            >
+              Favorit ({daftarFavorit.length})
             </Text>
-            <Text style={[styles.emptySubtext, { color: theme.textSecondary }]}>
-              Tambahkan kota favorit Anda dari Beranda atau Detail Cuaca.
-            </Text>
-          </View>
-        ) : (
-          <View style={styles.list}>
-            {daftarFavorit.map((kota, index) => (
+          </TouchableOpacity>
+        </View>
+
+        {/* ======================================================== */}
+        {/* KONTEN TAB 1: RIWAYAT PENCARIAN TERAKHIR (MAKS 10 KOTA) */}
+        {/* ======================================================== */}
+        {tabAktif === "riwayat" && (
+          <View style={styles.sectionWrapper}>
+            <View style={styles.headerRow}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+                <Ionicons name="time" size={18} color={theme.primary} />
+                <Text style={[styles.judulSection, { color: theme.text }]}>
+                  Riwayat Pencarian
+                </Text>
+              </View>
+            </View>
+
+            {riwayat.length === 0 ? (
               <View
-                key={`${kota.id}-${kota.nama}-${index}`}
                 style={[
-                  styles.cardItem,
+                  styles.emptyContainer,
                   {
                     backgroundColor: theme.card,
                     borderColor: theme.cardBorder,
                   },
                 ]}
               >
-                <TouchableOpacity
-                  style={styles.kotaLeft}
-                  activeOpacity={0.7}
-                  onPress={() =>
-                    router.push({
-                      pathname: "/detail/[kota]" as any,
-                      params: {
-                        kota: kota.nama,
-                        id: String(kota.id),
-                        lat: String(kota.latitude),
-                        lon: String(kota.longitude),
-                      },
-                    })
-                  }
+                <Ionicons
+                  name="search-outline"
+                  size={46}
+                  color={theme.textMuted}
+                  style={{ marginBottom: 8 }}
+                />
+                <Text style={[styles.emptyText, { color: theme.text }]}>
+                  Belum ada riwayat pencarian
+                </Text>
+                <Text
+                  style={[styles.emptySubtext, { color: theme.textSecondary }]}
                 >
+                  Cari nama kota di Beranda untuk menyimpan data perkiraan cuaca
+                  secara offline otomatis (maksimal 10 pencarian terakhir).
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.list}>
+                {riwayat.map((kota, index) => (
                   <View
+                    key={`riwayat-${kota.name}-${index}`}
                     style={[
-                      styles.iconBg,
-                      { backgroundColor: theme.primaryBg },
+                      styles.cardItem,
+                      {
+                        backgroundColor: theme.card,
+                        borderColor: theme.cardBorder,
+                      },
                     ]}
                   >
-                    <Ionicons name="star" size={16} color="#eab308" />
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={[styles.kotaText, { color: theme.text }]}>
-                      {kota.nama}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.koordinatText,
-                        { color: theme.textSecondary },
-                      ]}
+                    <TouchableOpacity
+                      style={styles.kotaLeft}
+                      activeOpacity={0.7}
+                      onPress={() => pilihKotaDariRiwayat(kota)}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Buka detail cuaca ${kota.name}`}
                     >
-                      {kota.latitude.toFixed(2)}°, {kota.longitude.toFixed(2)}°
-                    </Text>
-                  </View>
-                </TouchableOpacity>
+                      <View
+                        style={[
+                          styles.iconBg,
+                          { backgroundColor: theme.primaryBg },
+                        ]}
+                      >
+                        <Ionicons
+                          name="time-outline"
+                          size={18}
+                          color={theme.primary}
+                        />
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={[styles.kotaText, { color: theme.text }]}>
+                          {kota.name}
+                        </Text>
+                        <Text
+                          style={[
+                            styles.koordinatText,
+                            { color: theme.textSecondary },
+                          ]}
+                        >
+                          {kota.latitude.toFixed(2)}°, {kota.longitude.toFixed(2)}°
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={[
-                    styles.hapusButton,
-                    {
-                      backgroundColor: theme.tombolHapusBg,
-                      borderColor: theme.tombolHapusBorder,
-                    },
-                  ]}
-                  onPress={() => setTargetHapus(kota)}
-                  activeOpacity={0.7}
-                  accessibilityRole="button"
-                  accessibilityLabel={`Hapus ${kota.nama} dari favorit`}
-                >
-                  <Text style={styles.hapusButtonText}>Hapus</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[
+                        styles.hapusButton,
+                        {
+                          backgroundColor: theme.tombolHapusBg,
+                          borderColor: theme.tombolHapusBorder,
+                        },
+                      ]}
+                      onPress={() => setTargetHapusRiwayat(kota)}
+                      activeOpacity={0.7}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Hapus riwayat ${kota.name}`}
+                    >
+                      <Text style={styles.hapusButtonText}>Hapus</Text>
+                    </TouchableOpacity>
+                  </View>
+                ))}
               </View>
-            ))}
+            )}
+          </View>
+        )}
+
+        {/* ======================================================== */}
+        {/* KONTEN TAB 2: DAFTAR KOTA FAVORIT TERSIMPAN               */}
+        {/* ======================================================== */}
+        {tabAktif === "favorit" && (
+          <View style={styles.sectionWrapper}>
+            <View style={styles.headerRow}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+                <Ionicons name="star" size={18} color="#eab308" />
+                <Text style={[styles.judulSection, { color: theme.text }]}>
+                  Kota Favorit
+                </Text>
+              </View>
+            </View>
+
+            {daftarFavorit.length === 0 ? (
+              <View
+                style={[
+                  styles.emptyContainer,
+                  {
+                    backgroundColor: theme.card,
+                    borderColor: theme.cardBorder,
+                  },
+                ]}
+              >
+                <Ionicons
+                  name="star-outline"
+                  size={46}
+                  color={theme.textMuted}
+                  style={{ marginBottom: 8 }}
+                />
+                <Text style={[styles.emptyText, { color: theme.text }]}>
+                  Belum ada kota favorit
+                </Text>
+                <Text
+                  style={[styles.emptySubtext, { color: theme.textSecondary }]}
+                >
+                  Tambahkan kota favorit Anda dari Beranda atau Detail Cuaca.
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.list}>
+                {daftarFavorit.map((kota, index) => (
+                  <View
+                    key={`favorit-${kota.id}-${kota.nama}-${index}`}
+                    style={[
+                      styles.cardItem,
+                      {
+                        backgroundColor: theme.card,
+                        borderColor: theme.cardBorder,
+                      },
+                    ]}
+                  >
+                    <TouchableOpacity
+                      style={styles.kotaLeft}
+                      activeOpacity={0.7}
+                      onPress={() =>
+                        router.push({
+                          pathname: "/detail/[kota]" as any,
+                          params: {
+                            kota: kota.nama,
+                            id: String(kota.id),
+                            lat: String(kota.latitude),
+                            lon: String(kota.longitude),
+                          },
+                        })
+                      }
+                    >
+                      <View
+                        style={[
+                          styles.iconBg,
+                          { backgroundColor: "#fef3c7" },
+                        ]}
+                      >
+                        <Ionicons name="star" size={16} color="#eab308" />
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={[styles.kotaText, { color: theme.text }]}>
+                          {kota.nama}
+                        </Text>
+                        <Text
+                          style={[
+                            styles.koordinatText,
+                            { color: theme.textSecondary },
+                          ]}
+                        >
+                          {kota.latitude.toFixed(2)}°, {kota.longitude.toFixed(2)}°
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={[
+                        styles.hapusButton,
+                        {
+                          backgroundColor: theme.tombolHapusBg,
+                          borderColor: theme.tombolHapusBorder,
+                        },
+                      ]}
+                      onPress={() => setTargetHapusFavorit(kota)}
+                      activeOpacity={0.7}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Hapus ${kota.nama} dari favorit`}
+                    >
+                      <Text style={styles.hapusButtonText}>Hapus</Text>
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </View>
+            )}
           </View>
         )}
       </ScrollView>
 
-      {/* Modal Konfirmasi Hapus In-App (Bukan Alert Browser) */}
+      {/* ======================================================== */}
+      {/* MODAL KONFIRMASI HAPUS RIWAYAT PENCARIAN                 */}
+      {/* ======================================================== */}
       <Modal
-        visible={targetHapus !== null}
+        visible={targetHapusRiwayat !== null}
         transparent
         animationType="fade"
-        onRequestClose={batalkanHapus}
+        onRequestClose={batalkanHapusRiwayat}
       >
         <View style={styles.modalOverlay}>
           <Pressable
             style={styles.modalBackdropPressable}
-            onPress={batalkanHapus}
+            onPress={batalkanHapusRiwayat}
             accessibilityLabel="Tutup dialog konfirmasi"
           />
           <View
@@ -231,18 +457,25 @@ export default function TabRiwayat() {
             accessibilityRole="alert"
             accessibilityLiveRegion="assertive"
           >
-            <View style={styles.modalIconContainer}>
-              <Text style={styles.modalIcon}>🗑️</Text>
+            <View
+              style={[
+                styles.modalIconContainer,
+                { backgroundColor: theme.tombolHapusBg },
+              ]}
+            >
+              <Ionicons name="trash-outline" size={28} color="#ef4444" />
             </View>
 
             <Text style={[styles.modalJudul, { color: theme.text }]}>
-              Hapus Kota Favorit?
+              Hapus Riwayat Pencarian?
             </Text>
-            <Text style={[styles.modalKeterangan, { color: theme.textSecondary }]}>
-              Apakah Anda yakin ingin menghapus kota ini dari daftar favorit?
+            <Text
+              style={[styles.modalKeterangan, { color: theme.textSecondary }]}
+            >
+              Apakah Anda yakin ingin menghapus kota ini dari riwayat pencarian?
             </Text>
 
-            {targetHapus && (
+            {targetHapusRiwayat && (
               <View
                 style={[
                   styles.modalPreviewCard,
@@ -253,11 +486,15 @@ export default function TabRiwayat() {
                 ]}
               >
                 <View style={styles.modalPreviewIconWrapper}>
-                  <Text style={{ fontSize: 15 }}>📍</Text>
+                  <Ionicons
+                    name="time-outline"
+                    size={16}
+                    color="#2563eb"
+                  />
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.modalPreviewNama, { color: theme.text }]}>
-                    {targetHapus.nama}
+                    {targetHapusRiwayat.name}
                   </Text>
                   <Text
                     style={[
@@ -265,7 +502,8 @@ export default function TabRiwayat() {
                       { color: theme.textSecondary },
                     ]}
                   >
-                    {targetHapus.latitude.toFixed(2)}°, {targetHapus.longitude.toFixed(2)}°
+                    {targetHapusRiwayat.latitude.toFixed(2)}°,{" "}
+                    {targetHapusRiwayat.longitude.toFixed(2)}°
                   </Text>
                 </View>
               </View>
@@ -277,11 +515,11 @@ export default function TabRiwayat() {
                   styles.modalBatalButton,
                   { backgroundColor: theme.cardSecondary },
                 ]}
-                onPress={batalkanHapus}
-                disabled={sedangMenghapus}
+                onPress={batalkanHapusRiwayat}
+                disabled={sedangMenghapusRiwayat}
                 activeOpacity={0.7}
                 accessibilityRole="button"
-                accessibilityLabel="Batal menghapus"
+                accessibilityLabel="Batal menghapus riwayat"
               >
                 <Text style={[styles.modalBatalButtonText, { color: theme.text }]}>
                   Batal
@@ -290,13 +528,128 @@ export default function TabRiwayat() {
 
               <TouchableOpacity
                 style={styles.modalHapusButton}
-                onPress={eksekusiHapus}
-                disabled={sedangMenghapus}
+                onPress={eksekusiHapusRiwayat}
+                disabled={sedangMenghapusRiwayat}
                 activeOpacity={0.8}
                 accessibilityRole="button"
-                accessibilityLabel={`Konfirmasi hapus ${targetHapus?.nama ?? "kota"}`}
+                accessibilityLabel="Konfirmasi hapus riwayat"
               >
-                {sedangMenghapus ? (
+                {sedangMenghapusRiwayat ? (
+                  <ActivityIndicator color="#ffffff" size="small" />
+                ) : (
+                  <Text style={styles.modalHapusButtonText}>Ya, Hapus</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* ======================================================== */}
+      {/* MODAL KONFIRMASI HAPUS FAVORIT                             */}
+      {/* ======================================================== */}
+      <Modal
+        visible={targetHapusFavorit !== null}
+        transparent
+        animationType="fade"
+        onRequestClose={batalkanHapusFavorit}
+      >
+        <View style={styles.modalOverlay}>
+          <Pressable
+            style={styles.modalBackdropPressable}
+            onPress={batalkanHapusFavorit}
+            accessibilityLabel="Tutup dialog konfirmasi favorit"
+          />
+          <View
+            style={[
+              styles.modalContent,
+              {
+                backgroundColor: theme.card,
+                borderColor: theme.cardBorder,
+              },
+            ]}
+            accessibilityRole="alert"
+            accessibilityLiveRegion="assertive"
+          >
+            <View
+              style={[
+                styles.modalIconContainer,
+                { backgroundColor: "#fef3c7" },
+              ]}
+            >
+              <Ionicons name="star" size={28} color="#eab308" />
+            </View>
+
+            <Text style={[styles.modalJudul, { color: theme.text }]}>
+              Hapus Kota Favorit?
+            </Text>
+            <Text
+              style={[styles.modalKeterangan, { color: theme.textSecondary }]}
+            >
+              Apakah Anda yakin ingin menghapus kota ini dari daftar favorit?
+            </Text>
+
+            {targetHapusFavorit && (
+              <View
+                style={[
+                  styles.modalPreviewCard,
+                  {
+                    backgroundColor: theme.cardSecondary,
+                    borderColor: theme.cardBorder,
+                  },
+                ]}
+              >
+                <View
+                  style={[
+                    styles.modalPreviewIconWrapper,
+                    { backgroundColor: "#fef3c7" },
+                  ]}
+                >
+                  <Ionicons name="location-outline" size={16} color="#eab308" />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.modalPreviewNama, { color: theme.text }]}>
+                    {targetHapusFavorit.nama}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.modalPreviewKoordinat,
+                      { color: theme.textSecondary },
+                    ]}
+                  >
+                    {targetHapusFavorit.latitude.toFixed(2)}°,{" "}
+                    {targetHapusFavorit.longitude.toFixed(2)}°
+                  </Text>
+                </View>
+              </View>
+            )}
+
+            <View style={styles.modalButtonGroup}>
+              <TouchableOpacity
+                style={[
+                  styles.modalBatalButton,
+                  { backgroundColor: theme.cardSecondary },
+                ]}
+                onPress={batalkanHapusFavorit}
+                disabled={sedangMenghapusFavorit}
+                activeOpacity={0.7}
+                accessibilityRole="button"
+                accessibilityLabel="Batal menghapus favorit"
+              >
+                <Text style={[styles.modalBatalButtonText, { color: theme.text }]}>
+                  Batal
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.modalHapusButton}
+                onPress={eksekusiHapusFavorit}
+                disabled={sedangMenghapusFavorit}
+                activeOpacity={0.8}
+                accessibilityRole="button"
+                accessibilityLabel={`Konfirmasi hapus ${targetHapusFavorit?.nama ?? "kota"}`}
+              >
+                {sedangMenghapusFavorit ? (
                   <ActivityIndicator color="#ffffff" size="small" />
                 ) : (
                   <Text style={styles.modalHapusButtonText}>Ya, Hapus</Text>
@@ -320,29 +673,59 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
     gap: 16,
   },
+  topHeader: {
+    marginBottom: 4,
+  },
+  mainTitle: {
+    fontSize: 22,
+    fontWeight: "800",
+    letterSpacing: 0.2,
+  },
+  mainSubtitle: {
+    fontSize: 13,
+    marginTop: 4,
+    lineHeight: 18,
+  },
+  tabSwitcher: {
+    flexDirection: "row",
+    padding: 4,
+    borderRadius: 14,
+    borderWidth: 1,
+    gap: 6,
+  },
+  tabSwitcherBtn: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+  tabSwitcherText: {
+    fontSize: 13,
+  },
+  sectionWrapper: {
+    gap: 14,
+  },
   headerRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
   judulSection: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: "800",
-    color: "#0f172a",
     letterSpacing: 0.2,
   },
   badgeJumlah: {
-    backgroundColor: "#eff6ff",
-    paddingHorizontal: 12,
+    paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "#bfdbfe",
   },
   badgeJumlahText: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: "700",
-    color: "#2563eb",
   },
   list: {
     gap: 10,
@@ -351,77 +734,85 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#ffffff",
-    paddingVertical: 14,
-    paddingHorizontal: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: "#e2e8f0",
     shadowColor: "#0f172a",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.04,
     shadowRadius: 6,
     elevation: 2,
-    gap: 12,
+    gap: 10,
   },
   kotaLeft: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: 10,
   },
   iconBg: {
-    width: 38,
-    height: 38,
-    borderRadius: 12,
-    backgroundColor: "#fef3c7",
+    width: 36,
+    height: 36,
+    borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
   },
   kotaText: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: "700",
-    color: "#1e293b",
   },
   koordinatText: {
     fontSize: 12,
-    color: "#64748b",
     marginTop: 2,
   },
+  chipOffline: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+    borderWidth: 1,
+    marginRight: 4,
+  },
+  chipOfflineText: {
+    fontSize: 11,
+    fontWeight: "700",
+  },
   hapusButton: {
-    backgroundColor: "#fee2e2",
-    paddingHorizontal: 14,
+    paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 10,
+    borderWidth: 1,
+  },
+  hapusCacheButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    borderRadius: 10,
+    borderWidth: 1,
+    gap: 4,
   },
   hapusButtonText: {
     color: "#dc2626",
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: "700",
   },
   emptyContainer: {
-    backgroundColor: "#ffffff",
     padding: 32,
     borderRadius: 16,
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#e2e8f0",
-    marginTop: 20,
+    marginTop: 10,
     gap: 8,
-  },
-  emptyIcon: {
-    fontSize: 36,
-    marginBottom: 4,
   },
   emptyText: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#334155",
   },
   emptySubtext: {
     fontSize: 13,
-    color: "#94a3b8",
     textAlign: "center",
+    lineHeight: 18,
   },
   modalOverlay: {
     flex: 1,
@@ -440,12 +831,10 @@ const styles = StyleSheet.create({
   modalContent: {
     width: "100%",
     maxWidth: 380,
-    backgroundColor: "#ffffff",
     borderRadius: 24,
     padding: 24,
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#e2e8f0",
     shadowColor: "#0f172a",
     shadowOffset: { width: 0, height: 16 },
     shadowOpacity: 0.16,
@@ -470,14 +859,12 @@ const styles = StyleSheet.create({
   modalJudul: {
     fontSize: 19,
     fontWeight: "800",
-    color: "#0f172a",
     marginBottom: 8,
     textAlign: "center",
     letterSpacing: 0.2,
   },
   modalKeterangan: {
     fontSize: 14,
-    color: "#64748b",
     textAlign: "center",
     lineHeight: 20,
     marginBottom: 16,
@@ -485,9 +872,7 @@ const styles = StyleSheet.create({
   modalPreviewCard: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f8fafc",
     borderWidth: 1,
-    borderColor: "#e2e8f0",
     borderRadius: 14,
     paddingVertical: 10,
     paddingHorizontal: 14,
@@ -506,11 +891,9 @@ const styles = StyleSheet.create({
   modalPreviewNama: {
     fontSize: 15,
     fontWeight: "700",
-    color: "#0f172a",
   },
   modalPreviewKoordinat: {
     fontSize: 12,
-    color: "#64748b",
     marginTop: 2,
   },
   modalButtonGroup: {
@@ -520,14 +903,12 @@ const styles = StyleSheet.create({
   },
   modalBatalButton: {
     flex: 1,
-    backgroundColor: "#f1f5f9",
     paddingVertical: 13,
     borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
   },
   modalBatalButtonText: {
-    color: "#475569",
     fontSize: 14,
     fontWeight: "700",
   },
@@ -550,5 +931,3 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
 });
-
-// style(riwayat): sesuaikan tata letak kartu aktivitas dan chip koordinat
