@@ -7,6 +7,7 @@ import React, {
   useCallback,
   ReactNode,
 } from "react";
+import { useColorScheme } from "react-native";
 import {
   ambilPreferensi,
   simpanPreferensi,
@@ -26,12 +27,15 @@ export interface PengaturanContextType {
   celcius: boolean;
   notifikasi: boolean;
   darkMode: boolean;
+  ikutiSistem: boolean;
+  temaSistem: "light" | "dark";
   theme: ThemeColors;
   sedangMemuat: boolean;
   transition: ThemeTransitionState | null;
   setCelcius: (nilai: boolean) => Promise<void>;
   setNotifikasi: (nilai: boolean) => Promise<void>;
   setDarkMode: (nilai: boolean) => Promise<void>;
+  setIkutiSistem: (nilai: boolean) => Promise<void>;
   toggleDarkMode: (coords?: { x: number; y: number }) => void;
   applyThemeChange: (nextIsDark: boolean) => void;
   completeTransition: () => void;
@@ -59,12 +63,15 @@ const defaultContextValue: PengaturanContextType = {
   celcius: PREFERENSI_DEFAULT.celcius,
   notifikasi: PREFERENSI_DEFAULT.notifikasi,
   darkMode: PREFERENSI_DEFAULT.darkMode,
+  ikutiSistem: PREFERENSI_DEFAULT.ikutiSistem,
+  temaSistem: "light",
   theme: lightTheme,
   sedangMemuat: false,
   transition: null,
   setCelcius: async () => {},
   setNotifikasi: async () => {},
   setDarkMode: async () => {},
+  setIkutiSistem: async () => {},
   toggleDarkMode: () => {},
   applyThemeChange: () => {},
   completeTransition: () => {},
@@ -82,6 +89,9 @@ const PengaturanContext =
   createContext<PengaturanContextType>(defaultContextValue);
 
 export function PengaturanProvider({ children }: { children: ReactNode }) {
+  const systemColorScheme = useColorScheme();
+  const temaSistem: "light" | "dark" = systemColorScheme === "dark" ? "dark" : "light";
+
   const [preferensi, setPreferensi] =
     useState<PreferensiPengguna>(PREFERENSI_DEFAULT);
   const [sedangMemuat, setSedangMemuat] = useState(true);
@@ -116,30 +126,46 @@ export function PengaturanProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const setDarkMode = useCallback(async (nilai: boolean) => {
-    setPreferensi((prev) => ({ ...prev, darkMode: nilai }));
-    await simpanPreferensi({ darkMode: nilai });
+    setPreferensi((prev) => ({ ...prev, ikutiSistem: false, darkMode: nilai }));
+    await simpanPreferensi({ ikutiSistem: false, darkMode: nilai });
   }, []);
+
+  const setIkutiSistem = useCallback(async (nilai: boolean) => {
+    setPreferensi((prev) => {
+      const nextPref = { ...prev, ikutiSistem: nilai };
+      simpanPreferensi({ ikutiSistem: nilai });
+      return nextPref;
+    });
+  }, []);
+
+  // Tentukan apakah mode gelap aktif berdasarkan ikutiSistem atau preferensi manual
+  const isDark = preferensi.ikutiSistem ? temaSistem === "dark" : preferensi.darkMode;
 
   const toggleDarkMode = useCallback(
     (coords?: { x: number; y: number }) => {
       setPreferensi((prev) => {
-        const nextIsDark = !prev.darkMode;
-        simpanPreferensi({ darkMode: nextIsDark });
+        const nextIsDark = !isDark;
+        const nextPref = {
+          ...prev,
+          ikutiSistem: false,
+          darkMode: nextIsDark,
+        };
+        simpanPreferensi({ ikutiSistem: false, darkMode: nextIsDark });
         setTransition({
           active: true,
           x: coords?.x ?? -1,
           y: coords?.y ?? -1,
           nextIsDark,
         });
-        return { ...prev, darkMode: nextIsDark };
+        return nextPref;
       });
     },
-    []
+    [isDark]
   );
 
   const applyThemeChange = useCallback(async (nextIsDark: boolean) => {
-    setPreferensi((prev) => ({ ...prev, darkMode: nextIsDark }));
-    await simpanPreferensi({ darkMode: nextIsDark });
+    setPreferensi((prev) => ({ ...prev, ikutiSistem: false, darkMode: nextIsDark }));
+    await simpanPreferensi({ ikutiSistem: false, darkMode: nextIsDark });
   }, []);
 
   const completeTransition = useCallback(() => {
@@ -164,20 +190,23 @@ export function PengaturanProvider({ children }: { children: ReactNode }) {
 
   const satuanLabel = preferensi.celcius ? "°C" : "°F";
   const satuanNama = preferensi.celcius ? "Celsius" : "Fahrenheit";
-  const theme = preferensi.darkMode ? darkTheme : lightTheme;
+  const theme = isDark ? darkTheme : lightTheme;
 
   return (
     <PengaturanContext.Provider
       value={{
         celcius: preferensi.celcius,
         notifikasi: preferensi.notifikasi,
-        darkMode: preferensi.darkMode,
+        darkMode: isDark,
+        ikutiSistem: preferensi.ikutiSistem,
+        temaSistem,
         theme,
         sedangMemuat,
         transition,
         setCelcius,
         setNotifikasi,
         setDarkMode,
+        setIkutiSistem,
         toggleDarkMode,
         applyThemeChange,
         completeTransition,
