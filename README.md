@@ -34,17 +34,18 @@ Proyek ini dikembangkan sebagai bagian dari praktikum mata kuliah **Pemrograman 
 * Jika kota aktif sudah ada di daftar favorit, tombol otomatis dinonaktifkan (`disabled`) dengan status visual **"Sudah di Favorit ✓"**.
 * Penerusan parameter lengkap (`id`, `nama`, `lat`, `lon`) antar rute memastikan integritas data tetap konsisten.
 
-### 4. 🗑️ Manajemen Tab Riwayat & Modal Konfirmasi Hapus In-App
-* Tab Riwayat memuat daftar favorit nyata secara dinamis dengan penanda jumlah (*badge*) **"Tersimpan X kota"**.
-* Dilengkapi dialog konfirmasi penghapusan in-app yang modern dan elegan:
-  * Menggantikan alert browser bawaan (`window.confirm`) dan alert sistem dengan **Modal Dialog In-App** yang seragam di seluruh platform (Web, Android, iOS).
-  * Dilengkapi kartu tinjauan kota (*preview card*), indikator memuat (*loading indicator*), serta tombol aksi "Batal" dan "Ya, Hapus" yang aman.
-* Mekanisme penghapusan *dual-check* menjamin item segera terhapus dari memori lokal dan tampilan layar seketika.
+### 4. 🗂️ Tab Aktivitas Terpadu & Filter Cerdas (Favorit + Riwayat)
+* Menggabungkan daftar **Kota Favorit** dan **Riwayat Pencarian** ke dalam satu tab **Aktivitas** yang rapi dan terorganisir.
+* Dilengkapi **Filter Chip Kategori** instan: **Semua**, **Favorit**, dan **Riwayat**.
+* Dilengkapi kotak **Pencarian Cepat** untuk menyaring aktivitas kota secara *real-time*.
+* Tersedia opsi **"Hapus Riwayat"** berbasis dialog konfirmasi aman tanpa menghapus daftar favorit.
+* Dialog konfirmasi penghapusan in-app modern dengan kartu tinjauan (*preview card*), menggantikan alert browser bawaan di semua platform (Web, Android, iOS).
 
 ### 5. 🔍 Live Search Geocoding Cerdas
 * Pencarian kota instan ke seluruh dunia menggunakan **Open-Meteo Geocoding API**.
 * Dilengkapi *custom hook* `useDebounce` untuk menghemat kuota *request* dan mencegah pemanggilan API berulang saat pengguna mengetik.
 * Penanganan 4 kondisi UI yang lengkap: **Memuat (*loading*)**, **Berhasil**, **Kosong (*not found*)**, dan **Gagal (*error connection*)**.
+* Pencarian *offline fallback*: jika koneksi internet terputus, pencarian otomatis mencocokkan nama kota dengan data yang tersimpan di SQLite lokal.
 
 ### 6. ⚡ Real-Time Weather & Air Quality Engine
 * Memanggil **dua API Open-Meteo sekaligus** (*Weather Forecast* dan *Air Quality*) secara paralel menggunakan `Promise.all` untuk efisiensi waktu respon.
@@ -55,16 +56,27 @@ Proyek ini dikembangkan sebagai bagian dari praktikum mata kuliah **Pemrograman 
 * **Kamus Kode Cuaca WMO:** Menerjemahkan 17 kode cuaca standar dunia ke dalam Bahasa Indonesia lengkap dengan ikon visual (☀️ Cerah, ⛅ Berawan, 🌧️ Hujan, ⛈️ Badai, dll.).
 * **Adapter AQI:** Mengonversi indeks numerik AQI Eropa ke dalam 4 kategori warna standar (*Baik*, *Sedang*, *Tidak Sehat*, *Berbahaya*).
 * **Grid Metrik Lingkungan:** Menampilkan kecepatan angin (km/j), rentang suhu harian (Min/Maks °C), serta kadar partikel debu polutan **PM2.5** dan **PM10** ($\mu\text{g/m}^3$).
+* **Footer Status Data Terpadu:** Kartu cuaca menampilkan titik status (*Online* hijau, *Tersimpan* biru, *Offline* oranye) dan umur pembaruan data secara minimalis tanpa memenuhi layar.
 
 ### 8. ♿ Aksesibilitas & UI/UX Responsif
 * Desain adaptif berbasis `SafeAreaView` yang nyaman di berbagai ukuran layar perangkat Android, iOS, dan Web.
 * Standar aksesibilitas lengkap (`accessibilityLabel`, `accessibilityRole`) untuk mendukung pembaca layar (*screen reader* / TalkBack).
 * Sistem token desain terstruktur (*type scale* dan *spacing system*).
 
-### 9. 🌙 Mode Gelap Interaktif & Circular Reveal Transition
+### 9. 🌙 Mode Gelap & Sinkronisasi Tema Sistem
 * **Toggle Beranimasi:** Switch bertema siang/malam interaktif dengan rotasi 360° ikon matahari/bulan serta detail partikel bintang dan awan.
 * **Efek Circular Reveal:** Transisi perubahan tema meluas secara melingkar (*ripple wave expansion*) dari titik sentuh tombol toggle menutupi layar tanpa *screen flashing* atau *flicker*.
-* **Persistensi Tema:** Pilihan tema (Terang / Gelap) tersimpan persisten di `AsyncStorage` melalui `PengaturanContext`.
+* **Ikuti Tema Sistem (System Theme):** Sakelar cerdas di tab Pengaturan yang secara otomatis menyelaraskan tema aplikasi dengan pengaturan sistem operasi perangkat (Light / Dark mode via `useColorScheme`).
+* **Persistensi Tema:** Pilihan tema tersimpan permanen di `AsyncStorage` melalui `PengaturanContext`.
+
+### 10. 🗃️ Carousel Horizontal "Tersimpan Offline" & Navigasi Desktop
+* **Hemat Ruang:** Daftar kota tersimpan di SQLite ditampilkan dalam format *carousel horizontal* kompak sehingga tidak menghabiskan ruang vertikal Beranda.
+* **Judul Minimalis:** Label disederhanakan menjadi **"Tersimpan Offline"** satu baris rapi berdampingan dengan badge kuota `(X/5)`.
+* **Ramah Desktop & PC:**
+  * Tombol navigasi panah **`‹`** dan **`›`** untuk menggeser daftar kota dengan satu kali klik.
+  * Dukungan geser **Mouse Drag-to-Scroll** (kursor otomatis berubah menjadi *grab*) meniru pengalaman usap layar sentuh di ponsel.
+  * Dukungan putar **Roda Mouse (*Mouse Wheel*)** untuk menggeser daftar secara horizontal.
+* **Penghapusan Presisi per Kota (*Single-City Invalidation*):** Menghapus salah satu kota hanya membuang cache kota yang dipilih dari SQLite dan AsyncStorage Web dengan pembaruan tampilan instan (*optimistic update*).
 
 ---
 
@@ -76,10 +88,10 @@ Aplikasi dibangun menggunakan struktur **Expo Router** (*file-based routing*):
 app/
 ├── _layout.tsx              # Root Layout dibungkus PengaturanProvider & RiwayatProvider
 ├── (tabs)/                  # Bottom Tab Navigator
-│   ├── _layout.tsx          # Konfigurasi Icon & Tab Bar
-│   ├── index.tsx            # Tab Beranda (Pencarian, GPS Lokasi, Cuaca & Tambah Favorit)
-│   ├── riwayat.tsx          # Tab Riwayat Favorit (Daftar Tersimpan & Konfirmasi Hapus)
-│   ├── pengaturan.tsx       # Tab Preferensi Suhu, Mode Gelap & Notifikasi
+│   ├── _layout.tsx          # Konfigurasi Icon & Tab Bar (Tinggi Dinamis & Label Rapi)
+│   ├── index.tsx            # Tab Beranda (Pencarian, GPS Lokasi, Cuaca, Carousel Offline)
+│   ├── riwayat.tsx          # Tab Aktivitas (Daftar Favorit & Riwayat Pencarian dengan Filter Kategori)
+│   ├── pengaturan.tsx       # Tab Pengaturan (Satuan Suhu, Mode Gelap, Ikuti Sistem, Hapus Cache)
 │   └── tentang.tsx          # Tab Informasi Pengembang & Aplikasi
 ├── detail/
 │   └── [kota].tsx           # Halaman Detail Cuaca Lengkap & Status Favorit Terhubung
@@ -97,19 +109,19 @@ orientasi-jelajah-aman/
 │   ├── AnimatedThemeToggle.tsx # Switch Mode Gelap Beranimasi (Sun/Moon Morphing)
 │   ├── AtribusiCuaca.tsx    # Komponen Atribusi Lisensi Open-Meteo
 │   ├── CircularThemeOverlay.tsx# Overlay Efek Gelombang Melingkar (Circular Reveal)
-│   ├── RiwayatList.tsx      # Komponen Daftar Riwayat Pencarian
 │   ├── SearchBox.tsx        # Kotak Pencarian dengan Live Search & Clear Button
-│   └── WeatherCard.tsx      # Kartu Cuaca Utama & Grid Metrik Simetris
+│   ├── StatusData.tsx       # Re-ekspor Komponen Status Data & Helper
+│   └── WeatherCard.tsx      # Kartu Cuaca Utama dengan Footer Status Terpadu
 ├── constants/               # Konstanta Desain & Kamus Data
 │   ├── styles.ts            # Type Scale & Spacing System
 │   ├── theme.ts             # Skema Warna Tema Light & Dark
 │   └── weatherCodes.ts      # Kamus Terjemahan Kode Cuaca WMO & Ikon
 ├── contexts/                # State Global Aplikasi
-│   ├── PengaturanContext.tsx# Context Preferensi Satuan Suhu (°C/°F), Mode Gelap & Notifikasi
-│   └── RiwayatContext.tsx   # Context Penyimpan Riwayat Pencarian Kota
+│   ├── PengaturanContext.tsx# Context Satuan Suhu (°C/°F), Mode Gelap & Ikuti Sistem
+│   └── RiwayatContext.tsx   # Context Riwayat Pencarian Kota (AsyncStorage)
 ├── hooks/                   # Custom React Hooks
 │   └── use-debounce.ts      # Hook Debounce untuk Live Search API
-├── services/                # Lapisan Integrasi Layanan & API
+├── services/                # Lapisan Integrasi Layanan & API Eksternal
 │   ├── airQualityService.ts # Pemanggil Open-Meteo Air Quality API
 │   ├── favoritStorage.ts    # Service Persistensi Favorit via AsyncStorage
 │   ├── geocodingService.ts  # Pemanggil Open-Meteo Geocoding API
@@ -117,10 +129,20 @@ orientasi-jelajah-aman/
 │   ├── pengaturanStorage.ts # Service Persistensi Pengaturan via AsyncStorage
 │   ├── weatherAdapter.ts    # Adapter Konversi Skala AQI ke Kategori
 │   └── weatherService.ts    # Pemanggil Open-Meteo Forecast API + Timeout
+├── src/                     # Arsitektur Database & Layanan Offline-First
+│   ├── components/
+│   │   └── StatusData.tsx   # Komponen Indikator Status Asal Data (Varian Default & Minimalis)
+│   ├── db/
+│   │   ├── database.ts      # Koneksi SQLite Native (expo-sqlite) & Migrasi Skema v1/v2
+│   │   └── database.web.ts  # Adapter SQLite Mock untuk Web Browser (AsyncStorage Engine)
+│   └── services/
+│       ├── cacheRepository.ts # CRUD Operasi Database SQLite (Simpan, Ambil, Hapus per Kota)
+│       └── cuacaRepository.ts # Orkestrasi Offline-First (Cache-First + Network Fallback)
 └── types/                   # Definisi Tipe Data TypeScript
-    ├── cuaca.ts             # Tipe Data WeatherCard & Tingkat AQI
+    ├── cache.ts             # Interface Cache SQLite & Ringkasan Kota Tersimpan
+    ├── cuaca.ts             # Tipe Data WeatherCardProps & Metrik Cuaca
     ├── favorit.ts           # Interface KotaFavorit (AsyncStorage)
-    ├── geocoding.ts         # Tipe Data Hasil Geocoding
+    ├── geocoding.ts         # Tipe Data Hasil Geocoding Open-Meteo
     └── weather.ts           # Tipe Data Respon API Cuaca & Kualitas Udara
 ```
 
