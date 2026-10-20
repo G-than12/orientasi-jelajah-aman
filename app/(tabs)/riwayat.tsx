@@ -44,6 +44,11 @@ export default function TabRiwayat() {
     ...riwayat.map((r) => ({ id: r.id || 0, name: r.name, latitude: r.latitude, longitude: r.longitude, country: r.country || "", tipe: "riwayat" as const })),
   ];
 
+  const daftarGabungan = [
+    ...daftarFavorit.map((f) => ({ ...f, tipe: "favorit" as const })),
+    ...riwayat.map((r) => ({ id: r.id || 0, name: r.name, latitude: r.latitude, longitude: r.longitude, country: r.country || "", tipe: "riwayat" as const })),
+  ];
+
   async function eksekusiHapus() {
     if (!targetHapus) return;
     setSedangMenghapus(true);
