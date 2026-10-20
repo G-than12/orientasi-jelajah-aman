@@ -1,3 +1,5 @@
+import { SumberData } from "./cache";
+
 // types/cuaca.ts
 export interface DataCuaca {
   kota: string;
@@ -21,4 +23,6 @@ export interface WeatherCardProps {
   pm10?: number; // Partikel debu kasar PM10 (µg/m³)
   tampilkanDetail?: boolean; // false untuk ringkas di Beranda, true untuk lengkap di halaman Detail
   celcius?: boolean; // Opsional: override preferensi satuan suhu (°C vs °F)
+  sumberData?: SumberData; // Status data: jaringan | cache-segar | cache-basi
+  disimpanPada?: number; // Epoch waktu data disimpan
 }
