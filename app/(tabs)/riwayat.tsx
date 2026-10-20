@@ -18,6 +18,7 @@ import { KotaFavorit } from "../../types/favorit";
 import { usePengaturan } from "../../contexts/PengaturanContext";
 import { useRiwayat } from "../../contexts/RiwayatContext";
 
+// Tab Aktivitas Pengguna (Favorit & Riwayat Pencarian)
 export default function TabRiwayat() {
   const { theme } = usePengaturan();
   const [daftarFavorit, setDaftarFavorit] = useState<KotaFavorit[]>([]);
