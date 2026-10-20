@@ -34,9 +34,9 @@ export default function TabLayout() {
         tabBarActiveTintColor: theme.tabBarActive,
         tabBarInactiveTintColor: theme.tabBarInactive,
         tabBarStyle: {
-          // Menyesuaikan tinggi dan jarak bawah secara dinamis sesuai dagu layar HP
-          height: 65 + (insets.bottom > 0 ? insets.bottom : 12),
-          paddingBottom: (insets.bottom > 0 ? insets.bottom : 12) + 4,
+          // Menyesuaikan tinggi dan jarak bawah secara dinamis agar teks dan ekor huruf tidak terpotong
+          height: 68 + (insets.bottom > 0 ? insets.bottom : 8),
+          paddingBottom: insets.bottom > 0 ? insets.bottom + 4 : 8,
           paddingTop: 8,
           backgroundColor: theme.tabBar,
           borderTopWidth: 1,
@@ -45,6 +45,8 @@ export default function TabLayout() {
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: "600",
+          lineHeight: 16,
+          paddingBottom: 2,
         },
       }}
     >
@@ -60,7 +62,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="riwayat"
         options={{
-          title: "Riwayat",
+          title: "Aktivitas",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="time-outline" size={size} color={color} />
           ),
