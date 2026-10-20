@@ -18,7 +18,14 @@ function RootContent() {
       <StatusBar style={theme.statusBarStyle} />
       <Stack
         screenOptions={{
-          headerStyle: { backgroundColor: theme.card },
+          headerStyle: {
+            backgroundColor: theme.card,
+          },
+          headerShadowVisible: false,
+          headerTitleStyle: {
+            fontWeight: "700",
+            color: theme.text,
+          },
           headerTintColor: theme.text,
           contentStyle: { backgroundColor: theme.bg },
         }}
