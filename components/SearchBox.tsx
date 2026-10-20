@@ -49,7 +49,7 @@ export default function SearchBox({ onCari, nilai }: SearchBoxProps) {
       >
         <Ionicons
           name="search-outline"
-          size={18}
+          size={19}
           color={theme.textMuted}
           style={{ marginRight: 8 }}
         />
@@ -60,6 +60,7 @@ export default function SearchBox({ onCari, nilai }: SearchBoxProps) {
           value={teks}
           onChangeText={handleChange}
           onSubmitEditing={handleSubmit}
+          returnKeyType="search"
           accessibilityLabel="Cari cuaca untuk kota yang dimasukkan"
         />
         {teks.length > 0 && (
@@ -72,35 +73,23 @@ export default function SearchBox({ onCari, nilai }: SearchBoxProps) {
           </TouchableOpacity>
         )}
       </View>
-
-      {/* Tombol Biru "Cari" */}
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handleSubmit}
-        accessibilityRole="button"
-        accessibilityLabel="Tombol cari kota"
-      >
-        <Text style={styles.buttonText}>Cari</Text>
-      </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    gap: 10,
-    alignItems: "center",
+    width: "100%",
   },
   inputWrapper: {
-    flex: 1,
+    width: "100%",
     flexDirection: "row",
     alignItems: "center",
-    height: 48,
+    height: 50,
     backgroundColor: "#ffffff",
     borderWidth: 1.5,
     borderColor: "#e2e8f0",
-    borderRadius: 12,
+    borderRadius: 14,
     paddingHorizontal: 16,
   },
   input: {
@@ -111,23 +100,5 @@ const styles = StyleSheet.create({
   },
   clearBtn: {
     padding: 4,
-  },
-  clearText: {
-    color: "#94a3b8",
-    fontSize: 14,
-    fontWeight: "700",
-  },
-  button: {
-    height: 48,
-    paddingHorizontal: 20,
-    backgroundColor: "#2563eb",
-    borderRadius: 12,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "#ffffff",
-    fontWeight: "600",
-    fontSize: 15,
   },
 });
