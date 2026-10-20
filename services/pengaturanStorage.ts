@@ -5,6 +5,7 @@ export interface PreferensiPengguna {
   celcius: boolean;
   notifikasi: boolean;
   darkMode: boolean;
+  ikutiSistem: boolean;
 }
 
 const KUNCI_PENGATURAN = "@jelajah_aman:pengaturan";
@@ -13,6 +14,7 @@ export const PREFERENSI_DEFAULT: PreferensiPengguna = {
   celcius: true,
   notifikasi: true,
   darkMode: false,
+  ikutiSistem: false,
 };
 
 /**
@@ -37,6 +39,10 @@ export async function ambilPreferensi(): Promise<PreferensiPengguna> {
         typeof parsed.darkMode === "boolean"
           ? parsed.darkMode
           : PREFERENSI_DEFAULT.darkMode,
+      ikutiSistem:
+        typeof parsed.ikutiSistem === "boolean"
+          ? parsed.ikutiSistem
+          : PREFERENSI_DEFAULT.ikutiSistem,
     };
   } catch (err) {
     console.error("Gagal membaca preferensi pengguna dari storage:", err);
