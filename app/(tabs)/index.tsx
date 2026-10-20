@@ -1,8 +1,11 @@
 // app/(tabs)/index.tsx
-import { router, useFocusEffect } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
+  Modal,
+  Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -23,6 +26,7 @@ import { useDebounce } from "../../hooks/use-debounce";
 import {
   bersihkanCacheLama,
   daftarKotaTersimpan,
+  hapusCacheKota,
 } from "../../services/cacheRepository";
 import {
   ambilCuacaOfflineFirst,
@@ -66,10 +70,13 @@ export default function HalamanUtama() {
   const [sedangMemuatCuaca, setSedangMemuatCuaca] = useState(false);
   const [pesanErrorCuaca, setPesanErrorCuaca] = useState<string | null>(null);
 
-  // State daftar kota yang tersimpan di cache SQLite lokal
+  // State daftar kota yang tersimpan di cache SQLite lokal (maksimal 5 kota)
   const [kotaTersimpan, setKotaTersimpan] = useState<RingkasanKotaTersimpan[]>(
     [],
   );
+  const [targetHapusOffline, setTargetHapusOffline] =
+    useState<RingkasanKotaTersimpan | null>(null);
+  const [sedangMenghapusOffline, setSedangMenghapusOffline] = useState(false);
 
   // State status favorit kota aktif
   const [sudahFavorit, setSudahFavorit] = useState(false);
@@ -91,45 +98,52 @@ export default function HalamanUtama() {
     [],
   );
 
-  function geserOffline(arah: "kiri" | "kanan") {
-    const jarak = 220;
-    const node =
-      Platform.OS === "web"
-        ? (horizontalScrollRef.current as any)?.getScrollableNode?.() ||
-          (horizontalScrollRef.current as any)
-        : null;
-
-    if (node && typeof node.scrollBy === "function") {
-      node.scrollBy({
-        left: arah === "kanan" ? jarak : -jarak,
-        behavior: "smooth",
-      });
-      scrollPosisiOffline.current =
-        node.scrollLeft + (arah === "kanan" ? jarak : -jarak);
-    } else {
-      const targetX =
-        arah === "kanan"
-          ? scrollPosisiOffline.current + jarak
-          : Math.max(0, scrollPosisiOffline.current - jarak);
-      horizontalScrollRef.current?.scrollTo({ x: targetX, animated: true });
-      scrollPosisiOffline.current = targetX;
-    }
-  }
-
   async function muatKotaTersimpan() {
     try {
-      const daftar = await daftarKotaTersimpan();
-      setKotaTersimpan(daftar);
+      const daftar = await daftarKotaTersimpan(5);
+      setKotaTersimpan(daftar.slice(0, 5));
     } catch {
       // Abaikan jika database belum siap
     }
+  }
+
+  async function eksekusiHapusOffline() {
+    if (!targetHapusOffline) return;
+    const targetKunci = targetHapusOffline.kunci;
+    const targetNama = targetHapusOffline.nama;
+    setSedangMenghapusOffline(true);
+    try {
+      // 1. Optimistic update: langsung hapus HANYA kota yang dipilih dari tampilan
+      setKotaTersimpan((prev) =>
+        prev.filter(
+          (k) =>
+            k.kunci !== targetKunci &&
+            k.nama.toLowerCase() !== targetNama.toLowerCase()
+        )
+      );
+      // 2. Hapus spesifik kota ini dari SQLite berdasarkan kunci dan nama
+      await hapusCacheKota(targetKunci, targetNama);
+      // 3. Sinkronkan ulang daftar kota yang tersimpan
+      await muatKotaTersimpan();
+      setTargetHapusOffline(null);
+    } catch (err) {
+      console.error("Gagal menghapus cache offline:", err);
+      await muatKotaTersimpan();
+    } finally {
+      setSedangMenghapusOffline(false);
+    }
+  }
+
+  function batalkanHapusOffline() {
+    if (sedangMenghapusOffline) return;
+    setTargetHapusOffline(null);
   }
 
   // Saat aplikasi dibuka: buang cache > 7 hari, lalu tampilkan daftar tersimpan & muat kota default
   useEffect(() => {
     bersihkanCacheLama(BATAS_CACHE_MS)
       .then(muatKotaTersimpan)
-      .catch(() => {});
+      .catch(() => { });
     pilihKota(kotaAktif);
   }, []);
 
@@ -148,22 +162,45 @@ export default function HalamanUtama() {
   const [teksCari, setTeksCari] = useState("");
   const [hasilPencarian, setHasilPencarian] = useState<HasilGeocoding[]>([]);
   const [sedangMemuatGeocoding, setSedangMemuatGeocoding] = useState(false);
-  const [targetHapusOffline, setTargetHapusOffline] = useState<RingkasanKotaTersimpan | null>(null);
-  const [sedangMenghapusOffline, setSedangMenghapusOffline] = useState(false);
   const [pesanErrorGeocoding, setPesanErrorGeocoding] = useState<string | null>(
     null,
   );
 
   const teksTertunda = useDebounce(teksCari, 500);
   const requestIdRef = useRef(0); // pencegah race condition
+  const scrollViewRef = useRef<ScrollView>(null);
   const horizontalScrollRef = useRef<ScrollView>(null);
   const scrollPosisiOffline = useRef(0);
-  const scrollViewRef = useRef<ScrollView>(null);
-  const [posisiCuacaY, setPosisiCuacaY] = useState(0);
   const isDraggingOfflineRef = useRef(false);
   const dragStartXRef = useRef(0);
   const dragScrollLeftRef = useRef(0);
   const hasDraggedRef = useRef(false);
+  const [posisiCuacaY, setPosisiCuacaY] = useState(0);
+
+  function geserOffline(arah: "kiri" | "kanan") {
+    const jarak = 220;
+    const node =
+      Platform.OS === "web"
+        ? (horizontalScrollRef.current as any)?.getScrollableNode?.() ||
+        (horizontalScrollRef.current as any)
+        : null;
+
+    if (node && typeof node.scrollBy === "function") {
+      node.scrollBy({
+        left: arah === "kanan" ? jarak : -jarak,
+        behavior: "smooth",
+      });
+      scrollPosisiOffline.current =
+        node.scrollLeft + (arah === "kanan" ? jarak : -jarak);
+    } else {
+      const targetX =
+        arah === "kanan"
+          ? scrollPosisiOffline.current + jarak
+          : Math.max(0, scrollPosisiOffline.current - jarak);
+      horizontalScrollRef.current?.scrollTo({ x: targetX, animated: true });
+      scrollPosisiOffline.current = targetX;
+    }
+  }
 
   function scrollKeCuaca() {
     setTimeout(() => {
@@ -190,7 +227,6 @@ export default function HalamanUtama() {
     try {
       const data = await cariKota(nama);
       setHasilPencarian(data);
-      // Fallback pencarian offline SQLite jika tidak ada internet
     } catch (err) {
       // Jika offline, cari apakah nama kota yang diketik cocok dengan data yang sudah tersimpan di SQLite
       const cocokOffline = kotaTersimpan
@@ -232,13 +268,13 @@ export default function HalamanUtama() {
     kota:
       | HasilGeocoding
       | {
-          id: number;
-          name: string;
-          latitude: number;
-          longitude: number;
-          country?: string;
-          admin1?: string;
-        },
+        id: number;
+        name: string;
+        latitude: number;
+        longitude: number;
+        country?: string;
+        admin1?: string;
+      },
     paksaPerbarui = false,
   ) {
     // 1. Bersihkan pencarian
@@ -291,6 +327,32 @@ export default function HalamanUtama() {
       }
     }
   }
+
+  // Tangani parameter rute saat pengguna memilih kota dari tab Aktivitas / Riwayat
+  const params = useLocalSearchParams<{
+    kota?: string;
+    lat?: string;
+    lon?: string;
+    id?: string;
+    admin1?: string;
+  }>();
+
+  useEffect(() => {
+    if (params.kota && params.lat && params.lon) {
+      const lat = parseFloat(params.lat);
+      const lon = parseFloat(params.lon);
+      if (!isNaN(lat) && !isNaN(lon)) {
+        pilihKota({
+          id: params.id ? parseInt(params.id, 10) : -1,
+          name: String(params.kota),
+          latitude: lat,
+          longitude: lon,
+          admin1: params.admin1 ? String(params.admin1) : undefined,
+        });
+        scrollKeCuaca();
+      }
+    }
+  }, [params.kota, params.lat, params.lon, params.id, params.admin1]);
 
   // Fungsi mengambil lokasi perangkat saat ini dengan penanganan 3 kondisi izin
   async function gunakanLokasiSaatIni() {
@@ -486,7 +548,7 @@ export default function HalamanUtama() {
         {/* --- TAMPILAN UTAMA CUACA & CACHE OFFLINE --- */}
         {!sedangMencari && (
           <View style={styles.mainContainer}>
-            {/* Daftar Kota Tersimpan di SQLite (Bisa dibuka offline) */}
+            {/* Daftar Kota Tersimpan di SQLite (Bisa dibuka offline, Maksimal 5) */}
             {kotaTersimpan.length > 0 && (
               <View
                 style={[
@@ -504,13 +566,127 @@ export default function HalamanUtama() {
                       styles.kotaTersimpanHeaderTitle,
                       { color: theme.text },
                     ]}
+                    numberOfLines={1}
                   >
-                    Tersimpan offline di perangkat
+                    Tersimpan Offline
                   </Text>
+
+                  {/* Tombol Panah Navigasi Geser (Membantu di PC / Mouse) */}
+                  {kotaTersimpan.length > 1 && (
+                    <View style={styles.panahNavigasiRow}>
+                      <TouchableOpacity
+                        style={[
+                          styles.tombolPanahScroll,
+                          {
+                            backgroundColor: theme.cardSecondary,
+                            borderColor: theme.cardBorder,
+                          },
+                        ]}
+                        activeOpacity={0.7}
+                        onPress={() => geserOffline("kiri")}
+                        accessibilityRole="button"
+                        accessibilityLabel="Geser daftar ke kiri"
+                      >
+                        <Ionicons name="chevron-back" size={14} color={theme.text} />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={[
+                          styles.tombolPanahScroll,
+                          {
+                            backgroundColor: theme.cardSecondary,
+                            borderColor: theme.cardBorder,
+                          },
+                        ]}
+                        activeOpacity={0.7}
+                        onPress={() => geserOffline("kanan")}
+                        accessibilityRole="button"
+                        accessibilityLabel="Geser daftar ke kanan"
+                      >
+                        <Ionicons name="chevron-forward" size={14} color={theme.text} />
+                      </TouchableOpacity>
+                    </View>
+                  )}
+
+                  <View
+                    style={[
+                      styles.kotaTersimpanCountBadge,
+                      { backgroundColor: theme.badgeBg },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.kotaTersimpanCountBadgeText,
+                        { color: theme.badgeText },
+                      ]}
+                    >
+                      {kotaTersimpan.length}/5
+                    </Text>
+                  </View>
                 </View>
-                <View style={styles.kotaTersimpanList}>
-                  {kotaTersimpan.map((k) => (
-                    <TouchableOpacity
+                {/* List Horizontal yang bisa digeser ke kanan dan kiri (bisa pakai mouse wheel / tombol panah di PC) */}
+                <ScrollView
+                  ref={horizontalScrollRef}
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  onScroll={(e) => {
+                    scrollPosisiOffline.current = e.nativeEvent.contentOffset.x;
+                  }}
+                  scrollEventThrottle={16}
+                  contentContainerStyle={styles.kotaTersimpanHorizontalList}
+                  {...(Platform.OS === "web"
+                    ? {
+                      onWheel: (e: any) => {
+                        if (e.deltaY !== 0 || e.deltaX !== 0) {
+                          const node =
+                            (horizontalScrollRef.current as any)?.getScrollableNode?.() ||
+                            (horizontalScrollRef.current as any);
+                          if (node) {
+                            node.scrollLeft += e.deltaY !== 0 ? e.deltaY : e.deltaX;
+                            scrollPosisiOffline.current = node.scrollLeft;
+                          }
+                        }
+                      },
+                      onMouseDown: (e: any) => {
+                        isDraggingOfflineRef.current = true;
+                        hasDraggedRef.current = false;
+                        dragStartXRef.current = e.pageX;
+                        const node =
+                          (horizontalScrollRef.current as any)?.getScrollableNode?.() ||
+                          (horizontalScrollRef.current as any);
+                        dragScrollLeftRef.current =
+                          node?.scrollLeft || scrollPosisiOffline.current;
+                      },
+                      onMouseMove: (e: any) => {
+                        if (!isDraggingOfflineRef.current) return;
+                        const delta = e.pageX - dragStartXRef.current;
+                        if (Math.abs(delta) > 5) {
+                          hasDraggedRef.current = true;
+                        }
+                        const node =
+                          (horizontalScrollRef.current as any)?.getScrollableNode?.() ||
+                          (horizontalScrollRef.current as any);
+                        if (node) {
+                          node.scrollLeft = dragScrollLeftRef.current - delta;
+                          scrollPosisiOffline.current = node.scrollLeft;
+                        }
+                      },
+                      onMouseUp: () => {
+                        isDraggingOfflineRef.current = false;
+                        setTimeout(() => {
+                          hasDraggedRef.current = false;
+                        }, 50);
+                      },
+                      onMouseLeave: () => {
+                        isDraggingOfflineRef.current = false;
+                      },
+                      style: {
+                        cursor: "grab",
+                      } as any,
+                    }
+                    : {})}
+                >
+                  {kotaTersimpan.slice(0, 5).map((k) => (
+                    <View
                       key={k.kunci}
                       style={[
                         styles.kotaTersimpanItem,
@@ -519,47 +695,80 @@ export default function HalamanUtama() {
                           borderColor: theme.cardBorder,
                         },
                       ]}
-                      activeOpacity={0.7}
-                      onPress={() => {
-                        pilihKota({
-                          id: k.id,
-                          name: k.nama,
-                          latitude: k.latitude,
-                          longitude: k.longitude,
-                          country: "",
-                        });
-                        scrollKeCuaca();
-                      }}
                     >
-                      <View style={styles.kotaTersimpanItemLeft}>
-                        <Ionicons name="location-outline" size={16} color={theme.textMuted} />
+                      <TouchableOpacity
+                        style={styles.kotaTersimpanItemLeft}
+                        activeOpacity={0.7}
+                        onPress={() => {
+                          if (hasDraggedRef.current) return;
+                          pilihKota({
+                            id: k.id,
+                            name: k.nama,
+                            latitude: k.latitude,
+                            longitude: k.longitude,
+                            country: "",
+                          });
+                          scrollKeCuaca();
+                        }}
+                      >
+                        <Ionicons name="location-outline" size={15} color={theme.primary} />
                         <Text
                           style={[
                             styles.kotaTersimpanItemNama,
                             { color: theme.text },
                           ]}
+                          numberOfLines={1}
                         >
                           {k.nama}
                         </Text>
-                      </View>
-                      <View
-                        style={[
-                          styles.kotaTersimpanBadge,
-                          { backgroundColor: theme.badgeBg },
-                        ]}
-                      >
-                        <Text
+                      </TouchableOpacity>
+
+                      <View style={styles.kotaTersimpanAksiRow}>
+                        <TouchableOpacity
                           style={[
-                            styles.kotaTersimpanBadgeText,
-                            { color: theme.badgeText },
+                            styles.kotaTersimpanBadge,
+                            { backgroundColor: theme.badgeBg },
                           ]}
+                          activeOpacity={0.7}
+                          onPress={() => {
+                            if (hasDraggedRef.current) return;
+                            pilihKota({
+                              id: k.id,
+                              name: k.nama,
+                              latitude: k.latitude,
+                              longitude: k.longitude,
+                              country: "",
+                            });
+                            scrollKeCuaca();
+                          }}
                         >
-                          Buka Offline →
-                        </Text>
+                          <Text
+                            style={[
+                              styles.kotaTersimpanBadgeText,
+                              { color: theme.badgeText },
+                            ]}
+                          >
+                            Buka Offline
+                          </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          style={styles.tombolHapusOffline}
+                          activeOpacity={0.6}
+                          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                          onPress={() => {
+                            if (hasDraggedRef.current) return;
+                            setTargetHapusOffline(k);
+                          }}
+                          accessibilityRole="button"
+                          accessibilityLabel={`Hapus cache offline ${k.nama}`}
+                        >
+                          <Ionicons name="trash-outline" size={16} color="#ef4444" />
+                        </TouchableOpacity>
                       </View>
-                    </TouchableOpacity>
+                    </View>
                   ))}
-                </View>
+                </ScrollView>
               </View>
             )}
 
@@ -613,16 +822,10 @@ export default function HalamanUtama() {
                 </View>
               )}
 
-              {/* Tampilan Cuaca Lengkap: StatusData, WeatherCard, Perbarui, Tambah Favorit */}
+              {/* Tampilan Cuaca Lengkap: WeatherCard (Terpadu Status Data Minimalis), Perbarui, Tambah Favorit */}
               {hasil && kotaAktif && !sedangMemuatCuaca && (
                 <View style={styles.cuacaContainer}>
-                  {/* 1. Indikator Status Data (Online/Cache Segar/Cache Basi + Waktu) */}
-                  <StatusData
-                    sumber={hasil.sumber}
-                    disimpanPada={hasil.disimpanPada}
-                  />
-
-                  {/* 2. Kartu Cuaca Interaktif */}
+                  {/* Kartu Cuaca Interaktif (Status Data Terpadu Minimalis di dalam Card) */}
                   <TouchableOpacity
                     activeOpacity={0.85}
                     onPress={() =>
@@ -647,6 +850,8 @@ export default function HalamanUtama() {
                       kodeCuaca={hasil.cuaca.saatIni.kodeCuaca}
                       kondisi={labelKodeCuaca(hasil.cuaca.saatIni.kodeCuaca)}
                       tampilkanDetail={false}
+                      sumberData={hasil.sumber}
+                      disimpanPada={hasil.disimpanPada}
                     />
                   </TouchableOpacity>
 
@@ -722,6 +927,118 @@ export default function HalamanUtama() {
           </View>
         )}
       </ScrollView>
+
+      {/* Modal Konfirmasi Hapus Cache Offline (Index) */}
+      <Modal
+        visible={targetHapusOffline !== null}
+        transparent
+        animationType="fade"
+        onRequestClose={batalkanHapusOffline}
+      >
+        <View style={styles.modalOverlay}>
+          <Pressable
+            style={styles.modalBackdropPressable}
+            onPress={batalkanHapusOffline}
+            accessibilityLabel="Tutup dialog konfirmasi"
+          />
+          <View
+            style={[
+              styles.modalContent,
+              {
+                backgroundColor: theme.card,
+                borderColor: theme.cardBorder,
+              },
+            ]}
+            accessibilityRole="alert"
+            accessibilityLiveRegion="assertive"
+          >
+            <View
+              style={[
+                styles.modalIconContainer,
+                { backgroundColor: theme.tombolHapusBg },
+              ]}
+            >
+              <Ionicons name="trash-outline" size={28} color="#ef4444" />
+            </View>
+
+            <Text style={[styles.modalJudul, { color: theme.text }]}>
+              Hapus Cache Offline?
+            </Text>
+            <Text
+              style={[styles.modalKeterangan, { color: theme.textSecondary }]}
+            >
+              Apakah Anda yakin ingin menghapus data cuaca offline untuk kota ini dari perangkat?
+            </Text>
+
+            {targetHapusOffline && (
+              <View
+                style={[
+                  styles.modalPreviewCard,
+                  {
+                    backgroundColor: theme.cardSecondary,
+                    borderColor: theme.cardBorder,
+                  },
+                ]}
+              >
+                <View style={styles.modalPreviewIconWrapper}>
+                  <Ionicons
+                    name="cloud-offline-outline"
+                    size={16}
+                    color="#2563eb"
+                  />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.modalPreviewNama, { color: theme.text }]}>
+                    {targetHapusOffline.nama}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.modalPreviewKoordinat,
+                      { color: theme.textSecondary },
+                    ]}
+                  >
+                    {targetHapusOffline.latitude.toFixed(2)}°,{" "}
+                    {targetHapusOffline.longitude.toFixed(2)}°
+                  </Text>
+                </View>
+              </View>
+            )}
+
+            <View style={styles.modalButtonGroup}>
+              <TouchableOpacity
+                style={[
+                  styles.modalBatalButton,
+                  { backgroundColor: theme.cardSecondary },
+                ]}
+                onPress={batalkanHapusOffline}
+                disabled={sedangMenghapusOffline}
+                activeOpacity={0.7}
+                accessibilityRole="button"
+                accessibilityLabel="Batal menghapus cache offline"
+              >
+                <Text style={[styles.modalBatalButtonText, { color: theme.text }]}>
+                  Batal
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.modalHapusButton}
+                onPress={eksekusiHapusOffline}
+                disabled={sedangMenghapusOffline}
+                activeOpacity={0.8}
+                accessibilityRole="button"
+                accessibilityLabel="Konfirmasi hapus cache offline"
+              >
+                {sedangMenghapusOffline ? (
+                  <ActivityIndicator color="#ffffff" size="small" />
+                ) : (
+                  <Text style={styles.modalHapusButtonText}>Ya, Hapus</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -813,7 +1130,6 @@ const styles = StyleSheet.create({
   mainContainer: {
     gap: 16,
   },
-  // Carousel horizontal kota tersimpan offline
   kotaTersimpanCard: {
     backgroundColor: "#ffffff",
     padding: 14,
@@ -840,25 +1156,64 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "700",
     color: "#1e293b",
+    flex: 1,
   },
-  kotaTersimpanList: {
+  kotaTersimpanCountBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 10,
+  },
+  kotaTersimpanCountBadgeText: {
+    fontSize: 11,
+    fontWeight: "700",
+  },
+  panahNavigasiRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginRight: 6,
+  },
+  tombolPanahScroll: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  kotaTersimpanHorizontalList: {
+    flexDirection: "row",
+    alignItems: "center",
     gap: 8,
+    paddingRight: 6,
   },
   kotaTersimpanItem: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     backgroundColor: "#f8fafc",
-    paddingVertical: 10,
+    paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: "#e2e8f0",
+    gap: 8,
+    flexShrink: 0,
   },
   kotaTersimpanItemLeft: {
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
+    flex: 1,
+  },
+  kotaTersimpanAksiRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  tombolHapusOffline: {
+    padding: 6,
+    justifyContent: "center",
+    alignItems: "center",
   },
   kotaTersimpanItemPin: {
     fontSize: 14,
@@ -871,8 +1226,10 @@ const styles = StyleSheet.create({
   kotaTersimpanBadge: {
     backgroundColor: "#eff6ff",
     paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingVertical: 5,
     borderRadius: 6,
+    flexDirection: "row",
+    alignItems: "center",
   },
   kotaTersimpanBadgeText: {
     fontSize: 11,
@@ -1025,5 +1382,118 @@ const styles = StyleSheet.create({
   },
   tombolFavoritTextDisabled: {
     color: "#64748b",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(15, 23, 42, 0.6)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  modalBackdropPressable: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  modalContent: {
+    width: "100%",
+    maxWidth: 380,
+    borderRadius: 24,
+    padding: 24,
+    alignItems: "center",
+    borderWidth: 1,
+    shadowColor: "#0f172a",
+    shadowOffset: { width: 0, height: 16 },
+    shadowOpacity: 0.16,
+    shadowRadius: 24,
+    elevation: 8,
+  },
+  modalIconContainer: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: "#fee2e2",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  modalIcon: {
+    fontSize: 28,
+  },
+  modalJudul: {
+    fontSize: 19,
+    fontWeight: "800",
+    marginBottom: 8,
+    textAlign: "center",
+    letterSpacing: 0.2,
+  },
+  modalKeterangan: {
+    fontSize: 14,
+    textAlign: "center",
+    lineHeight: 20,
+    marginBottom: 16,
+  },
+  modalPreviewCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderRadius: 14,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    width: "100%",
+    gap: 12,
+    marginBottom: 20,
+  },
+  modalPreviewIconWrapper: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    backgroundColor: "#eff6ff",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalPreviewNama: {
+    fontSize: 15,
+    fontWeight: "700",
+  },
+  modalPreviewKoordinat: {
+    fontSize: 12,
+    marginTop: 2,
+  },
+  modalButtonGroup: {
+    flexDirection: "row",
+    gap: 12,
+    width: "100%",
+  },
+  modalBatalButton: {
+    flex: 1,
+    paddingVertical: 13,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  modalBatalButtonText: {
+    fontSize: 14,
+    fontWeight: "700",
+  },
+  modalHapusButton: {
+    flex: 1,
+    backgroundColor: "#dc2626",
+    paddingVertical: 13,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#dc2626",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  modalHapusButtonText: {
+    color: "#ffffff",
+    fontSize: 14,
+    fontWeight: "700",
   },
 });
