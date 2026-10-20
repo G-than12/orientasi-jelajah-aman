@@ -50,7 +50,10 @@ class WebSQLiteDatabase {
         rows.sort((a, b) => b.disimpan_pada - a.disimpan_pada);
       }
 
-      if (q.includes("LIMIT 5")) {
+      const matchLimit = q.match(/LIMIT\s+(\d+)/);
+      if (matchLimit) {
+        rows = rows.slice(0, parseInt(matchLimit[1], 10));
+      } else if (q.includes("LIMIT 5")) {
         rows = rows.slice(0, 5);
       }
 
@@ -103,7 +106,53 @@ class WebSQLiteDatabase {
       return { lastInsertRowId: 1, changes: 1 };
     }
 
-    if (q.startsWith("DELETE FROM CACHE_CUACA WHERE DISIMPAN_PADA <")) {
+    // Hapus satu kota spesifik berdasarkan kunci dan/atau nama kota
+    if (
+      q.includes("WHERE KUNCI = ? OR LOWER(NAMA_KOTA) = LOWER(?)") ||
+      (q.includes("WHERE KUNCI =") && q.includes("LOWER(NAMA_KOTA)"))
+    ) {
+      const [kunci, namaKota] = params;
+      const raw = await AsyncStorage.getItem(STORAGE_KEY_CACHE);
+      if (raw) {
+        const rows: BarisCacheWeb[] = JSON.parse(raw);
+        const targetKunci = String(kunci || "").trim();
+        const targetNama = String(namaKota || "").trim().toLowerCase();
+        const filtered = rows.filter((r) => {
+          const matchKunci = targetKunci && r.kunci === targetKunci;
+          const matchNama = targetNama && r.nama_kota.toLowerCase() === targetNama;
+          return !(matchKunci || matchNama);
+        });
+        await AsyncStorage.setItem(STORAGE_KEY_CACHE, JSON.stringify(filtered));
+      }
+      return { lastInsertRowId: 0, changes: 1 };
+    }
+
+    if (q.includes("WHERE KUNCI =")) {
+      const [kunci] = params;
+      const raw = await AsyncStorage.getItem(STORAGE_KEY_CACHE);
+      if (raw) {
+        const rows: BarisCacheWeb[] = JSON.parse(raw);
+        const targetKunci = String(kunci || "").trim();
+        const filtered = rows.filter((r) => r.kunci !== targetKunci);
+        await AsyncStorage.setItem(STORAGE_KEY_CACHE, JSON.stringify(filtered));
+      }
+      return { lastInsertRowId: 0, changes: 1 };
+    }
+
+    if (q.includes("WHERE LOWER(NAMA_KOTA) =")) {
+      const [namaKota] = params;
+      const raw = await AsyncStorage.getItem(STORAGE_KEY_CACHE);
+      if (raw) {
+        const rows: BarisCacheWeb[] = JSON.parse(raw);
+        const targetNama = String(namaKota || "").trim().toLowerCase();
+        const filtered = rows.filter((r) => r.nama_kota.toLowerCase() !== targetNama);
+        await AsyncStorage.setItem(STORAGE_KEY_CACHE, JSON.stringify(filtered));
+      }
+      return { lastInsertRowId: 0, changes: 1 };
+    }
+
+    // Invalidation otomatis: bersihkan data lebih tua dari batas waktu
+    if (q.includes("WHERE DISIMPAN_PADA <")) {
       const batasWaktu = params[0];
       const raw = await AsyncStorage.getItem(STORAGE_KEY_CACHE);
       if (raw) {
@@ -114,10 +163,8 @@ class WebSQLiteDatabase {
       return { lastInsertRowId: 0, changes: 1 };
     }
 
-    if (
-      q === "DELETE FROM CACHE_CUACA" ||
-      q.startsWith("DELETE FROM CACHE_CUACA")
-    ) {
+    // Invalidation manual: hanya hapus seluruh cache jika query tepat "DELETE FROM CACHE_CUACA" (tanpa WHERE)
+    if (q === "DELETE FROM CACHE_CUACA") {
       await AsyncStorage.removeItem(STORAGE_KEY_CACHE);
       return { lastInsertRowId: 0, changes: 1 };
     }
