@@ -550,3 +550,5 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
 });
+
+// style(riwayat): sesuaikan tata letak kartu aktivitas dan chip koordinat
