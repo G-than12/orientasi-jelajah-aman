@@ -2,10 +2,12 @@
 import { View, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { SumberData } from "../types/cache";
+import { usePengaturan } from "../../contexts/PengaturanContext";
 
 interface StatusDataProps {
   sumber: SumberData;
   disimpanPada: number;
+  variant?: "default" | "minimalis";
 }
 
 export function formatUmur(disimpanPada: number): string {
@@ -19,11 +21,22 @@ export function formatUmur(disimpanPada: number): string {
 
 export function labelSumber(sumber: SumberData): string {
   if (sumber === "jaringan") return "Data terbaru dari internet";
-  if (sumber === "cache-segar") return "Data tersimpan (masih segar)";
-  return "Mode offline - data tersimpan mungkin sudah usang";
+  if (sumber === "cache-segar") return "Data tersimpan di perangkat";
+  return "Mode offline (data tersimpan)";
 }
 
-export default function StatusData({ sumber, disimpanPada }: StatusDataProps) {
+export function labelSumberMinimalis(sumber: SumberData): string {
+  if (sumber === "jaringan") return "Online";
+  if (sumber === "cache-segar") return "Tersimpan";
+  return "Offline";
+}
+
+export default function StatusData({
+  sumber,
+  disimpanPada,
+  variant = "default",
+}: StatusDataProps) {
+  const { darkMode } = usePengaturan();
   const basi = sumber === "cache-basi";
   const segar = sumber === "cache-segar";
   const label = labelSumber(sumber);
@@ -32,32 +45,72 @@ export default function StatusData({ sumber, disimpanPada }: StatusDataProps) {
   const getTheme = () => {
     if (basi) {
       return {
-        bg: "#fef3c7",
-        border: "#fde68a",
-        text: "#b45309",
-        subtext: "#92400e",
+        bg: darkMode ? "#451a03" : "#fef3c7",
+        border: darkMode ? "#78350f" : "#fde68a",
+        text: darkMode ? "#fcd34d" : "#b45309",
+        subtext: darkMode ? "#fef3c7" : "#92400e",
         iconName: "alert-circle-outline" as const,
       };
     }
     if (segar) {
       return {
-        bg: "#ecfdf5",
-        border: "#a7f3d0",
-        text: "#065f46",
-        subtext: "#047857",
+        bg: darkMode ? "#064e3b" : "#ecfdf5",
+        border: darkMode ? "#047857" : "#a7f3d0",
+        text: darkMode ? "#6ee7b7" : "#065f46",
+        subtext: darkMode ? "#a7f3d0" : "#047857",
         iconName: "flash-outline" as const,
       };
     }
     return {
-      bg: "#eff6ff",
-      border: "#bfdbfe",
-      text: "#1e40af",
-      subtext: "#2563eb",
+      bg: darkMode ? "#1e3a8a" : "#eff6ff",
+      border: darkMode ? "#2563eb" : "#bfdbfe",
+      text: darkMode ? "#93c5fd" : "#1e40af",
+      subtext: darkMode ? "#bfdbfe" : "#2563eb",
       iconName: "globe-outline" as const,
     };
   };
 
   const theme = getTheme();
+
+  if (variant === "minimalis") {
+    return (
+      <View
+        accessible
+        accessibilityLabel={label + ", diperbarui " + umur}
+        style={[
+          styles.minimalisContainer,
+          {
+            borderBottomColor: darkMode
+              ? "rgba(255, 255, 255, 0.08)"
+              : "rgba(148, 163, 184, 0.15)",
+          },
+        ]}
+      >
+        <View
+          style={[
+            styles.minimalisBadge,
+            {
+              backgroundColor: theme.bg,
+              borderColor: theme.border,
+            },
+          ]}
+        >
+          <Ionicons name={theme.iconName} size={11} color={theme.text} />
+          <Text style={[styles.minimalisBadgeText, { color: theme.text }]}>
+            {labelSumberMinimalis(sumber)}
+          </Text>
+        </View>
+        <Text
+          style={[
+            styles.minimalisUmur,
+            { color: darkMode ? "#94a3b8" : "#64748b" },
+          ]}
+        >
+          Diperbarui {umur}
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View
@@ -106,6 +159,33 @@ const styles = StyleSheet.create({
   umur: {
     fontSize: 11,
     marginTop: 2,
+    fontWeight: "500",
+  },
+  minimalisContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    paddingBottom: 8,
+    marginBottom: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(148, 163, 184, 0.15)",
+  },
+  minimalisBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+    borderRadius: 6,
+    borderWidth: 1,
+    gap: 4,
+  },
+  minimalisBadgeText: {
+    fontSize: 11,
+    fontWeight: "700",
+  },
+  minimalisUmur: {
+    fontSize: 11,
     fontWeight: "500",
   },
 });
