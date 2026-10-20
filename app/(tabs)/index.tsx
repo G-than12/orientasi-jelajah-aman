@@ -148,6 +148,8 @@ export default function HalamanUtama() {
   const [teksCari, setTeksCari] = useState("");
   const [hasilPencarian, setHasilPencarian] = useState<HasilGeocoding[]>([]);
   const [sedangMemuatGeocoding, setSedangMemuatGeocoding] = useState(false);
+  const [targetHapusOffline, setTargetHapusOffline] = useState<RingkasanKotaTersimpan | null>(null);
+  const [sedangMenghapusOffline, setSedangMenghapusOffline] = useState(false);
   const [pesanErrorGeocoding, setPesanErrorGeocoding] = useState<string | null>(
     null,
   );
