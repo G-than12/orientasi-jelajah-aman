@@ -190,6 +190,7 @@ export default function HalamanUtama() {
     try {
       const data = await cariKota(nama);
       setHasilPencarian(data);
+      // Fallback pencarian offline SQLite jika tidak ada internet
     } catch (err) {
       // Jika offline, cari apakah nama kota yang diketik cocok dengan data yang sudah tersimpan di SQLite
       const cocokOffline = kotaTersimpan
