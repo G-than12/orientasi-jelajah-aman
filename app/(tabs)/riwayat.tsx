@@ -16,12 +16,16 @@ import { spacing } from "../../constants/styles";
 import { ambilSemuaFavorit, hapusFavorit } from "../../services/favoritStorage";
 import { KotaFavorit } from "../../types/favorit";
 import { usePengaturan } from "../../contexts/PengaturanContext";
+import { useRiwayat } from "../../contexts/RiwayatContext";
 
 export default function TabRiwayat() {
   const { theme } = usePengaturan();
   const [daftarFavorit, setDaftarFavorit] = useState<KotaFavorit[]>([]);
   const [targetHapus, setTargetHapus] = useState<KotaFavorit | null>(null);
   const [sedangMenghapus, setSedangMenghapus] = useState(false);
+  const { riwayat, hapusRiwayat, hapusSemuaRiwayat } = useRiwayat();
+  const [filterAktif, setFilterAktif] = useState<"semua" | "favorit" | "riwayat">("semua");
+  const [cariTeks, setCariTeks] = useState("");
 
   useFocusEffect(
     useCallback(() => {
