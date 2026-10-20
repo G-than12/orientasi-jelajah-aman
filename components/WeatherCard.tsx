@@ -4,6 +4,7 @@ import { WeatherCardProps } from "../types/cuaca";
 import { typeScale, spacing } from "../constants/styles";
 import { infoCuaca } from "../constants/weatherCodes";
 import { usePengaturan } from "../contexts/PengaturanContext";
+import { formatUmur } from "./StatusData";
 
 const getTemaAQI = (tingkat: string) => {
   switch (tingkat) {
@@ -32,6 +33,8 @@ export default function WeatherCard({
   pm10,
   tampilkanDetail = true,
   celcius: celciusProp,
+  sumberData,
+  disimpanPada,
 }: WeatherCardProps) {
   const { celcius: celciusGlobal, konversiSuhu, theme } = usePengaturan();
   const celciusAktif = celciusProp !== undefined ? celciusProp : celciusGlobal;
@@ -69,6 +72,32 @@ export default function WeatherCard({
       pm25 !== undefined ||
       pm10 !== undefined);
 
+  const getStatusInfo = () => {
+    if (!sumberData || disimpanPada === undefined) return null;
+    const umur = formatUmur(disimpanPada);
+    if (sumberData === "jaringan") {
+      return {
+        label: "Online",
+        umur,
+        dotColor: "#10b981",
+      };
+    }
+    if (sumberData === "cache-segar") {
+      return {
+        label: "Tersimpan",
+        umur,
+        dotColor: "#0284c7",
+      };
+    }
+    return {
+      label: "Offline",
+      umur,
+      dotColor: "#f59e0b",
+    };
+  };
+
+  const statusInfo = getStatusInfo();
+
   return (
     <View
       accessible
@@ -81,7 +110,7 @@ export default function WeatherCard({
         },
       ]}
     >
-      {/* 1. Header: Nama Kota, Kondisi Cuaca & Badge AQI */}
+      {/* 1. Header Bersih: Nama Kota, Kondisi Cuaca & Badge AQI */}
       <View style={styles.header}>
         <View style={styles.kotaWrapper}>
           <Text style={[styles.kota, { color: theme.text }]}>{kota}</Text>
@@ -114,15 +143,6 @@ export default function WeatherCard({
           </Text>
         </View>
       </View>
-
-      {/* 3. Footer Petunjuk untuk Tampilan Ringkas di Beranda */}
-      {!tampilkanDetail && (
-        <View style={[styles.ringkasFooter, { borderTopColor: theme.divider }]}>
-          <Text style={[styles.ringkasFooterText, { color: theme.primary }]}>
-            Ketuk untuk melihat detail cuaca →
-          </Text>
-        </View>
-      )}
 
       {/* 4. Informasi Lingkungan Terpadu & Simetris (Grid 2x2) untuk Tampilan Detail */}
       {adaInfoTambahan && (
@@ -226,6 +246,41 @@ export default function WeatherCard({
           )}
         </View>
       )}
+
+      {/* 4. Footer Kartu Cuaca: Status Data Terpadu & Link Detail Minimalis */}
+      {(statusInfo || !tampilkanDetail) && (
+        <View style={[styles.cardFooter, { borderTopColor: theme.divider }]}>
+          {statusInfo ? (
+            <View style={styles.statusFooterLeft}>
+              <View
+                style={[
+                  styles.statusDot,
+                  { backgroundColor: statusInfo.dotColor },
+                ]}
+              />
+              <Text
+                style={[
+                  styles.statusFooterText,
+                  { color: theme.textSecondary },
+                ]}
+              >
+                {statusInfo.label} • {statusInfo.umur}
+              </Text>
+            </View>
+          ) : (
+            <View style={{ flex: 1 }} />
+          )}
+
+          {!tampilkanDetail && (
+            <View style={styles.detailLinkWrapper}>
+              <Text style={[styles.detailLinkText, { color: theme.primary }]}>
+                Lihat Detail
+              </Text>
+              <Ionicons name="chevron-forward" size={13} color={theme.primary} />
+            </View>
+          )}
+        </View>
+      )}
     </View>
   );
 }
@@ -247,14 +302,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    marginBottom: spacing.sedang,
+    marginBottom: 10,
   },
   kotaWrapper: {
     flex: 1,
     marginRight: 8,
   },
   kota: {
-    fontSize: typeScale.judul,
+    fontSize: 22,
     fontWeight: "700",
     color: "#0f172a",
   },
@@ -266,34 +321,36 @@ const styles = StyleSheet.create({
   },
   kondisiText: {
     fontSize: 13,
-    fontWeight: "600",
+    fontWeight: "500",
     color: "#64748b",
   },
   badge: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
     borderRadius: 20,
     alignSelf: "flex-start",
   },
   badgeText: {
-    fontSize: typeScale.keterangan,
+    fontSize: 12,
     fontWeight: "700",
   },
   content: {
     flexDirection: "row",
     alignItems: "baseline",
     gap: 8,
+    marginVertical: 4,
   },
   suhu: {
-    fontSize: 46,
+    fontSize: 44,
     fontWeight: "800",
     color: "#1e293b",
+    letterSpacing: -1,
   },
   satuanContainer: {
     justifyContent: "center",
   },
   satuan: {
-    fontSize: typeScale.subjudul,
+    fontSize: 15,
     color: "#64748b",
     fontWeight: "600",
   },
@@ -303,16 +360,38 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     marginTop: 2,
   },
-  ringkasFooter: {
+  cardFooter: {
     marginTop: 14,
     paddingTop: 10,
     borderTopWidth: 1,
-    borderTopColor: "#f1f5f9",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
-  ringkasFooterText: {
+  statusFooterLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    flexShrink: 1,
+  },
+  statusDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+  },
+  statusFooterText: {
+    fontSize: 12,
+    fontWeight: "500",
+  },
+  detailLinkWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 2,
+    marginLeft: 8,
+  },
+  detailLinkText: {
     fontSize: 12,
     fontWeight: "600",
-    color: "#2563eb",
   },
   infoTambahanContainer: {
     marginTop: 4,
