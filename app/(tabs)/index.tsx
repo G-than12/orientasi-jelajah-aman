@@ -91,6 +91,31 @@ export default function HalamanUtama() {
     [],
   );
 
+  function geserOffline(arah: "kiri" | "kanan") {
+    const jarak = 220;
+    const node =
+      Platform.OS === "web"
+        ? (horizontalScrollRef.current as any)?.getScrollableNode?.() ||
+          (horizontalScrollRef.current as any)
+        : null;
+
+    if (node && typeof node.scrollBy === "function") {
+      node.scrollBy({
+        left: arah === "kanan" ? jarak : -jarak,
+        behavior: "smooth",
+      });
+      scrollPosisiOffline.current =
+        node.scrollLeft + (arah === "kanan" ? jarak : -jarak);
+    } else {
+      const targetX =
+        arah === "kanan"
+          ? scrollPosisiOffline.current + jarak
+          : Math.max(0, scrollPosisiOffline.current - jarak);
+      horizontalScrollRef.current?.scrollTo({ x: targetX, animated: true });
+      scrollPosisiOffline.current = targetX;
+    }
+  }
+
   async function muatKotaTersimpan() {
     try {
       const daftar = await daftarKotaTersimpan();
