@@ -66,11 +66,12 @@ export async function ambilCache(
   };
 }
 
-export async function daftarKotaTersimpan(): Promise<RingkasanKotaTersimpan[]> {
+export async function daftarKotaTersimpan(limit: number = 5): Promise<RingkasanKotaTersimpan[]> {
   const db = await ambilDatabase();
+  const limitInt = Math.max(1, Math.min(20, Math.floor(Number(limit) || 5)));
   const semua = await db.getAllAsync<BarisRingkasan>(
     `SELECT kunci, kota_id, nama_kota, latitude, longitude, disimpan_pada
-    FROM cache_cuaca ORDER BY disimpan_pada DESC LIMIT 5`
+    FROM cache_cuaca ORDER BY disimpan_pada DESC LIMIT ${limitInt}`
   );
   return semua.map((b) => ({
     kunci: b.kunci,
@@ -87,6 +88,32 @@ export async function bersihkanCacheLama(batasUmurMs: number): Promise<void> {
   const db = await ambilDatabase();
   await db.runAsync("DELETE FROM cache_cuaca WHERE disimpan_pada < ?", [
     Date.now() - batasUmurMs,
+  ]);
+}
+
+// Invalidation manual: hapus cache satu kota tertentu berdasarkan kunci dan/atau nama
+export async function hapusCacheKota(kunci: string, namaKota?: string): Promise<void> {
+  const db = await ambilDatabase();
+  if (kunci && namaKota) {
+    await db.runAsync(
+      "DELETE FROM cache_cuaca WHERE kunci = ? OR LOWER(nama_kota) = LOWER(?)",
+      [kunci, namaKota.trim()]
+    );
+  } else if (kunci) {
+    await db.runAsync("DELETE FROM cache_cuaca WHERE kunci = ?", [kunci]);
+  } else if (namaKota) {
+    await db.runAsync(
+      "DELETE FROM cache_cuaca WHERE LOWER(nama_kota) = LOWER(?)",
+      [namaKota.trim()]
+    );
+  }
+}
+
+// Invalidation manual: hapus cache satu kota tertentu berdasarkan nama
+export async function hapusCacheKotaByNama(namaKota: string): Promise<void> {
+  const db = await ambilDatabase();
+  await db.runAsync("DELETE FROM cache_cuaca WHERE LOWER(nama_kota) = LOWER(?)", [
+    namaKota.trim(),
   ]);
 }
 
