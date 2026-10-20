@@ -133,6 +133,10 @@ export default function HalamanUtama() {
   const scrollPosisiOffline = useRef(0);
   const scrollViewRef = useRef<ScrollView>(null);
   const [posisiCuacaY, setPosisiCuacaY] = useState(0);
+  const isDraggingOfflineRef = useRef(false);
+  const dragStartXRef = useRef(0);
+  const dragScrollLeftRef = useRef(0);
+  const hasDraggedRef = useRef(false);
 
   function scrollKeCuaca() {
     setTimeout(() => {
