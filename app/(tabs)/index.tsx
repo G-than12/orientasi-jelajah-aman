@@ -813,6 +813,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     gap: 16,
   },
+  // Carousel horizontal kota tersimpan offline
   kotaTersimpanCard: {
     backgroundColor: "#ffffff",
     padding: 14,
