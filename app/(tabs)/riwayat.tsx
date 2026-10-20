@@ -17,6 +17,7 @@ import { ambilSemuaFavorit, hapusFavorit } from "../../services/favoritStorage";
 import { KotaFavorit } from "../../types/favorit";
 import { usePengaturan } from "../../contexts/PengaturanContext";
 import { useRiwayat } from "../../contexts/RiwayatContext";
+import { useRiwayat } from "../../contexts/RiwayatContext";
 
 // Tab Aktivitas Pengguna (Favorit & Riwayat Pencarian)
 export default function TabRiwayat() {
@@ -25,6 +26,9 @@ export default function TabRiwayat() {
   const [targetHapus, setTargetHapus] = useState<any | null>(null);
   const [targetHapusSemua, setTargetHapusSemua] = useState(false);
   const [sedangMenghapus, setSedangMenghapus] = useState(false);
+  const { riwayat, hapusRiwayat, hapusSemuaRiwayat } = useRiwayat();
+  const [filterAktif, setFilterAktif] = useState<"semua" | "favorit" | "riwayat">("semua");
+  const [cariTeks, setCariTeks] = useState("");
   const { riwayat, hapusRiwayat, hapusSemuaRiwayat } = useRiwayat();
   const [filterAktif, setFilterAktif] = useState<"semua" | "favorit" | "riwayat">("semua");
   const [cariTeks, setCariTeks] = useState("");
