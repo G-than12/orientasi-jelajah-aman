@@ -21,7 +21,8 @@ import { useRiwayat } from "../../contexts/RiwayatContext";
 export default function TabRiwayat() {
   const { theme } = usePengaturan();
   const [daftarFavorit, setDaftarFavorit] = useState<KotaFavorit[]>([]);
-  const [targetHapus, setTargetHapus] = useState<KotaFavorit | null>(null);
+  const [targetHapus, setTargetHapus] = useState<any | null>(null);
+  const [targetHapusSemua, setTargetHapusSemua] = useState(false);
   const [sedangMenghapus, setSedangMenghapus] = useState(false);
   const { riwayat, hapusRiwayat, hapusSemuaRiwayat } = useRiwayat();
   const [filterAktif, setFilterAktif] = useState<"semua" | "favorit" | "riwayat">("semua");
