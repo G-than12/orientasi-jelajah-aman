@@ -129,6 +129,8 @@ export default function HalamanUtama() {
 
   const teksTertunda = useDebounce(teksCari, 500);
   const requestIdRef = useRef(0); // pencegah race condition
+  const horizontalScrollRef = useRef<ScrollView>(null);
+  const scrollPosisiOffline = useRef(0);
   const scrollViewRef = useRef<ScrollView>(null);
   const [posisiCuacaY, setPosisiCuacaY] = useState(0);
 
