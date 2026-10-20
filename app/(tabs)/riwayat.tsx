@@ -20,6 +20,7 @@ import { useRiwayat } from "../../contexts/RiwayatContext";
 import { useRiwayat } from "../../contexts/RiwayatContext";
 
 // Tab Aktivitas Pengguna (Favorit & Riwayat Pencarian)
+// Tab Aktivitas Pengguna (Favorit & Riwayat Pencarian)
 export default function TabRiwayat() {
   const { theme } = usePengaturan();
   const [daftarFavorit, setDaftarFavorit] = useState<KotaFavorit[]>([]);
@@ -549,5 +550,3 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
 });
-
-// refactor(riwayat): perbarui kartu item aktivitas dengan informasi koordinat dan navigasi
