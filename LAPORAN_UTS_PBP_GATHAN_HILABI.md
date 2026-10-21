@@ -36,7 +36,8 @@
 6. [BAB VI: Tugas 4 – Implementasi Tema Gelap / Terang / Ikuti Sistem](#bab-vi-tugas-4--implementasi-tema-gelap--terang--ikuti-sistem)
    - [6.5 Tangkapan Layar Hasil Implementasi (Screenshots)](#65-tangkapan-layar-hasil-implementasi-screenshots)
 7. [BAB VII: Fitur Tambahan & Nilai Plus (Kreativitas Mahasiswa)](#bab-vii-fitur-tambahan--nilai-plus-kreativitas-mahasiswa)
-   - [7.5 Tangkapan Layar Hasil Implementasi (Screenshots)](#75-tangkapan-layar-hasil-implementasi-screenshots)
+   - [7.1 Fitur Konversi Satuan Suhu Dinamis (Celsius vs Fahrenheit)](#71-fitur-konversi-satuan-suhu-dinamis-celsius-vs-fahrenheit)
+   - [7.6 Tangkapan Layar Hasil Implementasi (Screenshots)](#76-tangkapan-layar-hasil-implementasi-screenshots)
 8. [BAB VIII: Riwayat Commit Git (25++ Commits)](#bab-viii-riwayat-commit-git-25-commits)
 9. [BAB IX: Kesimpulan & Penutup](#bab-ix-kesimpulan--penutup)
 
@@ -776,7 +777,48 @@ Berikut adalah bukti visual implementasi fitur tema dinamis (Mode Terang, Mode G
 
 Sebagai wujud inovasi dan eksplorasi materi di luar batas minimum tugas UTS, mahasiswa menambahkan beberapa penyempurnaan unggulan:
 
-### 7.1 Tipografi Kustom Modern (Google Fonts: Plus Jakarta Sans)
+### 7.1 Fitur Konversi Satuan Suhu Dinamis (Celsius vs Fahrenheit)
+- **Kebutuhan & Fungsionalitas**: Aplikasi menyediakan fitur pemilihan satuan suhu antara **Celsius (°C)** dan **Fahrenheit (°F)** yang dapat diubah secara instan melalui sakelar di layar Pengaturan. Preferensi pengguna disimpan secara persisten ke dalam `AsyncStorage` (`@jelajah_aman:preferensi`) dan langsung memicu pembaruan reaktif (*reactive state update*) ke seluruh kartu cuaca baik di layar Beranda maupun Detail Cuaca.
+- **Formulasi Matematika**: Menggunakan fungsi konversi matematis presisi:
+  $$\text{Suhu (°F)} = \text{round}\left( \text{Suhu (°C)} \times \frac{9}{5} + 32 \right)$$
+  Sebagai bukti visual nyata pada tangkapan layar, suhu kota Batang sebesar **$32^\circ\text{C}$** dikonversi secara akurat menjadi **$89^\circ\text{F}$** ($32 \times 1.8 + 32 = 89.6 \approx 89^\circ\text{F}$).
+- **Potongan Kode Logika Konversi (`contexts/PengaturanContext.tsx`)**:
+
+```tsx
+// contexts/PengaturanContext.tsx
+export function hitungKonversiSuhu(
+  celsius: number,
+  celciusAktif: boolean
+): number {
+  if (celciusAktif) {
+    return Math.round(celsius);
+  }
+  return Math.round((celsius * 9) / 5 + 32);
+}
+```
+
+- **Penerapan pada Komponen Antarmuka (`components/WeatherCard.tsx`)**:
+
+```tsx
+// components/WeatherCard.tsx
+const suhuTampil = konversiSuhu
+  ? konversiSuhu(cuaca.temperature)
+  : hitungKonversiSuhu(cuaca.temperature, celciusAktif);
+const namaSatuan = celciusAktif ? "Celsius" : "Fahrenheit";
+
+return (
+  <View style={styles.temperatureRow}>
+    <Text style={[styles.temperature, { color: theme.text }]}>
+      {suhuTampil}°
+    </Text>
+    <Text style={[styles.unitText, { color: theme.textSecondary }]}>
+      {namaSatuan}
+    </Text>
+  </View>
+);
+```
+
+### 7.2 Tipografi Kustom Modern (Google Fonts: Plus Jakarta Sans)
 - Mengintegrasikan pustaka `@expo-google-fonts/plus-jakarta-sans` dengan 5 bobot lengkap: `Regular (400)`, `Medium (500)`, `SemiBold (600)`, `Bold (700)`, dan `ExtraBold (800)`.
 - Mengonfigurasi `SplashScreen.preventAutoHideAsync()` di root layout (`app/_layout.tsx`) agar font ter-load sempurna sebelum antarmuka dirender.
 - **Pembersihan Bentrok Android `fontWeight`**: Menghapus redundansi `fontWeight` pada komponen yang telah menggunakan `fontFamily` khusus bobot tertentu, sehingga Android tidak mengalami *fallback* ke font sistem bawaan (Roboto) melainkan murni menampilkan tipografi Plus Jakarta Sans yang tajam dan elegan.
@@ -797,29 +839,29 @@ const [fontsLoaded, fontError] = useFonts({
 });
 ```
 
-### 7.2 Palet Warna "Atmospheric Indigo & Electric Sky"
+### 7.3 Palet Warna "Atmospheric Indigo & Electric Sky"
 - Menggantikan warna biru standar generic (`#2563eb`) dengan palet bernuansa atmosfer cuaca internasional: **Indigo `#4F46E5`** dan **Electric Sky `#0EA5E9`**.
 - Pada Mode Gelap, kartu aplikasi menggunakan latar **Deep Twilight `#0D1527`** dengan garis tepi **Indigo Glow `rgba(99, 102, 241, 0.22)`** yang memberikan kesan aplikasi kelas atas (*premium tech aesthetic*).
 
-### 7.3 Status Data Terpadu Minimalis
+### 7.4 Status Data Terpadu Minimalis
 - Menyematkan badge status data pada kartu cuaca (`WeatherCard.tsx`):
   - **Online (Hijau Emerald)**: Data segar diambil langsung dari API internet.
   - **Tersimpan (Biru Langit)**: Data tersimpan di SQLite lokal dalam batas waktu segar.
   - **Offline (Kuning Amber)**: Data cache lokal saat perangkat sedang tidak memiliki koneksi internet.
 
-### 7.4 Penjaminan Mutu & Type-Safety
+### 7.5 Penjaminan Mutu & Type-Safety
 - Seluruh kode program diverifikasi secara berkala menggunakan kompilator TypeScript (`npx tsc --noEmit`) dan menghasilkan **0 error** (*Clean Compile*).
 
-### 7.5 Tangkapan Layar Hasil Implementasi (Screenshots)
+### 7.6 Tangkapan Layar Hasil Implementasi (Screenshots)
 
-Berikut adalah bukti visual implementasi fitur kreativitas mahasiswa (Tipografi Plus Jakarta Sans, Dialog Modal Tema Gelap, dan Indikator Status Data):
+Berikut adalah bukti visual implementasi fitur kreativitas mahasiswa (Konversi Suhu Fahrenheit, Tipografi Plus Jakarta Sans, Dialog Modal Tema Gelap, dan Indikator Status Data):
 
 <div align="center">
 
-| Tipografi Plus Jakarta Sans & Suhu | Modal Dialog Tambah Favorit (*Dark Theme*) | Indikator Status Data (*Online / Tersimpan*) |
+| Konversi Suhu Fahrenheit ($89^\circ\text{F}$) & Tipografi | Modal Dialog Tambah Favorit (*Dark Theme*) | Indikator Status Data (*Online / Tersimpan*) |
 | :---: | :---: | :---: |
-| <img src="./docs/screenshots/05_tipografi_dan_kartu.png" width="240" alt="Tipografi Plus Jakarta Sans" /> | <img src="./docs/screenshots/05_modal_favorit_dark.png" width="240" alt="Modal Simpan Favorit Dark Mode" /> | <img src="./docs/screenshots/05_status_badge.png" width="240" alt="Status Data Badge" /> |
-| *Gambar 7.1: Tipografi Plus Jakarta Sans pada Kartu Cuaca* | *Gambar 7.2: Modal Tambah Favorit dalam Mode Gelap* | *Gambar 7.3: Status data Online & Tersimpan pada Beranda* |
+| <img src="./docs/screenshots/05_tipografi_dan_kartu.png" width="240" alt="Konversi Suhu Fahrenheit dan Tipografi" /> | <img src="./docs/screenshots/05_modal_favorit_dark.png" width="240" alt="Modal Simpan Favorit Dark Mode" /> | <img src="./docs/screenshots/05_status_badge.png" width="240" alt="Status Data Badge" /> |
+| *Gambar 7.1: Suhu 89° Fahrenheit hasil konversi dari 32°C & Plus Jakarta Sans* | *Gambar 7.2: Modal Tambah Favorit dalam Mode Gelap* | *Gambar 7.3: Status data Online & Tersimpan pada Beranda* |
 
 </div>
 
@@ -878,7 +920,8 @@ Seluruh target penugasan Ujian Tengah Semester (UTS) mata kuliah Pemrograman Ber
 2. **Riwayat Pencarian**: Berjalan otomatis dengan batas 10 kota, terhindar dari duplikasi data (*deduplicated*), tersimpan persisten di `AsyncStorage`, dan dapat diklik untuk meninjau data cuaca.
 3. **Penghapusan Cache**: Tersedia tombol hapus spesifik pada setiap rekaman cache kota di SQLite, dilengkapi dengan modal konfirmasi interaktif sebelum penghapusan data.
 4. **Tema Gelap / Terang**: Mendukung mode Terang, Gelap, dan Otomatis Mengikuti Sistem perangkat dengan perpindahan warna dinamis pada seluruh komponen.
-5. **Kualitas Tambahan**: Dilengkapi tipografi Google Fonts **Plus Jakarta Sans**, palet visual **Atmospheric Indigo**, dan arsitektur kode TypeScript yang bebas dari galat (*error-free*).
+5. **Konversi Satuan Suhu (Nilai Plus)**: Mengimplementasikan sakelar preferensi satuan suhu dinamis dari Celsius (°C) ke Fahrenheit (°F) berbasis rumus matematika presisi yang tersimpan persisten di storage dan bereaksi langsung pada seluruh kartu cuaca.
+6. **Kualitas & Kreativitas Tambahan**: Dilengkapi tipografi Google Fonts **Plus Jakarta Sans**, palet visual modern **Atmospheric Indigo & Electric Sky**, modal dialog custom bergaya twilight, serta arsitektur kode TypeScript yang bebas dari galat (*0 error Clean Compile*).
 
 Laporan ini disusun dengan sebenar-benarnya berdasarkan kode program riil yang terdapat pada repositori proyek.
 
