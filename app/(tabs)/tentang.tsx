@@ -20,7 +20,7 @@ export default function TabTentang() {
             },
           ]}
         >
-          <Ionicons name="partly-sunny" size={38} color="#2563eb" />
+          <Ionicons name="partly-sunny" size={38} color={theme.primary} />
         </View>
         <Text
           accessible
@@ -104,7 +104,6 @@ const styles = StyleSheet.create({
   judul: {
     fontFamily: fonts.extraBold,
     fontSize: typeScale.judul,
-    fontWeight: "800",
   },
   versiBadge: {
     marginTop: 6,
@@ -115,7 +114,6 @@ const styles = StyleSheet.create({
   versiText: {
     fontFamily: fonts.semiBold,
     fontSize: typeScale.keterangan,
-    fontWeight: "600",
   },
   card: {
     padding: spacing.sedang,
@@ -125,14 +123,12 @@ const styles = StyleSheet.create({
   labelSection: {
     fontFamily: fonts.bold,
     fontSize: typeScale.keterangan,
-    fontWeight: "700",
     textTransform: "uppercase",
     marginBottom: 4,
   },
   nama: {
     fontFamily: fonts.bold,
     fontSize: typeScale.subjudul,
-    fontWeight: "700",
   },
   subtext: {
     fontFamily: fonts.regular,
