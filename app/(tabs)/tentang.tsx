@@ -56,7 +56,7 @@ export default function TabTentang() {
         </Text>
         <Text style={[styles.nama, { color: theme.text }]}>Gathan</Text>
         <Text style={[styles.subtext, { color: theme.textSecondary }]}>
-          Informatika â€” UIN Gus Dur Pekalongan
+          Informatika — UIN Gus Dur Pekalongan
         </Text>
       </View>
 
@@ -123,20 +123,24 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   labelSection: {
+    fontFamily: fonts.bold,
     fontSize: typeScale.keterangan,
     fontWeight: "700",
     textTransform: "uppercase",
     marginBottom: 4,
   },
   nama: {
+    fontFamily: fonts.bold,
     fontSize: typeScale.subjudul,
     fontWeight: "700",
   },
   subtext: {
+    fontFamily: fonts.regular,
     fontSize: typeScale.isi,
     marginTop: 2,
   },
   deskripsi: {
+    fontFamily: fonts.regular,
     fontSize: typeScale.isi,
     lineHeight: 20,
   },
