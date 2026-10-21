@@ -3,6 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { fonts } from "../../constants/styles";
 import { usePengaturan } from "../../contexts/PengaturanContext";
 import AnimatedThemeToggle from "../../components/AnimatedThemeToggle";
 
