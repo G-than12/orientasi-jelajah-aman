@@ -427,11 +427,11 @@ export default function HalamanUtama() {
         accessibilityLabel="Gunakan Lokasi Saat Ini"
       >
         {sedangMemuatLokasi ? (
-          <ActivityIndicator size="small" color="#2563eb" />
+          <ActivityIndicator size="small" color={theme.primary} />
         ) : (
-          <Ionicons name="navigate-outline" size={18} color="#2563eb" />
+          <Ionicons name="navigate-outline" size={18} color={theme.primary} />
         )}
-        <Text style={styles.tombolLokasiText}>
+        <Text style={[styles.tombolLokasiText, { color: theme.primary }]}>
           {sedangMemuatLokasi
             ? "Mencari Lokasi GPS..."
             : "Gunakan Lokasi Saat Ini"}
@@ -870,8 +870,8 @@ export default function HalamanUtama() {
                     accessibilityRole="button"
                     accessibilityLabel="Perbarui Sekarang"
                   >
-                    <Ionicons name="refresh-outline" size={17} color="#2563eb" />
-                    <Text style={styles.tombolPerbaruiText}>
+                    <Ionicons name="refresh-outline" size={17} color={theme.primary} />
+                    <Text style={[styles.tombolPerbaruiText, { color: theme.primary }]}>
                       Perbarui Sekarang
                     </Text>
                   </TouchableOpacity>
@@ -1157,8 +1157,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   kotaTersimpanHeaderTitle: {
+    fontFamily: fonts.bold,
     fontSize: 13,
-    fontWeight: "700",
     color: "#1e293b",
     flex: 1,
   },
@@ -1168,8 +1168,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   kotaTersimpanCountBadgeText: {
+    fontFamily: fonts.bold,
     fontSize: 11,
-    fontWeight: "700",
   },
   panahNavigasiRow: {
     flexDirection: "row",
@@ -1223,12 +1223,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   kotaTersimpanItemNama: {
+    fontFamily: fonts.semiBold,
     fontSize: 14,
-    fontWeight: "600",
     color: "#1e293b",
   },
   kotaTersimpanBadge: {
-    backgroundColor: "#eff6ff",
+    backgroundColor: "#eef2ff",
     paddingHorizontal: 8,
     paddingVertical: 5,
     borderRadius: 6,
@@ -1236,9 +1236,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   kotaTersimpanBadgeText: {
+    fontFamily: fonts.semiBold,
     fontSize: 11,
-    fontWeight: "600",
-    color: "#2563eb",
+    color: "#4f46e5",
   },
   cardLoading: {
     backgroundColor: "#ffffff",
@@ -1296,21 +1296,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: "#bfdbfe",
+    borderColor: "#e0e7ff",
     gap: 8,
-    shadowColor: "#2563eb",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
+    shadowColor: "#4f46e5",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
     elevation: 2,
   },
   tombolLokasiIcon: {
     fontSize: 16,
   },
   tombolLokasiText: {
-    color: "#2563eb",
+    fontFamily: fonts.bold,
+    color: "#4f46e5",
     fontSize: 14,
-    fontWeight: "700",
   },
   pesanLokasiBox: {
     flexDirection: "row",
@@ -1327,10 +1327,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   pesanLokasiText: {
+    fontFamily: fonts.medium,
     flex: 1,
     color: "#92400e",
     fontSize: 13,
-    fontWeight: "500",
   },
   cuacaWrapper: {
     gap: 12,
@@ -1347,15 +1347,15 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: "#2563eb",
+    borderColor: "#4f46e5",
   },
   tombolPerbaruiIcon: {
     fontSize: 14,
   },
   tombolPerbaruiText: {
-    color: "#2563eb",
+    fontFamily: fonts.bold,
+    color: "#4f46e5",
     fontSize: 14,
-    fontWeight: "700",
   },
   tombolFavorit: {
     backgroundColor: "#2563eb",
