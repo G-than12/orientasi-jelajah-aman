@@ -1,6 +1,6 @@
-// components/IndikatorAQI.tsx
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { fonts } from "../constants/styles";
 // Import dari ../types/udara
 import { LaporanUdara } from "../types/udara";
 
@@ -93,11 +93,12 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   kota: {
+    fontFamily: fonts.bold,
     fontSize: 18,
-    fontWeight: "700",
     color: "#1e293b",
   },
   waktu: {
+    fontFamily: fonts.regular,
     fontSize: 12,
     color: "#64748b",
   },
@@ -112,13 +113,13 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   labelAQI: {
+    fontFamily: fonts.semiBold,
     fontSize: 14,
-    fontWeight: "600",
     color: "#64748b",
   },
   nilaiAQI: {
+    fontFamily: fonts.extraBold,
     fontSize: 32,
-    fontWeight: "800",
   },
   badge: {
     paddingHorizontal: 12,
@@ -126,8 +127,8 @@ const styles = StyleSheet.create({
     borderRadius: 9999,
   },
   badgeText: {
+    fontFamily: fonts.bold,
     fontSize: 14,
-    fontWeight: "700",
     textTransform: "uppercase",
   },
 });
