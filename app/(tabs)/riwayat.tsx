@@ -13,7 +13,7 @@ import {
 import { router, useFocusEffect } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { spacing } from "../../constants/styles";
+import { fonts, spacing } from "../../constants/styles";
 import { ambilSemuaFavorit, hapusFavorit } from "../../services/favoritStorage";
 import { KotaFavorit } from "../../types/favorit";
 import { usePengaturan } from "../../contexts/PengaturanContext";
@@ -291,7 +291,7 @@ export default function TabRiwayat() {
                             { color: theme.textSecondary },
                           ]}
                         >
-                          {kota.latitude.toFixed(2)}°, {kota.longitude.toFixed(2)}°
+                          {kota.latitude.toFixed(2)}Â°, {kota.longitude.toFixed(2)}Â°
                         </Text>
                       </View>
                     </TouchableOpacity>
@@ -403,7 +403,7 @@ export default function TabRiwayat() {
                             { color: theme.textSecondary },
                           ]}
                         >
-                          {kota.latitude.toFixed(2)}°, {kota.longitude.toFixed(2)}°
+                          {kota.latitude.toFixed(2)}Â°, {kota.longitude.toFixed(2)}Â°
                         </Text>
                       </View>
                     </TouchableOpacity>
@@ -502,8 +502,8 @@ export default function TabRiwayat() {
                       { color: theme.textSecondary },
                     ]}
                   >
-                    {targetHapusRiwayat.latitude.toFixed(2)}°,{" "}
-                    {targetHapusRiwayat.longitude.toFixed(2)}°
+                    {targetHapusRiwayat.latitude.toFixed(2)}Â°,{" "}
+                    {targetHapusRiwayat.longitude.toFixed(2)}Â°
                   </Text>
                 </View>
               </View>
@@ -617,8 +617,8 @@ export default function TabRiwayat() {
                       { color: theme.textSecondary },
                     ]}
                   >
-                    {targetHapusFavorit.latitude.toFixed(2)}°,{" "}
-                    {targetHapusFavorit.longitude.toFixed(2)}°
+                    {targetHapusFavorit.latitude.toFixed(2)}Â°,{" "}
+                    {targetHapusFavorit.longitude.toFixed(2)}Â°
                   </Text>
                 </View>
               </View>
