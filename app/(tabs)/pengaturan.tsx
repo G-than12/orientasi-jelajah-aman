@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { spacing } from "../../constants/styles";
+import { fonts, spacing } from "../../constants/styles";
 import { hapusSemuaCache } from "../../services/cacheRepository";
 import { usePengaturan } from "../../contexts/PengaturanContext";
 
@@ -378,7 +378,8 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   sectionHeader: {
-        fontSize: 12,
+    fontFamily: fonts.bold,
+    fontSize: 12,
     fontWeight: "700",
     textTransform: "uppercase",
     letterSpacing: 0.8,
@@ -409,11 +410,13 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   itemTitle: {
-        fontSize: 15,
+    fontFamily: fonts.semiBold,
+    fontSize: 15,
     fontWeight: "600",
   },
   itemSubtitle: {
-        fontSize: 12,
+    fontFamily: fonts.medium,
+    fontSize: 12,
     marginTop: 2,
   },
   insetDivider: {
@@ -451,7 +454,8 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   pesanText: {
-        fontSize: 12,
+    fontFamily: fonts.medium,
+    fontSize: 12,
     fontWeight: "500",
   },
   footer: {
@@ -461,7 +465,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   footerText: {
-        fontSize: 12,
+    fontFamily: fonts.medium,
+    fontSize: 12,
     fontWeight: "500",
     letterSpacing: 0.3,
   },
@@ -502,13 +507,15 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   modalJudul: {
-        fontSize: 18,
+    fontFamily: fonts.bold,
+    fontSize: 18,
     fontWeight: "700",
     marginBottom: 6,
     textAlign: "center",
   },
   modalKeterangan: {
-        fontSize: 13,
+    fontFamily: fonts.regular,
+    fontSize: 13,
     textAlign: "center",
     lineHeight: 18,
     marginBottom: 20,
@@ -526,7 +533,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   modalBatalButtonText: {
-        fontSize: 14,
+    fontFamily: fonts.semiBold,
+    fontSize: 14,
     fontWeight: "600",
   },
   modalHapusButton: {
@@ -538,7 +546,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   modalHapusButtonText: {
-        color: "#ffffff",
+    fontFamily: fonts.bold,
+    color: "#ffffff",
     fontSize: 14,
     fontWeight: "700",
   },
