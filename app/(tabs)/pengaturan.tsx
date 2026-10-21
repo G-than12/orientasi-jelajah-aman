@@ -85,7 +85,7 @@ export default function TabPengaturan() {
                 </Text>
               </View>
               <Text style={[styles.itemSubtitle, { color: theme.textSecondary }]}>
-                {celcius ? "Celsius (°C)" : "Fahrenheit (°F)"}
+                {celcius ? "Celsius (Â°C)" : "Fahrenheit (Â°F)"}
               </Text>
             </View>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
@@ -109,7 +109,7 @@ export default function TabPengaturan() {
                     { color: celcius ? (darkMode ? "#60a5fa" : "#2563eb") : "#f59e0b" },
                   ]}
                 >
-                  {celcius ? "°C" : "°F"}
+                  {celcius ? "Â°C" : "Â°F"}
                 </Text>
               </View>
               <Switch
@@ -331,39 +331,11 @@ export default function TabPengaturan() {
           )}
         </View>
 
-        {/* Bagian Informasi Aplikasi */}
-        <Text
-          style={[
-            styles.sectionHeader,
-            { color: theme.textMuted, marginTop: spacing.sedang },
-          ]}
-        >
-          Tentang Sistem
-        </Text>
-        <View
-          style={[
-            styles.card,
-            {
-              backgroundColor: theme.card,
-              borderColor: theme.cardBorder,
-            },
-          ]}
-        >
-          <View style={styles.row}>
-            <Text style={[styles.itemTitle, { color: theme.text }]}>
-              Nama Aplikasi
-            </Text>
-            <Text style={[styles.itemValue, { color: theme.textSecondary }]}>
-              Jelajah Aman
-            </Text>
-          </View>
-          <View style={[styles.divider, { backgroundColor: theme.divider }]} />
-          <View style={styles.row}>
-            <Text style={[styles.itemTitle, { color: theme.text }]}>Versi</Text>
-            <Text style={[styles.itemValue, { color: theme.textSecondary }]}>
-              1.0.0 (Expo Router)
-            </Text>
-          </View>
+        {/* Minimalist Footer */}
+        <View style={styles.footer}>
+          <Text style={[styles.footerText, { color: theme.textMuted }]}>
+            Jelajah Aman • Versi 1.0.0
+          </Text>
         </View>
       </ScrollView>
 
@@ -713,5 +685,16 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontSize: 14,
     fontWeight: "700",
+  },
+  footer: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 32,
+    marginBottom: 16,
+  },
+  footerText: {
+    fontSize: 12,
+    fontWeight: "500",
+    letterSpacing: 0.3,
   },
 });
