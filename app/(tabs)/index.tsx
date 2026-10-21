@@ -538,7 +538,7 @@ export default function HalamanUtama() {
                         { color: theme.badgeText },
                       ]}
                     >
-                      Pilih â†’
+                      Pilih →
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -791,7 +791,7 @@ export default function HalamanUtama() {
                     },
                   ]}
                 >
-                  <ActivityIndicator size="large" color="#2563eb" />
+                  <ActivityIndicator size="large" color={theme.primary} />
                   <Text
                     style={[
                       styles.cardLoadingText,
@@ -880,6 +880,10 @@ export default function HalamanUtama() {
                   <TouchableOpacity
                     style={[
                       styles.tombolFavorit,
+                      {
+                        backgroundColor: theme.primary,
+                        shadowColor: theme.primary,
+                      },
                       sudahFavorit && {
                         backgroundColor: theme.cardSecondary,
                         borderColor: theme.cardBorder,
@@ -985,7 +989,7 @@ export default function HalamanUtama() {
                   <Ionicons
                     name="cloud-offline-outline"
                     size={16}
-                    color="#2563eb"
+                    color={theme.primary}
                   />
                 </View>
                 <View style={{ flex: 1 }}>
@@ -998,8 +1002,8 @@ export default function HalamanUtama() {
                       { color: theme.textSecondary },
                     ]}
                   >
-                    {targetHapusOffline.latitude.toFixed(2)}Â°,{" "}
-                    {targetHapusOffline.longitude.toFixed(2)}Â°
+                    {targetHapusOffline.latitude.toFixed(2)}°,{" "}
+                    {targetHapusOffline.longitude.toFixed(2)}°
                   </Text>
                 </View>
               </View>
@@ -1251,9 +1255,9 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   cardLoadingText: {
+    fontFamily: fonts.medium,
     fontSize: 14,
     color: "#64748b",
-    fontWeight: "500",
   },
   errorContainer: {
     padding: 12,
@@ -1268,6 +1272,7 @@ const styles = StyleSheet.create({
     borderColor: "#fecaca",
   },
   errorText: {
+    fontFamily: fonts.medium,
     color: "#dc2626",
     textAlign: "center",
     fontSize: 14,
@@ -1283,8 +1288,8 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   tombolCobaLagiText: {
+    fontFamily: fonts.bold,
     color: "#ffffff",
-    fontWeight: "700",
     fontSize: 13,
   },
   tombolLokasi: {
@@ -1358,26 +1363,26 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   tombolFavorit: {
-    backgroundColor: "#2563eb",
+    backgroundColor: "#4f46e5",
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     gap: 8,
     paddingVertical: 14,
     borderRadius: 14,
-    shadowColor: "#2563eb",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 6,
+    shadowColor: "#4f46e5",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
     elevation: 3,
   },
   tombolFavoritIcon: {
     fontSize: 16,
   },
   tombolFavoritText: {
+    fontFamily: fonts.bold,
     color: "#ffffff",
     fontSize: 15,
-    fontWeight: "700",
   },
   tombolFavoritDisabled: {
     backgroundColor: "#e2e8f0",
@@ -1427,13 +1432,14 @@ const styles = StyleSheet.create({
     fontSize: 28,
   },
   modalJudul: {
+    fontFamily: fonts.extraBold,
     fontSize: 19,
-    fontWeight: "800",
     marginBottom: 8,
     textAlign: "center",
     letterSpacing: 0.2,
   },
   modalKeterangan: {
+    fontFamily: fonts.regular,
     fontSize: 14,
     textAlign: "center",
     lineHeight: 20,
@@ -1459,10 +1465,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalPreviewNama: {
+    fontFamily: fonts.bold,
     fontSize: 15,
-    fontWeight: "700",
   },
   modalPreviewKoordinat: {
+    fontFamily: fonts.regular,
     fontSize: 12,
     marginTop: 2,
   },
@@ -1479,8 +1486,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   modalBatalButtonText: {
+    fontFamily: fonts.bold,
     fontSize: 14,
-    fontWeight: "700",
   },
   modalHapusButton: {
     flex: 1,
@@ -1496,8 +1503,8 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   modalHapusButtonText: {
+    fontFamily: fonts.bold,
     color: "#ffffff",
     fontSize: 14,
-    fontWeight: "700",
   },
 });
