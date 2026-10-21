@@ -59,7 +59,7 @@ export default function TabPengaturan() {
       <ScrollView contentContainerStyle={styles.content}>
         {/* Bagian Preferensi Tampilan & Cuaca */}
         <Text style={[styles.sectionHeader, { color: theme.textMuted }]}>
-          Tampilan & Preferensi
+          Preferensi
         </Text>
         <View
           style={[
