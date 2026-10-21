@@ -19,6 +19,7 @@ import AtribusiCuaca from "../../components/AtribusiCuaca";
 import SearchBox from "../../components/SearchBox";
 import StatusData from "../../components/StatusData";
 import WeatherCard from "../../components/WeatherCard";
+import { fonts } from "../../constants/styles";
 import { labelKodeCuaca } from "../../constants/weatherCodes";
 import { useRiwayat } from "../../contexts/RiwayatContext";
 import { usePengaturan } from "../../contexts/PengaturanContext";
@@ -454,7 +455,7 @@ export default function HalamanUtama() {
         {/* --- HASIL PENCARIAN LIVE SEARCH --- */}
         {sedangMemuatGeocoding && (
           <View style={styles.loadingPencarian}>
-            <ActivityIndicator size="small" color="#2563eb" />
+            <ActivityIndicator size="small" color={theme.primary} />
             <Text style={[styles.loadingPencarianText, { color: theme.textSecondary }]}>
               Mencari kota...
             </Text>
@@ -510,7 +511,7 @@ export default function HalamanUtama() {
                       { backgroundColor: theme.primaryBg },
                     ]}
                   >
-                    <Ionicons name="location-outline" size={18} color="#2563eb" />
+                    <Ionicons name="location-outline" size={18} color={theme.primary} />
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={[styles.hasilNamaKota, { color: theme.text }]}>
@@ -537,7 +538,7 @@ export default function HalamanUtama() {
                         { color: theme.badgeText },
                       ]}
                     >
-                      Pilih →
+                      Pilih â†’
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -997,8 +998,8 @@ export default function HalamanUtama() {
                       { color: theme.textSecondary },
                     ]}
                   >
-                    {targetHapusOffline.latitude.toFixed(2)}°,{" "}
-                    {targetHapusOffline.longitude.toFixed(2)}°
+                    {targetHapusOffline.latitude.toFixed(2)}Â°,{" "}
+                    {targetHapusOffline.longitude.toFixed(2)}Â°
                   </Text>
                 </View>
               </View>
@@ -1062,6 +1063,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   loadingPencarianText: {
+    fontFamily: fonts.medium,
     color: "#64748b",
     fontSize: 14,
   },
@@ -1070,6 +1072,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   tidakDitemukanText: {
+    fontFamily: fonts.regular,
     color: "#64748b",
     fontSize: 14,
     textAlign: "center",
@@ -1078,8 +1081,8 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   hasilPencarianHeader: {
+    fontFamily: fonts.semiBold,
     fontSize: 14,
-    fontWeight: "600",
     color: "#475569",
     marginBottom: 2,
   },
@@ -1107,25 +1110,26 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   hasilNamaKota: {
+    fontFamily: fonts.bold,
     fontSize: 16,
-    fontWeight: "700",
     color: "#0f172a",
   },
   hasilWilayahKota: {
+    fontFamily: fonts.regular,
     fontSize: 13,
     color: "#64748b",
     marginTop: 2,
   },
   hasilPilihBadge: {
-    backgroundColor: "#eff6ff",
+    backgroundColor: "#eef2ff",
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 8,
   },
   hasilPilihText: {
-    color: "#2563eb",
+    fontFamily: fonts.bold,
+    color: "#4f46e5",
     fontSize: 12,
-    fontWeight: "700",
   },
   mainContainer: {
     gap: 16,
