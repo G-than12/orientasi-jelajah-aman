@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 import { Link } from "expo-router";
+import { fonts } from "../constants/styles";
 import { usePengaturan } from "../contexts/PengaturanContext";
 
 interface RiwayatListProps {
@@ -88,17 +89,17 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   judulSection: {
+    fontFamily: fonts.bold,
     fontSize: 14,
-    fontWeight: "700",
     color: "#64748b",
     textTransform: "uppercase",
     letterSpacing: 0.5,
   },
   jumlahBadge: {
+    fontFamily: fonts.semiBold,
     fontSize: 12,
-    fontWeight: "600",
-    color: "#2563eb",
-    backgroundColor: "#eff6ff",
+    color: "#4f46e5",
+    backgroundColor: "#eef2ff",
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 10,
@@ -134,8 +135,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   kotaText: {
+    fontFamily: fonts.semiBold,
     fontSize: 16,
-    fontWeight: "600",
     color: "#1e293b",
   },
   arrowText: {
@@ -151,6 +152,7 @@ const styles = StyleSheet.create({
     borderColor: "#e2e8f0",
   },
   emptyText: {
+    fontFamily: fonts.medium,
     fontSize: 14,
     color: "#94a3b8",
   },
