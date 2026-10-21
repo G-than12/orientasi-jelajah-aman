@@ -116,16 +116,6 @@ export default function TabRiwayat() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header Layar */}
-        <View style={styles.topHeader}>
-          <Text style={[styles.mainTitle, { color: theme.text }]}>
-            Aktivitas
-          </Text>
-          <Text style={[styles.mainSubtitle, { color: theme.textSecondary }]}>
-            Kelola riwayat pencarian terakhir & koleksi kota favorit Anda
-          </Text>
-        </View>
-
         {/* Tab Kapsul Switcher (Riwayat Pencarian vs Kota Favorit) */}
         <View
           style={[
@@ -259,6 +249,7 @@ export default function TabRiwayat() {
                       {
                         backgroundColor: theme.card,
                         borderColor: theme.cardBorder,
+                        borderLeftColor: theme.primary,
                       },
                     ]}
                   >
@@ -269,48 +260,60 @@ export default function TabRiwayat() {
                       accessibilityRole="button"
                       accessibilityLabel={`Buka detail cuaca ${kota.name}`}
                     >
-                      <View
-                        style={[
-                          styles.iconBg,
-                          { backgroundColor: theme.primaryBg },
-                        ]}
-                      >
+                      <Text style={[styles.kotaText, { color: theme.text }]}>
+                        {kota.name}
+                      </Text>
+
+                      <View style={styles.koordinatRow}>
                         <Ionicons
-                          name="time-outline"
-                          size={18}
-                          color={theme.primary}
+                          name="location-outline"
+                          size={12}
+                          color={theme.textMuted}
                         />
-                      </View>
-                      <View style={{ flex: 1 }}>
-                        <Text style={[styles.kotaText, { color: theme.text }]}>
-                          {kota.name}
-                        </Text>
                         <Text
                           style={[
                             styles.koordinatText,
                             { color: theme.textSecondary },
                           ]}
                         >
-                          {kota.latitude.toFixed(2)}Â°, {kota.longitude.toFixed(2)}Â°
+                          {kota.latitude.toFixed(2)}°, {kota.longitude.toFixed(2)}°
+                          {kota.admin1 ? ` • ${kota.admin1}` : ""}
                         </Text>
                       </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity
-                      style={[
-                        styles.hapusButton,
-                        {
-                          backgroundColor: theme.tombolHapusBg,
-                          borderColor: theme.tombolHapusBorder,
-                        },
-                      ]}
-                      onPress={() => setTargetHapusRiwayat(kota)}
-                      activeOpacity={0.7}
-                      accessibilityRole="button"
-                      accessibilityLabel={`Hapus riwayat ${kota.name}`}
-                    >
-                      <Text style={styles.hapusButtonText}>Hapus</Text>
-                    </TouchableOpacity>
+                    <View style={styles.actionGroup}>
+                      <TouchableOpacity
+                        style={styles.hapusButton}
+                        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                        onPress={() => setTargetHapusRiwayat(kota)}
+                        activeOpacity={0.6}
+                        accessibilityRole="button"
+                        accessibilityLabel={`Hapus riwayat ${kota.name}`}
+                      >
+                        <Ionicons name="trash-outline" size={19} color="#ef4444" />
+                      </TouchableOpacity>
+
+                      <View
+                        style={[
+                          styles.actionDivider,
+                          { backgroundColor: theme.cardBorder },
+                        ]}
+                      />
+
+                      <TouchableOpacity
+                        activeOpacity={0.7}
+                        onPress={() => pilihKotaDariRiwayat(kota)}
+                        style={styles.chevronButton}
+                        accessibilityLabel={`Buka detail cuaca ${kota.name}`}
+                      >
+                        <Ionicons
+                          name="chevron-forward"
+                          size={16}
+                          color={theme.textMuted}
+                        />
+                      </TouchableOpacity>
+                    </View>
                   </View>
                 ))}
               </View>
@@ -367,6 +370,7 @@ export default function TabRiwayat() {
                       {
                         backgroundColor: theme.card,
                         borderColor: theme.cardBorder,
+                        borderLeftColor: "#eab308",
                       },
                     ]}
                   >
@@ -385,44 +389,69 @@ export default function TabRiwayat() {
                         })
                       }
                     >
-                      <View
-                        style={[
-                          styles.iconBg,
-                          { backgroundColor: "#fef3c7" },
-                        ]}
-                      >
-                        <Ionicons name="star" size={16} color="#eab308" />
-                      </View>
-                      <View style={{ flex: 1 }}>
-                        <Text style={[styles.kotaText, { color: theme.text }]}>
-                          {kota.nama}
-                        </Text>
+                      <Text style={[styles.kotaText, { color: theme.text }]}>
+                        {kota.nama}
+                      </Text>
+
+                      <View style={styles.koordinatRow}>
+                        <Ionicons
+                          name="location-outline"
+                          size={12}
+                          color={theme.textMuted}
+                        />
                         <Text
                           style={[
                             styles.koordinatText,
                             { color: theme.textSecondary },
                           ]}
                         >
-                          {kota.latitude.toFixed(2)}Â°, {kota.longitude.toFixed(2)}Â°
+                          {kota.latitude.toFixed(2)}°, {kota.longitude.toFixed(2)}°
                         </Text>
                       </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity
-                      style={[
-                        styles.hapusButton,
-                        {
-                          backgroundColor: theme.tombolHapusBg,
-                          borderColor: theme.tombolHapusBorder,
-                        },
-                      ]}
-                      onPress={() => setTargetHapusFavorit(kota)}
-                      activeOpacity={0.7}
-                      accessibilityRole="button"
-                      accessibilityLabel={`Hapus ${kota.nama} dari favorit`}
-                    >
-                      <Text style={styles.hapusButtonText}>Hapus</Text>
-                    </TouchableOpacity>
+                    <View style={styles.actionGroup}>
+                      <TouchableOpacity
+                        style={styles.hapusButton}
+                        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                        onPress={() => setTargetHapusFavorit(kota)}
+                        activeOpacity={0.6}
+                        accessibilityRole="button"
+                        accessibilityLabel={`Hapus ${kota.nama} dari favorit`}
+                      >
+                        <Ionicons name="trash-outline" size={19} color="#ef4444" />
+                      </TouchableOpacity>
+
+                      <View
+                        style={[
+                          styles.actionDivider,
+                          { backgroundColor: theme.cardBorder },
+                        ]}
+                      />
+
+                      <TouchableOpacity
+                        activeOpacity={0.7}
+                        onPress={() =>
+                          router.push({
+                            pathname: "/detail/[kota]" as any,
+                            params: {
+                              kota: kota.nama,
+                              id: String(kota.id),
+                              lat: String(kota.latitude),
+                              lon: String(kota.longitude),
+                            },
+                          })
+                        }
+                        style={styles.chevronButton}
+                        accessibilityLabel={`Buka detail cuaca ${kota.nama}`}
+                      >
+                        <Ionicons
+                          name="chevron-forward"
+                          size={16}
+                          color={theme.textMuted}
+                        />
+                      </TouchableOpacity>
+                    </View>
                   </View>
                 ))}
               </View>
@@ -502,8 +531,8 @@ export default function TabRiwayat() {
                       { color: theme.textSecondary },
                     ]}
                   >
-                    {targetHapusRiwayat.latitude.toFixed(2)}Â°,{" "}
-                    {targetHapusRiwayat.longitude.toFixed(2)}Â°
+                    {targetHapusRiwayat.latitude.toFixed(2)}°,{" "}
+                    {targetHapusRiwayat.longitude.toFixed(2)}°
                   </Text>
                 </View>
               </View>
@@ -617,8 +646,8 @@ export default function TabRiwayat() {
                       { color: theme.textSecondary },
                     ]}
                   >
-                    {targetHapusFavorit.latitude.toFixed(2)}Â°,{" "}
-                    {targetHapusFavorit.longitude.toFixed(2)}Â°
+                    {targetHapusFavorit.latitude.toFixed(2)}°,{" "}
+                    {targetHapusFavorit.longitude.toFixed(2)}°
                   </Text>
                 </View>
               </View>
@@ -737,37 +766,72 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingVertical: 12,
-    paddingHorizontal: 14,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     borderRadius: 16,
     borderWidth: 1,
+    borderLeftWidth: 4,
     shadowColor: "#0f172a",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.04,
     shadowRadius: 6,
     elevation: 2,
-    gap: 10,
+    gap: 12,
   },
   kotaLeft: {
     flex: 1,
+    justifyContent: "center",
+  },
+  kotaTitleRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
-  },
-  iconBg: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
+    gap: 8,
+    marginBottom: 4,
   },
   kotaText: {
-    fontSize: 15,
+    fontFamily: fonts.bold,
+    fontSize: 16,
     fontWeight: "700",
+    letterSpacing: -0.2,
+    marginBottom: 4,
+  },
+  tagBadge: {
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: 6,
+    borderWidth: 1,
+  },
+  tagBadgeText: {
+    fontFamily: fonts.bold,
+    fontSize: 10,
+    fontWeight: "700",
+    textTransform: "uppercase",
+    letterSpacing: 0.3,
+  },
+  koordinatRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
   },
   koordinatText: {
+    fontFamily: fonts.medium,
     fontSize: 12,
-    marginTop: 2,
+    fontWeight: "500",
+  },
+  actionGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  actionDivider: {
+    width: 1,
+    height: 18,
+    marginHorizontal: 4,
+  },
+  chevronButton: {
+    padding: 6,
+    justifyContent: "center",
+    alignItems: "center",
   },
   chipOffline: {
     paddingHorizontal: 8,
@@ -781,10 +845,9 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   hapusButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 10,
-    borderWidth: 1,
+    padding: 6,
+    justifyContent: "center",
+    alignItems: "center",
   },
   hapusCacheButton: {
     flexDirection: "row",
@@ -860,6 +923,7 @@ const styles = StyleSheet.create({
     fontSize: 26,
   },
   modalJudul: {
+    fontFamily: fonts.bold,
     fontSize: 19,
     fontWeight: "800",
     marginBottom: 8,
@@ -867,6 +931,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
   modalKeterangan: {
+    fontFamily: fonts.regular,
     fontSize: 14,
     textAlign: "center",
     lineHeight: 20,
@@ -892,10 +957,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalPreviewNama: {
+    fontFamily: fonts.bold,
     fontSize: 15,
     fontWeight: "700",
   },
   modalPreviewKoordinat: {
+    fontFamily: fonts.medium,
     fontSize: 12,
     marginTop: 2,
   },
@@ -912,6 +979,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   modalBatalButtonText: {
+    fontFamily: fonts.semiBold,
     fontSize: 14,
     fontWeight: "700",
   },
@@ -929,6 +997,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   modalHapusButtonText: {
+    fontFamily: fonts.bold,
     color: "#ffffff",
     fontSize: 14,
     fontWeight: "700",
