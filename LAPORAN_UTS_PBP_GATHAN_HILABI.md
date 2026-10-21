@@ -28,10 +28,15 @@
 1. [BAB I: Pendahuluan & Gambaran Umum Aplikasi](#bab-i-pendahuluan--gambaran-umum-aplikasi)
 2. [BAB II: Struktur Proyek & Arsitektur Sistem](#bab-ii-struktur-proyek--arsitektur-sistem)
 3. [BAB III: Tugas 1 – Kustomisasi Ikon Tab Bar & Perbaikan Label Navigasi](#bab-iii-tugas-1--kustomisasi-ikon-tab-bar--perbaikan-label-navigasi)
+   - [3.5 Tangkapan Layar Hasil Implementasi (Screenshots)](#35-tangkapan-layar-hasil-implementasi-screenshots)
 4. [BAB IV: Tugas 2 – Fitur Riwayat Pencarian Terakhir (Recent Search History)](#bab-iv-tugas-2--fitur-riwayat-pencarian-terakhir-recent-search-history)
+   - [4.5 Tangkapan Layar Hasil Implementasi (Screenshots)](#45-tangkapan-layar-hasil-implementasi-screenshots)
 5. [BAB V: Tugas 3 – Penghapusan Cache Kota & Modal Konfirmasi](#bab-v-tugas-3--penghapusan-cache-kota--modal-konfirmasi)
+   - [5.5 Tangkapan Layar Hasil Implementasi (Screenshots)](#55-tangkapan-layar-hasil-implementasi-screenshots)
 6. [BAB VI: Tugas 4 – Implementasi Tema Gelap / Terang / Ikuti Sistem](#bab-vi-tugas-4--implementasi-tema-gelap--terang--ikuti-sistem)
+   - [6.5 Tangkapan Layar Hasil Implementasi (Screenshots)](#65-tangkapan-layar-hasil-implementasi-screenshots)
 7. [BAB VII: Fitur Tambahan & Nilai Plus (Kreativitas Mahasiswa)](#bab-vii-fitur-tambahan--nilai-plus-kreativitas-mahasiswa)
+   - [7.5 Tangkapan Layar Hasil Implementasi (Screenshots)](#75-tangkapan-layar-hasil-implementasi-screenshots)
 8. [BAB VIII: Riwayat Commit Git (25++ Commits)](#bab-viii-riwayat-commit-git-25-commits)
 9. [BAB IX: Kesimpulan & Penutup](#bab-ix-kesimpulan--penutup)
 
@@ -220,6 +225,22 @@ export default function TabLayout() {
 - **`useSafeAreaInsets()`**: Menghitung area aman bagian bawah layar perangkat (terutama iPhone ber-notch atau Android dengan *gesture navigation bar*), sehingga teks label tab bar tidak akan terpotong pada berbagai dimensi layar.
 - **Ikon Dinamis (`focused ? ... : ...`)**: Saat pengguna berada di tab aktif, ikon bertransformasi menjadi *solid fill* untuk memberikan feedback visual yang tegas kepada pengguna.
 
+### 3.5 Tangkapan Layar Hasil Implementasi (Screenshots)
+
+Berikut adalah bukti visual implementasi kustomisasi ikon tab bar dan label navigasi:
+
+<div align="center">
+
+![Tangkapan Layar Kustomisasi Tab Bar Bawah](./docs/screenshots/01_tab_bar_navigation.png)
+
+*Gambar 3.1: Navigasi Tab Bar bawah dengan ikon kustom Ionicons (`Beranda`, `Aktivitas`, `Pengaturan`, `Tentang`)*
+
+</div>
+
+> [!TIP]
+> **Panduan Penempatan Screenshot:**
+> Letakkan berkas gambar hasil tangkapan layar ponsel/web Anda pada folder `docs/screenshots/01_tab_bar_navigation.png`. Gambar akan otomatis muncul di laporan ini.
+
 ---
 
 ## BAB IV: TUGAS 2 – FITUR RIWAYAT PENCARIAN TERAKHIR (RECENT SEARCH HISTORY)
@@ -396,6 +417,24 @@ export default function TabRiwayat() {
 }
 ```
 
+### 4.5 Tangkapan Layar Hasil Implementasi (Screenshots)
+
+Berikut adalah bukti visual implementasi fitur riwayat pencarian terakhir dan interaktivitasnya:
+
+<div align="center">
+
+| Riwayat Pencarian Terakhir (Tab Aktivitas) | Hasil Navigasi Saat Riwayat Diklik (Detail Cuaca) |
+| :---: | :---: |
+| <img src="./docs/screenshots/02_riwayat_pencarian.png" width="340" alt="Daftar Riwayat Pencarian" /> | <img src="./docs/screenshots/02_riwayat_klik_detail.png" width="340" alt="Halaman Detail Cuaca dari Riwayat" /> |
+| *Gambar 4.1: Daftar riwayat pencarian (maksimal 10 item, LIFO & deduplikasi)* | *Gambar 4.2: Tampilan detail informasi cuaca setelah salah satu riwayat diklik* |
+
+</div>
+
+> [!TIP]
+> **Panduan Penempatan Screenshot:**
+> - Simpan screenshot daftar riwayat di: `docs/screenshots/02_riwayat_pencarian.png`
+> - Simpan screenshot halaman detail hasil klik riwayat di: `docs/screenshots/02_riwayat_klik_detail.png`
+
 ---
 
 ## BAB V: TUGAS 3 – PENGHAPUSAN CACHE KOTA & MODAL KONFIRMASI
@@ -529,6 +568,24 @@ export default function HalamanUtama() {
   );
 }
 ```
+
+### 5.5 Tangkapan Layar Hasil Implementasi (Screenshots)
+
+Berikut adalah bukti visual implementasi penghapusan cache kota offline beserta dialog modal konfirmasi interaktif:
+
+<div align="center">
+
+| Tombol Hapus Cache pada Kartu Kota Tersimpan | Dialog Modal Konfirmasi Interaktif |
+| :---: | :---: |
+| <img src="./docs/screenshots/03_tombol_hapus_cache.png" width="340" alt="Tombol Hapus Cache Offline" /> | <img src="./docs/screenshots/03_modal_konfirmasi_hapus.png" width="340" alt="Modal Konfirmasi Hapus Cache" /> |
+| *Gambar 5.1: Tombol tempat sampah merah pada kartu cuaca tersimpan (offline)* | *Gambar 5.2: Modal konfirmasi "Hapus Cache Offline?" dengan tombol Batal & Hapus* |
+
+</div>
+
+> [!TIP]
+> **Panduan Penempatan Screenshot:**
+> - Simpan screenshot tombol hapus di: `docs/screenshots/03_tombol_hapus_cache.png`
+> - Simpan screenshot pop-up modal konfirmasi di: `docs/screenshots/03_modal_konfirmasi_hapus.png`
 
 ---
 
@@ -702,6 +759,25 @@ export default function TabPengaturan() {
 }
 ```
 
+### 6.5 Tangkapan Layar Hasil Implementasi (Screenshots)
+
+Berikut adalah bukti visual implementasi fitur tema dinamis (Mode Terang, Mode Gelap, dan Ikuti Sistem):
+
+<div align="center">
+
+| Menu Pengaturan Tema | Tampilan Mode Terang (*Light Mode*) | Tampilan Mode Gelap (*Atmospheric Dark*) |
+| :---: | :---: | :---: |
+| <img src="./docs/screenshots/04_pengaturan_tema.png" width="240" alt="Menu Pengaturan Tema" /> | <img src="./docs/screenshots/04_tampilan_terang.png" width="240" alt="Beranda Mode Terang" /> | <img src="./docs/screenshots/04_tampilan_gelap.png" width="240" alt="Beranda Mode Gelap" /> |
+| *Gambar 6.1: Sakelar tema di Pengaturan* | *Gambar 6.2: Layar Beranda bertema Terang* | *Gambar 6.3: Layar Beranda bertema Gelap Indigo* |
+
+</div>
+
+> [!TIP]
+> **Panduan Penempatan Screenshot:**
+> - Simpan screenshot menu pengaturan di: `docs/screenshots/04_pengaturan_tema.png`
+> - Simpan screenshot tampilan terang di: `docs/screenshots/04_tampilan_terang.png`
+> - Simpan screenshot tampilan gelap di: `docs/screenshots/04_tampilan_gelap.png`
+
 ---
 
 ## BAB VII: FITUR TAMBAHAN & NILAI PLUS (KREATIVITAS MAHASISWA)
@@ -741,6 +817,25 @@ const [fontsLoaded, fontError] = useFonts({
 
 ### 7.4 Penjaminan Mutu & Type-Safety
 - Seluruh kode program diverifikasi secara berkala menggunakan kompilator TypeScript (`npx tsc --noEmit`) dan menghasilkan **0 error** (*Clean Compile*).
+
+### 7.5 Tangkapan Layar Hasil Implementasi (Screenshots)
+
+Berikut adalah bukti visual implementasi fitur kreativitas mahasiswa (Tipografi Plus Jakarta Sans, Palet Indigo, dan Verifikasi TypeScript):
+
+<div align="center">
+
+| Tipografi Plus Jakarta Sans & Kartu Cuaca | Indikator Status Data (Online/Offline) | Verifikasi TypeScript (0 Error) |
+| :---: | :---: | :---: |
+| <img src="./docs/screenshots/05_tipografi_dan_kartu.png" width="240" alt="Tipografi Plus Jakarta Sans" /> | <img src="./docs/screenshots/05_status_badge.png" width="240" alt="Status Data Badge" /> | <img src="./docs/screenshots/05_typescript_check.png" width="240" alt="Terminal TSC 0 Error" /> |
+| *Gambar 7.1: Tipografi Plus Jakarta Sans & Kartu Cuaca* | *Gambar 7.2: Status data Online / Tersimpan / Offline* | *Gambar 7.3: Hasil audit type-safety npx tsc --noEmit* |
+
+</div>
+
+> [!TIP]
+> **Panduan Penempatan Screenshot:**
+> - Simpan screenshot tampilan tipografi di: `docs/screenshots/05_tipografi_dan_kartu.png`
+> - Simpan screenshot badge status di: `docs/screenshots/05_status_badge.png`
+> - Simpan screenshot terminal lolos pengecekan TypeScript di: `docs/screenshots/05_typescript_check.png`
 
 ---
 
