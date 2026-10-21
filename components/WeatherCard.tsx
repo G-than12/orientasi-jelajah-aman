@@ -309,6 +309,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   kota: {
+    fontFamily: fonts.bold,
     fontSize: 22,
     fontWeight: "700",
     color: "#0f172a",
@@ -320,6 +321,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   kondisiText: {
+    fontFamily: fonts.medium,
     fontSize: 13,
     fontWeight: "500",
     color: "#64748b",
@@ -331,6 +333,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
   },
   badgeText: {
+    fontFamily: fonts.bold,
     fontSize: 12,
     fontWeight: "700",
   },
