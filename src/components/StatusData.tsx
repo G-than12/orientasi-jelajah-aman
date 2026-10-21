@@ -1,7 +1,7 @@
-// src/components/StatusData.tsx
 import { View, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { SumberData } from "../types/cache";
+import { fonts } from "../../constants/styles";
 import { usePengaturan } from "../../contexts/PengaturanContext";
 
 interface StatusDataProps {
@@ -62,10 +62,10 @@ export default function StatusData({
       };
     }
     return {
-      bg: darkMode ? "#1e3a8a" : "#eff6ff",
-      border: darkMode ? "#2563eb" : "#bfdbfe",
-      text: darkMode ? "#93c5fd" : "#1e40af",
-      subtext: darkMode ? "#bfdbfe" : "#2563eb",
+      bg: darkMode ? "rgba(99, 102, 241, 0.18)" : "#eef2ff",
+      border: darkMode ? "rgba(99, 102, 241, 0.45)" : "#c7d2fe",
+      text: darkMode ? "#a5b4fc" : "#4338ca",
+      subtext: darkMode ? "#c7d2fe" : "#4f46e5",
       iconName: "globe-outline" as const,
     };
   };
@@ -153,13 +153,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   label: {
+    fontFamily: fonts.bold,
     fontSize: 13,
-    fontWeight: "700",
   },
   umur: {
+    fontFamily: fonts.medium,
     fontSize: 11,
     marginTop: 2,
-    fontWeight: "500",
   },
   minimalisContainer: {
     flexDirection: "row",
@@ -181,11 +181,11 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   minimalisBadgeText: {
+    fontFamily: fonts.bold,
     fontSize: 11,
-    fontWeight: "700",
   },
   minimalisUmur: {
+    fontFamily: fonts.medium,
     fontSize: 11,
-    fontWeight: "500",
   },
 });
