@@ -177,79 +177,17 @@ export default function TabPengaturan() {
                   : "Atur tema secara manual lewat tombol di atas"}
               </Text>
             </View>
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-              <View
-                style={[
-                  styles.satuanBadge,
-                  {
-                    backgroundColor: ikutiSistem
-                      ? darkMode
-                        ? "#1e293b"
-                        : "#eff6ff"
-                      : darkMode
-                      ? "#1e293b"
-                      : "#f1f5f9",
-                  },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.satuanBadgeText,
-                    {
-                      color: ikutiSistem
-                        ? darkMode
-                          ? "#60a5fa"
-                          : "#2563eb"
-                        : theme.textMuted,
-                    },
-                  ]}
-                >
-                  {ikutiSistem ? "Otomatis" : "Manual"}
-                </Text>
-              </View>
-              <Switch
-                value={ikutiSistem}
-                onValueChange={setIkutiSistem}
-                trackColor={{
-                  false: darkMode ? "#334155" : "#cbd5e1",
-                  true: "#2563eb",
-                }}
-                thumbColor="#ffffff"
-                accessibilityRole="switch"
-                accessibilityLabel="Ikuti tema sistem perangkat"
-              />
-            </View>
+            <Switch
+              value={ikutiSistem}
+              onValueChange={setIkutiSistem}
+              trackColor={{ false: "#cbd5e1", true: "#2563eb" }}
+              thumbColor="#ffffff"
+              accessibilityRole="switch"
+              accessibilityLabel="Ikuti tema sistem perangkat"
+            />
           </View>
 
-          {ikutiSistem && (
-            <View
-              style={[
-                styles.systemInfoBox,
-                {
-                  backgroundColor: darkMode ? "#0f172a" : "#eff6ff",
-                  borderColor: darkMode ? "#1e293b" : "#bfdbfe",
-                },
-              ]}
-            >
-              <Ionicons
-                name="information-circle-outline"
-                size={16}
-                color={darkMode ? "#60a5fa" : "#2563eb"}
-                style={{ marginRight: 6 }}
-              />
-              <Text
-                style={[
-                  styles.systemInfoText,
-                  { color: darkMode ? "#93c5fd" : "#1d4ed8" },
-                ]}
-              >
-                Sistem HP Anda saat ini:{" "}
-                <Text style={{ fontWeight: "700" }}>
-                  Mode {temaSistem === "dark" ? "Gelap (Dark)" : "Terang (Light)"}
-                </Text>
-              </Text>
-            </View>
-          )}
+          
         </View>
 
         {/* Bagian Manajemen Cache & Penyimpanan Offline */}
