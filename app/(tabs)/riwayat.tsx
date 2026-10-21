@@ -714,6 +714,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   judulSection: {
+    fontFamily: fonts.bold,
     fontSize: 17,
     fontWeight: "800",
     letterSpacing: 0.2,
@@ -725,6 +726,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   badgeJumlahText: {
+    fontFamily: fonts.bold,
     fontSize: 12,
     fontWeight: "700",
   },
