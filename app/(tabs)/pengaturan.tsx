@@ -1,3 +1,4 @@
+import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import {
   ActivityIndicator,
@@ -11,10 +12,9 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
 import { fonts, spacing } from "../../constants/styles";
-import { hapusSemuaCache } from "../../services/cacheRepository";
 import { usePengaturan } from "../../contexts/PengaturanContext";
+import { hapusSemuaCache } from "../../services/cacheRepository";
 
 export default function TabPengaturan() {
   const {
@@ -82,14 +82,14 @@ export default function TabPengaturan() {
               style={[
                 styles.iconWrapper,
                 {
-                  backgroundColor: darkMode ? "#1e293b" : "#eff6ff",
+                  backgroundColor: theme.primaryBg,
                 },
               ]}
             >
               <Ionicons
                 name="thermometer-outline"
                 size={18}
-                color={celcius ? "#2563eb" : "#f59e0b"}
+                color={celcius ? theme.primary : "#f59e0b"}
               />
             </View>
 
@@ -97,7 +97,9 @@ export default function TabPengaturan() {
               <Text style={[styles.itemTitle, { color: theme.text }]}>
                 Satuan Suhu
               </Text>
-              <Text style={[styles.itemSubtitle, { color: theme.textSecondary }]}>
+              <Text
+                style={[styles.itemSubtitle, { color: theme.textSecondary }]}
+              >
                 {celcius ? "Celsius (°C)" : "Fahrenheit (°F)"}
               </Text>
             </View>
@@ -105,14 +107,16 @@ export default function TabPengaturan() {
             <Switch
               value={celcius}
               onValueChange={setCelcius}
-              trackColor={{ false: "#cbd5e1", true: "#2563eb" }}
+              trackColor={{ false: "#cbd5e1", true: theme.primary }}
               thumbColor="#ffffff"
               accessibilityRole="switch"
               accessibilityLabel={`Satuan suhu: ${celcius ? "Celsius" : "Fahrenheit"}`}
             />
           </View>
 
-          <View style={[styles.insetDivider, { backgroundColor: theme.divider }]} />
+          <View
+            style={[styles.insetDivider, { backgroundColor: theme.divider }]}
+          />
 
           {/* 2. Ikuti Tema Sistem */}
           <View style={styles.row}>
@@ -120,14 +124,14 @@ export default function TabPengaturan() {
               style={[
                 styles.iconWrapper,
                 {
-                  backgroundColor: darkMode ? "#1e293b" : "#f1f5f9",
+                  backgroundColor: theme.cardSecondary,
                 },
               ]}
             >
               <Ionicons
                 name="phone-portrait-outline"
                 size={18}
-                color={ikutiSistem ? "#2563eb" : theme.textSecondary}
+                color={ikutiSistem ? theme.primary : theme.textSecondary}
               />
             </View>
 
@@ -135,7 +139,9 @@ export default function TabPengaturan() {
               <Text style={[styles.itemTitle, { color: theme.text }]}>
                 Ikuti Tema Sistem
               </Text>
-              <Text style={[styles.itemSubtitle, { color: theme.textSecondary }]}>
+              <Text
+                style={[styles.itemSubtitle, { color: theme.textSecondary }]}
+              >
                 {ikutiSistem
                   ? `Otomatis (${temaSistem === "dark" ? "Gelap" : "Terang"})`
                   : "Manual"}
@@ -145,7 +151,7 @@ export default function TabPengaturan() {
             <Switch
               value={ikutiSistem}
               onValueChange={setIkutiSistem}
-              trackColor={{ false: "#cbd5e1", true: "#2563eb" }}
+              trackColor={{ false: "#cbd5e1", true: theme.primary }}
               thumbColor="#ffffff"
               accessibilityRole="switch"
               accessibilityLabel="Ikuti tema sistem perangkat"
@@ -179,14 +185,14 @@ export default function TabPengaturan() {
               style={[
                 styles.iconWrapper,
                 {
-                  backgroundColor: darkMode ? "#1e293b" : "#eff6ff",
+                  backgroundColor: theme.primaryBg,
                 },
               ]}
             >
               <Ionicons
                 name="cloud-offline-outline"
                 size={18}
-                color={darkMode ? "#60a5fa" : "#2563eb"}
+                color={theme.primary}
               />
             </View>
 
@@ -302,8 +308,8 @@ export default function TabPengaturan() {
             <Text
               style={[styles.modalKeterangan, { color: theme.textSecondary }]}
             >
-              Tindakan ini akan mengosongkan semua salinan data cuaca offline dan
-              perkiraan lokal dari perangkat.
+              Tindakan ini akan mengosongkan semua salinan data cuaca offline
+              dan perkiraan lokal dari perangkat.
             </Text>
 
             <View style={styles.modalButtonGroup}>
@@ -390,7 +396,6 @@ const styles = StyleSheet.create({
   itemTitle: {
     fontFamily: fonts.semiBold,
     fontSize: 15,
-    fontWeight: "600",
   },
   itemSubtitle: {
     fontFamily: fonts.medium,
@@ -401,7 +406,22 @@ const styles = StyleSheet.create({
     height: 1,
     marginLeft: 62,
   },
+  actionGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  actionDivider: {
+    width: 1,
+    height: 18,
+    marginHorizontal: 4,
+  },
   hapusButton: {
+    padding: 6,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  chevronButton: {
     padding: 6,
     justifyContent: "center",
     alignItems: "center",
@@ -472,7 +492,6 @@ const styles = StyleSheet.create({
   modalJudul: {
     fontFamily: fonts.bold,
     fontSize: 18,
-    fontWeight: "700",
     marginBottom: 6,
     textAlign: "center",
   },
@@ -498,7 +517,6 @@ const styles = StyleSheet.create({
   modalBatalButtonText: {
     fontFamily: fonts.semiBold,
     fontSize: 14,
-    fontWeight: "600",
   },
   modalHapusButton: {
     flex: 1,
@@ -512,7 +530,5 @@ const styles = StyleSheet.create({
     fontFamily: fonts.bold,
     color: "#ffffff",
     fontSize: 14,
-    fontWeight: "700",
   },
 });
-
