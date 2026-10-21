@@ -702,6 +702,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   tabSwitcherText: {
+    fontFamily: fonts.semiBold,
     fontSize: 13,
   },
   sectionWrapper: {
