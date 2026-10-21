@@ -12,14 +12,14 @@ import {
   PlusJakartaSans_700Bold,
   PlusJakartaSans_800ExtraBold,
 } from "@expo-google-fonts/plus-jakarta-sans";
-
-SplashScreen.preventAutoHideAsync().catch(() => {});
 import { RiwayatProvider } from "../contexts/RiwayatContext";
 import {
   PengaturanProvider,
   usePengaturan,
 } from "../contexts/PengaturanContext";
 import CircularThemeOverlay from "../components/CircularThemeOverlay";
+
+SplashScreen.preventAutoHideAsync().catch(() => {});
 
 function RootContent() {
   const { theme, transition, applyThemeChange, completeTransition } =
@@ -35,6 +35,7 @@ function RootContent() {
           },
           headerShadowVisible: false,
           headerTitleStyle: {
+            fontFamily: "PlusJakartaSans-Bold",
             fontWeight: "700",
             color: theme.text,
           },
@@ -97,3 +98,4 @@ export default function RootLayout() {
     </PengaturanProvider>
   );
 }
+
