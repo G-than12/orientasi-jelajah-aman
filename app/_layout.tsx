@@ -2,6 +2,9 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { View } from "react-native";
+import * as SplashScreen from "expo-splash-screen";
+
+SplashScreen.preventAutoHideAsync().catch(() => {});
 import { RiwayatProvider } from "../contexts/RiwayatContext";
 import {
   PengaturanProvider,
