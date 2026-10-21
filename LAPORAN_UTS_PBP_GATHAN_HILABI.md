@@ -34,7 +34,9 @@
 5. [BAB V: Tugas 3 – Penghapusan Cache Kota & Modal Konfirmasi](#bab-v-tugas-3--penghapusan-cache-kota--modal-konfirmasi)
    - [5.5 Tangkapan Layar Hasil Implementasi (Screenshots)](#55-tangkapan-layar-hasil-implementasi-screenshots)
 6. [BAB VI: Tugas 4 – Implementasi Tema Gelap / Terang / Ikuti Sistem](#bab-vi-tugas-4--implementasi-tema-gelap--terang--ikuti-sistem)
-   - [6.5 Tangkapan Layar Hasil Implementasi (Screenshots)](#65-tangkapan-layar-hasil-implementasi-screenshots)
+   - [6.4 Cara Kerja & Kode Logika "Ikuti Tema Sistem"](#64-cara-kerja--kode-logika-ikuti-tema-sistem-contextspengaturancontexttsx)
+   - [6.6 Tombol Sakelar Cepat di Header Kanan Atas](#66-tombol-sakelar-cepat-di-pojok-kanan-atas-header-animatedthemetoggle)
+   - [6.7 Tangkapan Layar Hasil Implementasi (Screenshots)](#67-tangkapan-layar-hasil-implementasi-screenshots)
 7. [BAB VII: Fitur Tambahan & Nilai Plus (Kreativitas Mahasiswa)](#bab-vii-fitur-tambahan--nilai-plus-kreativitas-mahasiswa)
    - [7.1 Fitur Konversi Satuan Suhu Dinamis (Celsius vs Fahrenheit)](#71-fitur-konversi-satuan-suhu-dinamis-celsius-vs-fahrenheit)
    - [7.6 Tangkapan Layar Hasil Implementasi (Screenshots)](#76-tangkapan-layar-hasil-implementasi-screenshots)
@@ -682,7 +684,74 @@ export const darkTheme: ThemeColors = {
 };
 ```
 
-### 6.4 Potongan Kode Layar Pengaturan Tema (`app/(tabs)/pengaturan.tsx`)
+### 6.4 Cara Kerja & Kode Logika "Ikuti Tema Sistem" (`contexts/PengaturanContext.tsx`)
+
+Fitur **"Ikuti Tema Sistem"** memungkinkan aplikasi menyelaraskan tampilannya secara otomatis dengan mode tema global yang sedang aktif pada sistem operasi perangkat (Android / iOS):
+
+1. **Deteksi Sistem Operasi Real-Time**:
+   - Menggunakan hook bawaan React Native `useColorScheme()` yang mendengarkan (*event listener*) status tampilan perangkat.
+   - Nilai kembalian `temaSistem` bertipe `'light' | 'dark' | null`.
+2. **Hierarki Keputusan Tema (*Decision Hierarchy*)**:
+   - Logika penentuan tema aktif dievaluasi melalui ekspresi kondisional:
+     ```typescript
+     const isDark = preferensi.ikutiSistem ? temaSistem === "dark" : preferensi.darkMode;
+     ```
+   - **Kondisi 1 (Ikuti Sistem Aktif)**: Jika `preferensi.ikutiSistem === true`, maka nilai `isDark` sepenuhnya mengikuti kondisi OS. Bila pengguna mengaktifkan mode gelap di notification shade HP mereka, seluruh antarmuka aplikasi Jelajah Aman otomatis berubah menjadi gelap tanpa perlu memuat ulang aplikasi.
+   - **Kondisi 2 (Mode Manual)**: Jika `preferensi.ikutiSistem === false`, maka nilai `isDark` ditentukan secara mandiri oleh `preferensi.darkMode` yang dipilih langsung oleh pengguna.
+3. **Persistensi Penyimpanan Lokal (`AsyncStorage`)**:
+   - Preferensi tema disimpan secara persisten dengan kunci `@jelajah_aman:preferensi` dalam format JSON, sehingga saat aplikasi ditutup dan dibuka kembali, preferensi pengguna tetap dipertahankan.
+
+```tsx
+// Cuplikan logika Ikuti Tema Sistem pada contexts/PengaturanContext.tsx
+export function PengaturanProvider({ children }: { children: ReactNode }) {
+  const temaSistem = useColorScheme(); // Mendengarkan tema OS perangkat
+  const [preferensi, setPreferensi] = useState<PreferensiApp>(PREFERENSI_DEFAULT);
+
+  // Evaluasi dinamis apakah tema yang aktif adalah mode gelap
+  const isDark = preferensi.ikutiSistem ? temaSistem === "dark" : preferensi.darkMode;
+  const theme = isDark ? darkTheme : lightTheme;
+
+  // Fungsi mengubah sakelar "Ikuti Tema Sistem"
+  const setIkutiSistem = useCallback(async (nilai: boolean) => {
+    setPreferensi((prev) => {
+      const nextPref = { ...prev, ikutiSistem: nilai };
+      simpanPreferensi({ ikutiSistem: nilai });
+      return nextPref;
+    });
+  }, []);
+
+  // Fungsi mengubah mode gelap secara manual
+  const setDarkMode = useCallback(async (nilai: boolean) => {
+    // Saat pengguna memilih manual, nonaktifkan otomatis ikutiSistem
+    setPreferensi((prev) => ({ ...prev, ikutiSistem: false, darkMode: nilai }));
+    await simpanPreferensi({ ikutiSistem: false, darkMode: nilai });
+  }, []);
+
+  return (
+    <PengaturanContext.Provider
+      value={{
+        darkMode: isDark,
+        ikutiSistem: preferensi.ikutiSistem,
+        temaSistem,
+        theme,
+        setDarkMode,
+        setIkutiSistem,
+        // ...
+      }}
+    >
+      {children}
+    </PengaturanContext.Provider>
+  );
+}
+```
+
+---
+
+### 6.5 Antarmuka Pengaturan & Sakelar Ikuti Sistem (`app/(tabs)/pengaturan.tsx`)
+
+Pada layar Pengaturan, antarmuka dirancang dengan UX yang intuitif untuk mencegah konflik preferensi:
+- **Penguncian Sakelar (*Switch Disabled*)**: Ketika *Ikuti Tema Sistem* aktif, baris sakelar *Mode Gelap* secara otomatis terkunci (`disabled={ikutiSistem}`) dan tampilannya dibuat redup (`styles.rowDisabled`) untuk memberi tahu pengguna bahwa warna sedang dikendalikan oleh sistem.
+- **Keterangan Status Dinamis**: Subtitle menampilkan status real-time, misalnya `"Otomatis (Gelap)"` atau `"Otomatis (Terang)"`.
 
 ```tsx
 // Cuplikan dari app/(tabs)/pengaturan.tsx
@@ -698,7 +767,7 @@ export default function TabPengaturan() {
 
   return (
     <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.cardBorder }]}>
-      {/* 1. Opsi Ikuti Tema Sistem Perangkat */}
+      {/* 1. Sakelar Ikuti Tema Sistem Perangkat */}
       <View style={styles.row}>
         <View style={[styles.iconWrapper, { backgroundColor: theme.cardSecondary }]}>
           <Ionicons
@@ -724,7 +793,7 @@ export default function TabPengaturan() {
 
       <View style={[styles.insetDivider, { backgroundColor: theme.divider }]} />
 
-      {/* 2. Opsi Mode Gelap Manual (Hanya aktif jika Ikuti Sistem dimatikan) */}
+      {/* 2. Sakelar Mode Gelap Manual (Hanya aktif jika Ikuti Sistem dimatikan) */}
       <View style={[styles.row, ikutiSistem && styles.rowDisabled]}>
         <View style={[styles.iconWrapper, { backgroundColor: theme.cardSecondary }]}>
           <Ionicons
@@ -755,21 +824,52 @@ export default function TabPengaturan() {
 }
 ```
 
-### 6.5 Tangkapan Layar Hasil Implementasi (Screenshots)
+---
 
-Berikut adalah bukti visual implementasi fitur tema dinamis (Mode Terang, Mode Gelap, dan Ikuti Sistem):
+### 6.6 Tombol Sakelar Cepat di Pojok Kanan Atas Header (`AnimatedThemeToggle`)
+
+Selain melalui menu Pengaturan, aplikasi juga menyediakan **Tombol Sakelar Cepat (*Quick Action Toggle*)** yang dipasang langsung pada pojok kanan atas (*headerRight*) di seluruh layar navigasi tab:
+
+1. **Fungsi & Aksesibilitas**:
+   - Memungkinkan pengguna mengubah tema kapan saja langsung dari layar Beranda, Aktivitas, maupun Tentang secara instan dengan satu kali ketukan, tanpa harus berpindah ke tab Pengaturan.
+2. **Pemasangan pada Layout Navigasi (`app/(tabs)/_layout.tsx`)**:
+   ```tsx
+   // Cuplikan headerRight pada app/(tabs)/_layout.tsx
+   headerRight: () => (
+     <View style={{ marginRight: 16 }}>
+       <AnimatedThemeToggle size="compact" />
+     </View>
+   ),
+   ```
+3. **Mekanisme Animasi & Transisi (`components/AnimatedThemeToggle.tsx`)**:
+   - Komponen berbentuk pil kapsul dengan animasi fisik halus:
+     - **Ibu Jari Bergeser (*Thumb Translation*)**: Berpindah secara mulus antara ikon Matahari (kiri) dan Bulan (kanan).
+     - **Rotasi Ikon 360°**: Ikon berputar penuh saat tema berganti.
+     - **Efek Transisi Melingkar (*Circular Reveal Animation*)**: Menghitung koordinat sentuhan jari pengguna (`pageX`, `pageY`) untuk memicu efek transisi warna melingkar ke seluruh layar.
+   - **Override Otomatis**: Saat tombol cepat ini diketuk pengguna, sistem otomatis menonaktifkan `ikutiSistem: false` dan langsung membalikkan mode gelap (`darkMode: !isDark`) agar kehendak langsung pengguna diutamakan.
+
+---
+
+### 6.7 Tangkapan Layar Hasil Implementasi (Screenshots)
+
+Berikut adalah bukti visual implementasi lengkap fitur tema dinamis (Pengaturan, Sakelar Cepat Header, Mode Terang, dan Mode Gelap):
 
 <div align="center">
 
-| Menu Pengaturan Tema | Tampilan Mode Terang (*Light Mode*) | Tampilan Mode Gelap (*Atmospheric Dark*) |
-| :---: | :---: | :---: |
-| <img src="./docs/screenshots/04_pengaturan_tema.png" width="240" alt="Menu Pengaturan Tema" /> | <img src="./docs/screenshots/04_tampilan_terang.png" width="240" alt="Beranda Mode Terang" /> | <img src="./docs/screenshots/04_tampilan_gelap.png" width="240" alt="Beranda Mode Gelap" /> |
-| *Gambar 6.1: Sakelar tema di Pengaturan* | *Gambar 6.2: Layar Beranda bertema Terang* | *Gambar 6.3: Layar Beranda bertema Gelap Indigo* |
+| Sakelar Cepat Header Kanan Atas | Menu Pengaturan Tema |
+| :---: | :---: |
+| <img src="./docs/screenshots/04_header_theme_toggle.png" width="340" alt="Tombol Sakelar Cepat Header Kanan Atas" /> | <img src="./docs/screenshots/04_pengaturan_tema.png" width="340" alt="Menu Pengaturan Tema" /> |
+| *Gambar 6.1: Tombol sakelar cepat animasi matahari/bulan di kanan atas header* | *Gambar 6.2: Sakelar Ikuti Tema Sistem & Mode Gelap di menu Pengaturan* |
+
+| Tampilan Beranda Mode Terang (*Light Mode*) | Tampilan Beranda Mode Gelap (*Atmospheric Dark*) |
+| :---: | :---: |
+| <img src="./docs/screenshots/04_tampilan_terang.png" width="340" alt="Beranda Mode Terang" /> | <img src="./docs/screenshots/04_tampilan_gelap.png" width="340" alt="Beranda Mode Gelap" /> |
+| *Gambar 6.3: Layar Beranda bertema Terang (Light Mode)* | *Gambar 6.4: Layar Beranda bertema Gelap Indigo (Dark Mode)* |
 
 </div>
 
 > [!NOTE]
-> Aset tangkapan layar fitur tema dinamis (Pengaturan, Mode Terang, dan Mode Gelap) tersimpan pada: `docs/screenshots/04_pengaturan_tema.png`, `docs/screenshots/04_tampilan_terang.png`, dan `docs/screenshots/04_tampilan_gelap.png`.
+> Seluruh aset tangkapan layar fitur tema dinamis di atas tersimpan pada: `docs/screenshots/04_header_theme_toggle.png`, `docs/screenshots/04_pengaturan_tema.png`, `docs/screenshots/04_tampilan_terang.png`, dan `docs/screenshots/04_tampilan_gelap.png`.
 
 ---
 

@@ -16,9 +16,10 @@ Simpan atau seret (*drag-and-drop*) gambar tangkapan layar Anda ke dalam folder 
 | `02_riwayat_klik_detail.png` | **Tugas 2** (Navigasi) | Sub-bab 4.5 | Tangkapan layar halaman detail cuaca kota setelah salah satu kartu riwayat diklik. |
 | `03_tombol_hapus_cache.png` | **Tugas 3** (Cache) | Sub-bab 5.5 | Tangkapan layar tombol tempat sampah merah pada baris kartu kota offline di Beranda. |
 | `03_modal_konfirmasi_hapus.png` | **Tugas 3** (Modal) | Sub-bab 5.5 | Tangkapan layar dialog pop-up modal: *"Hapus Cache Offline?"* lengkap dengan tombol Batal dan Hapus. |
-| `04_pengaturan_tema.png` | **Tugas 4** (Tema) | Sub-bab 6.5 | Tangkapan layar menu Pengaturan dengan sakelar *"Ikuti Tema Sistem"* dan *"Mode Gelap"*. |
-| `04_tampilan_terang.png` | **Tugas 4** (Light Mode) | Sub-bab 6.5 | Tangkapan layar layar Beranda dalam Mode Terang (Light Theme). |
-| `04_tampilan_gelap.png` | **Tugas 4** (Dark Mode) | Sub-bab 6.5 | Tangkapan layar layar Beranda dalam Mode Gelap (Dark Theme) dengan palet Atmospheric Indigo. |
+| `04_header_theme_toggle.png` | **Tugas 4** (Tombol Cepat) | Sub-bab 6.7 | Tangkapan layar tombol sakelar cepat animasi matahari/bulan di pojok kanan atas header. |
+| `04_pengaturan_tema.png` | **Tugas 4** (Tema) | Sub-bab 6.7 | Tangkapan layar menu Pengaturan dengan sakelar *"Ikuti Tema Sistem"* dan *"Mode Gelap"*. |
+| `04_tampilan_terang.png` | **Tugas 4** (Light Mode) | Sub-bab 6.7 | Tangkapan layar layar Beranda dalam Mode Terang (Light Theme). |
+| `04_tampilan_gelap.png` | **Tugas 4** (Dark Mode) | Sub-bab 6.7 | Tangkapan layar layar Beranda dalam Mode Gelap (Dark Theme) dengan palet Atmospheric Indigo. |
 | `05_tipografi_dan_kartu.png` | **Fitur Tambahan** | Sub-bab 7.5 | Tangkapan layar kartu cuaca utama dengan font kustom Google Fonts Plus Jakarta Sans dan satuan suhu Fahrenheit. |
 | `05_modal_favorit_dark.png` | **Fitur Tambahan** | Sub-bab 7.5 | Tangkapan layar modal dialog Simpan ke Favorit dalam Mode Gelap (*Dark Theme*). |
 | `05_status_badge.png` | **Fitur Tambahan** | Sub-bab 7.5 | Tangkapan layar indikator badge status data (*Online* / *Tersimpan*). |
