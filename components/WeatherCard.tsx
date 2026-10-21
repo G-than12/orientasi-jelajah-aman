@@ -386,6 +386,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   statusFooterText: {
+    fontFamily: fonts.medium,
     fontSize: 12,
     fontWeight: "500",
   },
@@ -396,6 +397,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   detailLinkText: {
+    fontFamily: fonts.semiBold,
     fontSize: 12,
     fontWeight: "600",
   },
