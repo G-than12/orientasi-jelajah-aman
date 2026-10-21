@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   judul: {
+    fontFamily: fonts.extraBold,
     fontSize: typeScale.judul,
     fontWeight: "800",
   },
@@ -112,6 +113,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   versiText: {
+    fontFamily: fonts.semiBold,
     fontSize: typeScale.keterangan,
     fontWeight: "600",
   },
