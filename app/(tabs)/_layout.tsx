@@ -57,8 +57,8 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Beranda",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home-outline" size={size} color={color} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons name={focused ? "home" : "home-outline"} size={size} color={color} />
           ),
         }}
       />
@@ -66,8 +66,8 @@ export default function TabLayout() {
         name="riwayat"
         options={{
           title: "Aktivitas",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="time-outline" size={size} color={color} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons name={focused ? "time" : "time-outline"} size={size} color={color} />
           ),
         }}
       />
@@ -75,8 +75,8 @@ export default function TabLayout() {
         name="pengaturan"
         options={{
           title: "Pengaturan",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="settings-outline" size={size} color={color} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons name={focused ? "settings" : "settings-outline"} size={size} color={color} />
           ),
         }}
       />
@@ -84,9 +84,9 @@ export default function TabLayout() {
         name="tentang"
         options={{
           title: "Tentang",
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
-              name="information-circle-outline"
+              name={focused ? "information-circle" : "information-circle-outline"}
               size={size}
               color={color}
             />
