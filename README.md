@@ -12,6 +12,9 @@
 
 Proyek ini dikembangkan sebagai bagian dari praktikum mata kuliah **Pemrograman Berbasis Platform (INF2528)** pada Program Studi **Informatika, Fakultas Sains dan Teknologi, UIN K.H. Abdurrahman Wahid Pekalongan**.
 
+> 📄 **Laporan Lengkap Ujian Tengah Semester (UTS):**  
+> Dokumentasi teknis terperinci per bab penugasan, analisis kode, dan galeri tangkapan layar fitur tersedia pada berkas [LAPORAN_UTS_PBP_GATHAN_HILABI.md](./LAPORAN_UTS_PBP_GATHAN_HILABI.md).
+
 ---
 
 ## 🌟 Fitur Utama
@@ -77,6 +80,28 @@ Proyek ini dikembangkan sebagai bagian dari praktikum mata kuliah **Pemrograman 
   * Dukungan geser **Mouse Drag-to-Scroll** (kursor otomatis berubah menjadi *grab*) meniru pengalaman usap layar sentuh di ponsel.
   * Dukungan putar **Roda Mouse (*Mouse Wheel*)** untuk menggeser daftar secara horizontal.
 * **Penghapusan Presisi per Kota (*Single-City Invalidation*):** Menghapus salah satu kota hanya membuang cache kota yang dipilih dari SQLite dan AsyncStorage Web dengan pembaruan tampilan instan (*optimistic update*).
+
+### 11. 🧭 Kustomisasi Ikon Tab Bar Representatif (`Ionicons`)
+* **Ikon Adaptif `@expo/vector-icons`:** Menggantikan ikon default dengan ikon representatif yang bertransformasi dinamis antara *focused* (solid) dan *unfocused* (outline) untuk Beranda (`home`), Aktivitas (`time`), Pengaturan (`settings`), dan Tentang (`information-circle`).
+* **Area Aman Layar (*Safe Area*):** Menghitung dimensi `useSafeAreaInsets` untuk memastikan teks label dan tombol tidak terpotong pada Android *gesture bar* maupun iOS *home indicator*.
+
+### 12. 🕒 Riwayat Pencarian Terakhir (Maksimal 10 Kota, LIFO & Deduplikasi)
+* **Penyimpanan Cerdas `AsyncStorage`:** Otomatis merekam kota hasil pencarian pengguna ke kunci persisten `@jelajah_aman:riwayat_pencarian`.
+* **Kapasitas & Deduplikasi:** Dibatasi maksimal 10 pencarian terakhir secara LIFO (*Last-In, First-Out*). Jika kota yang sama dicari ulang, posisinya otomatis dipindahkan ke urutan teratas tanpa menduplikasi baris.
+* **Navigasi Cepat:** Setiap kartu riwayat dapat diklik langsung untuk membuka halaman detail cuaca kota tersebut.
+
+### 13. 🗑️ Modal Dialog Konfirmasi Interaktif Hapus Cache
+* **Keamanan Data Pengguna:** Dilengkapi modal pop-up kustom *"Hapus Cache Offline?"* sebelum data dihapus secara permanen dari database SQLite.
+* **Konsistensi UI:** Menggunakan komponen modal terpadu beranimasi fade yang serasi dengan tema aplikasi di Android, iOS, maupun Web (menggantikan dialog alert bawaan browser).
+
+### 14. 🔤 Tipografi Modern Google Fonts (Plus Jakarta Sans) & Palet Atmospheric Indigo
+* **Google Fonts Terintegrasi:** Mengadopsi font **Plus Jakarta Sans** dengan 5 varian bobot (`Regular 400`, `Medium 500`, `SemiBold 600`, `Bold 700`, `ExtraBold 800`).
+* **Pembersihan Android `fontWeight` Clash:** Menghilangkan redundansi bobot font sehingga sistem Android tidak mengalami *fallback* ke Roboto.
+* **Palet Cuaca Internasional:** Menggunakan warna **Atmospheric Indigo `#4F46E5`**, **Electric Sky `#0EA5E9`**, serta latar malam **Twilight Midnight `#0D1527`** dengan garis tepi **Indigo Glow**.
+
+### 15. 🌡️ Konversi Satuan Suhu Dinamis (Celsius °C $\leftrightarrow$ Fahrenheit °F)
+* **Sakelar Preferensi Global:** Mengizinkan pengguna beralih antara satuan metrik **Celsius (°C)** dan imperial **Fahrenheit (°F)** dari menu Pengaturan.
+* **Kalkulasi Reaktif Presisi:** Menerapkan rumus konversi $\text{°F} = \text{round}(\text{°C} \times 9/5 + 32)$ secara otomatis pada seluruh antarmuka kartu cuaca.
 
 ---
 
@@ -191,6 +216,7 @@ orientasi-jelajah-aman/
 | **Pertemuan 5** | API Realtime Cuaca & AQI | Integrasi API Cuaca & Kualitas Udara ganda paralel, pencegahan race condition, kamus WMO, dan timeout handler. |
 | **Pertemuan 6** | Lokasi, Permission & AsyncStorage | Integrasi GPS `expo-location` (3 kondisi izin), persistensi `AsyncStorage`, modal tambah favorit berbasis parameter, tab riwayat dinamis, konfirmasi hapus lintas platform, dan sinkronisasi status duplikat. |
 | **Pertemuan 7** | SQLite, Cache & Mode Offline | Integrasi SQLite (`expo-sqlite`) dengan migrasi skema v1 & v2 (`PRAGMA user_version`), caching offline-first dengan TTL 30 menit, komponen `StatusData` (asal & umur data), fallback data basi saat offline, dan fitur invalidasi cache manual di tab Pengaturan. |
+| **Pertemuan 8 (UTS)** | Kustomisasi Ikon, Riwayat Pencarian, Modal Konfirmasi, Tema Dinamis & Desain Premium | Penyelesaian 4 tugas pokok UTS & inovasi nilai plus: Kustomisasi Ikon Tab Bar (`Ionicons` aktif/inaktif), Riwayat Pencarian Terakhir (`AsyncStorage` max 10 kota, LIFO & deduplikasi otomatis), Modal Dialog Konfirmasi Interaktif Hapus Cache, Sinkronisasi Tema Sistem (`useColorScheme`), Tipografi Modern Google Fonts Plus Jakarta Sans, Palet Warna Atmospheric Indigo, dan Konversi Suhu Dinamis (°C/°F). |
 
 ---
 
