@@ -1111,7 +1111,17 @@ $ npx tsc --noEmit
 
 ## BAB VIII: RIWAYAT COMMIT GIT (25++ COMMITS)
 
-Pengembangan dilakukan secara disiplin dan bertahap dengan menerapkan standar **Conventional Commits** (`feat:`, `style:`, `refactor:`, `fix:`). Berikut adalah riwayat commit aktual pada repositori GitHub:
+Pengembangan dilakukan secara disiplin dan bertahap dengan menerapkan standar **Conventional Commits** (`feat:`, `style:`, `refactor:`, `fix:`). Berikut adalah bukti visual tangkapan layar riwayat commit aktual pada repositori GitHub:
+
+<div align="center">
+
+<img src="./docs/screenshots/BAB VII COMMIT.png" class="code-screenshot" width="540" alt="Tangkapan Layar Riwayat Commit Git" />
+
+*Gambar 8.1: Tangkapan layar riwayat commit Git pada repositori GitHub*
+
+</div>
+
+Daftar rincian teks commit hash dan deskripsi:
 
 ```bash
 da13d7c style(beranda): perbarui tombol favorit dan modal konfirmasi dengan palet indigo
