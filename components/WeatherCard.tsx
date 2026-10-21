@@ -52,7 +52,7 @@ export default function WeatherCard({
 
   const teksAQI =
     indeksAQI !== undefined
-      ? `AQI: ${indeksAQI} â€¢ ${tema.label}`
+      ? `AQI: ${indeksAQI} • ${tema.label}`
       : `AQI: ${tema.label}`;
 
   const labelAksesibilitas =
@@ -136,7 +136,7 @@ export default function WeatherCard({
 
       {/* 2. Suhu Utama & Satuan */}
       <View style={styles.content}>
-        <Text style={[styles.suhu, { color: theme.text }]}>{suhuTampil}Â°</Text>
+        <Text style={[styles.suhu, { color: theme.text }]}>{suhuTampil}°</Text>
         <View style={styles.satuanContainer}>
           <Text style={[styles.satuan, { color: theme.textSecondary }]}>
             {namaSatuan}
@@ -190,7 +190,7 @@ export default function WeatherCard({
                   </Text>
                 </View>
                 <Text style={[styles.infoItemValue, { color: theme.text }]}>
-                  {suhuMinTampil}Â° / {suhuMaksTampil}Â°
+                  {suhuMinTampil}° / {suhuMaksTampil}°
                 </Text>
               </View>
             )}
@@ -216,7 +216,7 @@ export default function WeatherCard({
                     </Text>
                   </View>
                   <Text style={[styles.infoItemValue, { color: theme.text }]}>
-                    {pm25} Âµg/mÂ³
+                    {pm25} µg/m³
                   </Text>
                 </View>
               )}
@@ -238,7 +238,7 @@ export default function WeatherCard({
                     </Text>
                   </View>
                   <Text style={[styles.infoItemValue, { color: theme.text }]}>
-                    {pm10} Âµg/mÂ³
+                    {pm10} µg/m³
                   </Text>
                 </View>
               )}
@@ -264,7 +264,7 @@ export default function WeatherCard({
                   { color: theme.textSecondary },
                 ]}
               >
-                {statusInfo.label} â€¢ {statusInfo.umur}
+                {statusInfo.label} • {statusInfo.umur}
               </Text>
             </View>
           ) : (
@@ -429,11 +429,13 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   infoItemLabel: {
+    fontFamily: fonts.semiBold,
     fontSize: 12,
     fontWeight: "600",
     color: "#64748b",
   },
   infoItemValue: {
+    fontFamily: fonts.bold,
     fontSize: 14,
     fontWeight: "700",
     color: "#1e293b",
