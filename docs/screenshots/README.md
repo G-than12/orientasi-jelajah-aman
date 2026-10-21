@@ -19,9 +19,9 @@ Simpan atau seret (*drag-and-drop*) gambar tangkapan layar Anda ke dalam folder 
 | `04_pengaturan_tema.png` | **Tugas 4** (Tema) | Sub-bab 6.5 | Tangkapan layar menu Pengaturan dengan sakelar *"Ikuti Tema Sistem"* dan *"Mode Gelap"*. |
 | `04_tampilan_terang.png` | **Tugas 4** (Light Mode) | Sub-bab 6.5 | Tangkapan layar layar Beranda dalam Mode Terang (Light Theme). |
 | `04_tampilan_gelap.png` | **Tugas 4** (Dark Mode) | Sub-bab 6.5 | Tangkapan layar layar Beranda dalam Mode Gelap (Dark Theme) dengan palet Atmospheric Indigo. |
-| `05_tipografi_dan_kartu.png` | **Fitur Tambahan** | Sub-bab 7.5 | Tangkapan layar kartu cuaca utama dengan font kustom Google Fonts Plus Jakarta Sans. |
-| `05_status_badge.png` | **Fitur Tambahan** | Sub-bab 7.5 | Tangkapan layar indikator badge status data (Online / Tersimpan / Offline). |
-| `05_typescript_check.png` | **Fitur Tambahan** | Sub-bab 7.5 | Tangkapan layar terminal yang menjalankan perintah `npx tsc --noEmit` bersih (0 error). |
+| `05_tipografi_dan_kartu.png` | **Fitur Tambahan** | Sub-bab 7.5 | Tangkapan layar kartu cuaca utama dengan font kustom Google Fonts Plus Jakarta Sans dan satuan suhu Fahrenheit. |
+| `05_modal_favorit_dark.png` | **Fitur Tambahan** | Sub-bab 7.5 | Tangkapan layar modal dialog Simpan ke Favorit dalam Mode Gelap (*Dark Theme*). |
+| `05_status_badge.png` | **Fitur Tambahan** | Sub-bab 7.5 | Tangkapan layar indikator badge status data (*Online* / *Tersimpan*). |
 
 ---
 

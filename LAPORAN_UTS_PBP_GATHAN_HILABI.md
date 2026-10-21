@@ -231,15 +231,14 @@ Berikut adalah bukti visual implementasi kustomisasi ikon tab bar dan label navi
 
 <div align="center">
 
-![Tangkapan Layar Kustomisasi Tab Bar Bawah](./docs/screenshots/01_tab_bar_navigation.png)
+<img src="./docs/screenshots/01_tab_bar_navigation.png" width="460" alt="Navigasi Tab Bar Bawah" />
 
 *Gambar 3.1: Navigasi Tab Bar bawah dengan ikon kustom Ionicons (`Beranda`, `Aktivitas`, `Pengaturan`, `Tentang`)*
 
 </div>
 
-> [!TIP]
-> **Panduan Penempatan Screenshot:**
-> Letakkan berkas gambar hasil tangkapan layar ponsel/web Anda pada folder `docs/screenshots/01_tab_bar_navigation.png`. Gambar akan otomatis muncul di laporan ini.
+> [!NOTE]
+> Aset tangkapan layar navigasi tab bar tersimpan pada: `docs/screenshots/01_tab_bar_navigation.png`.
 
 ---
 
@@ -430,10 +429,8 @@ Berikut adalah bukti visual implementasi fitur riwayat pencarian terakhir dan in
 
 </div>
 
-> [!TIP]
-> **Panduan Penempatan Screenshot:**
-> - Simpan screenshot daftar riwayat di: `docs/screenshots/02_riwayat_pencarian.png`
-> - Simpan screenshot halaman detail hasil klik riwayat di: `docs/screenshots/02_riwayat_klik_detail.png`
+> [!NOTE]
+> Aset tangkapan layar fitur riwayat pencarian tersimpan pada: `docs/screenshots/02_riwayat_pencarian.png` dan `docs/screenshots/02_riwayat_klik_detail.png`.
 
 ---
 
@@ -582,10 +579,8 @@ Berikut adalah bukti visual implementasi penghapusan cache kota offline beserta 
 
 </div>
 
-> [!TIP]
-> **Panduan Penempatan Screenshot:**
-> - Simpan screenshot tombol hapus di: `docs/screenshots/03_tombol_hapus_cache.png`
-> - Simpan screenshot pop-up modal konfirmasi di: `docs/screenshots/03_modal_konfirmasi_hapus.png`
+> [!NOTE]
+> Aset tangkapan layar fitur penghapusan cache dan modal konfirmasi tersimpan pada: `docs/screenshots/03_tombol_hapus_cache.png` dan `docs/screenshots/03_modal_konfirmasi_hapus.png`.
 
 ---
 
@@ -772,11 +767,8 @@ Berikut adalah bukti visual implementasi fitur tema dinamis (Mode Terang, Mode G
 
 </div>
 
-> [!TIP]
-> **Panduan Penempatan Screenshot:**
-> - Simpan screenshot menu pengaturan di: `docs/screenshots/04_pengaturan_tema.png`
-> - Simpan screenshot tampilan terang di: `docs/screenshots/04_tampilan_terang.png`
-> - Simpan screenshot tampilan gelap di: `docs/screenshots/04_tampilan_gelap.png`
+> [!NOTE]
+> Aset tangkapan layar fitur tema dinamis (Pengaturan, Mode Terang, dan Mode Gelap) tersimpan pada: `docs/screenshots/04_pengaturan_tema.png`, `docs/screenshots/04_tampilan_terang.png`, dan `docs/screenshots/04_tampilan_gelap.png`.
 
 ---
 
@@ -820,22 +812,25 @@ const [fontsLoaded, fontError] = useFonts({
 
 ### 7.5 Tangkapan Layar Hasil Implementasi (Screenshots)
 
-Berikut adalah bukti visual implementasi fitur kreativitas mahasiswa (Tipografi Plus Jakarta Sans, Palet Indigo, dan Verifikasi TypeScript):
+Berikut adalah bukti visual implementasi fitur kreativitas mahasiswa (Tipografi Plus Jakarta Sans, Dialog Modal Tema Gelap, dan Indikator Status Data):
 
 <div align="center">
 
-| Tipografi Plus Jakarta Sans & Kartu Cuaca | Indikator Status Data (Online/Offline) | Verifikasi TypeScript (0 Error) |
+| Tipografi Plus Jakarta Sans & Suhu | Modal Dialog Tambah Favorit (*Dark Theme*) | Indikator Status Data (*Online / Tersimpan*) |
 | :---: | :---: | :---: |
-| <img src="./docs/screenshots/05_tipografi_dan_kartu.png" width="240" alt="Tipografi Plus Jakarta Sans" /> | <img src="./docs/screenshots/05_status_badge.png" width="240" alt="Status Data Badge" /> | <img src="./docs/screenshots/05_typescript_check.png" width="240" alt="Terminal TSC 0 Error" /> |
-| *Gambar 7.1: Tipografi Plus Jakarta Sans & Kartu Cuaca* | *Gambar 7.2: Status data Online / Tersimpan / Offline* | *Gambar 7.3: Hasil audit type-safety npx tsc --noEmit* |
+| <img src="./docs/screenshots/05_tipografi_dan_kartu.png" width="240" alt="Tipografi Plus Jakarta Sans" /> | <img src="./docs/screenshots/05_modal_favorit_dark.png" width="240" alt="Modal Simpan Favorit Dark Mode" /> | <img src="./docs/screenshots/05_status_badge.png" width="240" alt="Status Data Badge" /> |
+| *Gambar 7.1: Tipografi Plus Jakarta Sans pada Kartu Cuaca* | *Gambar 7.2: Modal Tambah Favorit dalam Mode Gelap* | *Gambar 7.3: Status data Online & Tersimpan pada Beranda* |
 
 </div>
 
-> [!TIP]
-> **Panduan Penempatan Screenshot:**
-> - Simpan screenshot tampilan tipografi di: `docs/screenshots/05_tipografi_dan_kartu.png`
-> - Simpan screenshot badge status di: `docs/screenshots/05_status_badge.png`
-> - Simpan screenshot terminal lolos pengecekan TypeScript di: `docs/screenshots/05_typescript_check.png`
+```bash
+# Verifikasi Kualitas Kode & Type-Safety:
+$ npx tsc --noEmit
+# Exit Code: 0 (Clean Compile - Bebas dari seluruh kesalahan pengetikan tipe TypeScript)
+```
+
+> [!NOTE]
+> Seluruh aset tangkapan layar di atas tersimpan secara persisten pada direktori repositori: `docs/screenshots/`.
 
 ---
 
