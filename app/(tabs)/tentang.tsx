@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { typeScale, spacing } from "../../constants/styles";
+import { fonts, typeScale, spacing } from "../../constants/styles";
 import { usePengaturan } from "../../contexts/PengaturanContext";
 
 export default function TabTentang() {
@@ -56,7 +56,7 @@ export default function TabTentang() {
         </Text>
         <Text style={[styles.nama, { color: theme.text }]}>Gathan</Text>
         <Text style={[styles.subtext, { color: theme.textSecondary }]}>
-          Informatika — UIN Gus Dur Pekalongan
+          Informatika â€” UIN Gus Dur Pekalongan
         </Text>
       </View>
 
