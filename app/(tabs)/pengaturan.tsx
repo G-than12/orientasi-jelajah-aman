@@ -20,8 +20,6 @@ export default function TabPengaturan() {
   const {
     celcius,
     setCelcius,
-    notifikasi,
-    setNotifikasi,
     darkMode,
     ikutiSistem,
     setIkutiSistem,
@@ -41,11 +39,13 @@ export default function TabPengaturan() {
     setSedangMenghapus(true);
     try {
       await hapusSemuaCache();
-      setPesan("Data cuaca tersimpan sudah dihapus.");
+      setPesan("Cache cuaca berhasil dibersihkan");
       setTampilkanModalHapus(false);
+      setTimeout(() => setPesan(null), 3000);
     } catch {
-      setPesan("Gagal menghapus cache cuaca.");
+      setPesan("Gagal membersihkan cache");
       setTampilkanModalHapus(false);
+      setTimeout(() => setPesan(null), 3000);
     } finally {
       setSedangMenghapus(false);
     }
@@ -56,11 +56,17 @@ export default function TabPengaturan() {
       style={[styles.container, { backgroundColor: theme.bg }]}
       edges={["bottom", "left", "right"]}
     >
-      <ScrollView contentContainerStyle={styles.content}>
-        {/* Bagian Preferensi Tampilan & Cuaca */}
+      <ScrollView
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* ======================================================== */}
+        {/* SEKSI 1: PREFERENSI APLIKASI                             */}
+        {/* ======================================================== */}
         <Text style={[styles.sectionHeader, { color: theme.textMuted }]}>
           Preferensi
         </Text>
+
         <View
           style={[
             styles.card,
@@ -70,113 +76,72 @@ export default function TabPengaturan() {
             },
           ]}
         >
-          {/* 1. Pengaturan Satuan Suhu */}
+          {/* 1. Satuan Suhu */}
           <View style={styles.row}>
-            <View style={{ flex: 1, marginRight: 12 }}>
-              <View style={styles.titleWithIcon}>
-                <Ionicons
-                  name="thermometer-outline"
-                  size={18}
-                  color={celcius ? "#2563eb" : "#f59e0b"}
-                  style={{ marginRight: 6 }}
-                />
-                <Text style={[styles.itemTitle, { color: theme.text }]}>
-                  Satuan Suhu
-                </Text>
-              </View>
-              <Text style={[styles.itemSubtitle, { color: theme.textSecondary }]}>
-                {celcius ? "Celsius (Â°C)" : "Fahrenheit (Â°F)"}
-              </Text>
-            </View>
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-              <View
-                style={[
-                  styles.satuanBadge,
-                  {
-                    backgroundColor: celcius
-                      ? darkMode
-                        ? "#1e293b"
-                        : "#eff6ff"
-                      : darkMode
-                      ? "#332211"
-                      : "#fef3c7",
-                  },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.satuanBadgeText,
-                    { color: celcius ? (darkMode ? "#60a5fa" : "#2563eb") : "#f59e0b" },
-                  ]}
-                >
-                  {celcius ? "Â°C" : "Â°F"}
-                </Text>
-              </View>
-              <Switch
-                value={celcius}
-                onValueChange={setCelcius}
-                trackColor={{ false: "#f59e0b", true: "#2563eb" }}
-                thumbColor="#ffffff"
-                accessibilityRole="switch"
-                accessibilityLabel={`Satuan suhu aktif: ${
-                  celcius ? "Celsius" : "Fahrenheit"
-                }`}
+            <View
+              style={[
+                styles.iconWrapper,
+                {
+                  backgroundColor: darkMode ? "#1e293b" : "#eff6ff",
+                },
+              ]}
+            >
+              <Ionicons
+                name="thermometer-outline"
+                size={18}
+                color={celcius ? "#2563eb" : "#f59e0b"}
               />
             </View>
-          </View>
 
-          <View style={[styles.divider, { backgroundColor: theme.divider }]} />
-
-          {/* 3. Pengaturan Notifikasi Cuaca Buruk */}
-          <View style={styles.row}>
-            <View style={{ flex: 1, marginRight: 12 }}>
-              <View style={styles.titleWithIcon}>
-                <Ionicons
-                  name="notifications-outline"
-                  size={18}
-                  color={darkMode ? "#60a5fa" : "#2563eb"}
-                  style={{ marginRight: 6 }}
-                />
-                <Text style={[styles.itemTitle, { color: theme.text }]}>
-                  Notifikasi Cuaca Buruk
-                </Text>
-              </View>
+            <View style={styles.textWrapper}>
+              <Text style={[styles.itemTitle, { color: theme.text }]}>
+                Satuan Suhu
+              </Text>
               <Text style={[styles.itemSubtitle, { color: theme.textSecondary }]}>
-                Peringatan dini saat AQI tidak sehat
+                {celcius ? "Celsius (°C)" : "Fahrenheit (°F)"}
               </Text>
             </View>
+
             <Switch
-              value={notifikasi}
-              onValueChange={setNotifikasi}
-              trackColor={{ false: darkMode ? "#334155" : "#cbd5e1", true: "#2563eb" }}
+              value={celcius}
+              onValueChange={setCelcius}
+              trackColor={{ false: "#cbd5e1", true: "#2563eb" }}
               thumbColor="#ffffff"
               accessibilityRole="switch"
-              accessibilityLabel="Notifikasi cuaca buruk"
+              accessibilityLabel={`Satuan suhu: ${celcius ? "Celsius" : "Fahrenheit"}`}
             />
           </View>
 
-          <View style={[styles.divider, { backgroundColor: theme.divider }]} />
+          <View style={[styles.insetDivider, { backgroundColor: theme.divider }]} />
 
-          {/* 3. Pengaturan Ikuti Tema Sistem */}
+          {/* 2. Ikuti Tema Sistem */}
           <View style={styles.row}>
-            <View style={{ flex: 1, marginRight: 12 }}>
-              <View style={styles.titleWithIcon}>
-                <Ionicons
-                  name="phone-portrait-outline"
-                  size={18}
-                  color={ikutiSistem ? "#2563eb" : darkMode ? "#60a5fa" : "#64748b"}
-                  style={{ marginRight: 6 }}
-                />
-                <Text style={[styles.itemTitle, { color: theme.text }]}>
-                  Ikuti Tema Sistem
-                </Text>
-              </View>
+            <View
+              style={[
+                styles.iconWrapper,
+                {
+                  backgroundColor: darkMode ? "#1e293b" : "#f1f5f9",
+                },
+              ]}
+            >
+              <Ionicons
+                name="phone-portrait-outline"
+                size={18}
+                color={ikutiSistem ? "#2563eb" : theme.textSecondary}
+              />
+            </View>
+
+            <View style={styles.textWrapper}>
+              <Text style={[styles.itemTitle, { color: theme.text }]}>
+                Ikuti Tema Sistem
+              </Text>
               <Text style={[styles.itemSubtitle, { color: theme.textSecondary }]}>
                 {ikutiSistem
-                  ? `Otomatis ikuti tema HP (${temaSistem === "dark" ? "Gelap" : "Terang"})`
-                  : "Atur tema secara manual lewat tombol di atas"}
+                  ? `Otomatis (${temaSistem === "dark" ? "Gelap" : "Terang"})`
+                  : "Manual"}
               </Text>
             </View>
+
             <Switch
               value={ikutiSistem}
               onValueChange={setIkutiSistem}
@@ -186,19 +151,20 @@ export default function TabPengaturan() {
               accessibilityLabel="Ikuti tema sistem perangkat"
             />
           </View>
-
-          
         </View>
 
-        {/* Bagian Manajemen Cache & Penyimpanan Offline */}
+        {/* ======================================================== */}
+        {/* SEKSI 2: PENYIMPANAN                                     */}
+        {/* ======================================================== */}
         <Text
           style={[
             styles.sectionHeader,
             { color: theme.textMuted, marginTop: spacing.sedang },
           ]}
         >
-          Penyimpanan & Cache SQLite
+          Penyimpanan
         </Text>
+
         <View
           style={[
             styles.card,
@@ -209,59 +175,99 @@ export default function TabPengaturan() {
           ]}
         >
           <View style={styles.row}>
-            <View style={{ flex: 1, marginRight: 12 }}>
+            <View
+              style={[
+                styles.iconWrapper,
+                {
+                  backgroundColor: darkMode ? "#1e293b" : "#eff6ff",
+                },
+              ]}
+            >
+              <Ionicons
+                name="cloud-offline-outline"
+                size={18}
+                color={darkMode ? "#60a5fa" : "#2563eb"}
+              />
+            </View>
+
+            <TouchableOpacity
+              style={styles.textWrapper}
+              activeOpacity={0.7}
+              onPress={() => setTampilkanModalHapus(true)}
+              accessibilityRole="button"
+              accessibilityLabel="Hapus Cache Cuaca Offline"
+            >
               <Text style={[styles.itemTitle, { color: theme.text }]}>
                 Cache Cuaca Offline
               </Text>
-              <Text style={[styles.itemSubtitle, { color: theme.textSecondary }]}>
-                Hapus salinan database lokal untuk membebaskan ruang atau uji
-                first-run
+              <Text
+                style={[styles.itemSubtitle, { color: theme.textSecondary }]}
+                numberOfLines={1}
+              >
+                Kosongkan data cuaca lokal
               </Text>
+            </TouchableOpacity>
+
+            <View style={styles.actionGroup}>
+              <TouchableOpacity
+                style={styles.hapusButton}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                onPress={() => setTampilkanModalHapus(true)}
+                disabled={sedangMenghapus}
+                activeOpacity={0.6}
+                accessibilityRole="button"
+                accessibilityLabel="Hapus cache cuaca"
+              >
+                {sedangMenghapus ? (
+                  <ActivityIndicator size="small" color="#ef4444" />
+                ) : (
+                  <Ionicons name="trash-outline" size={19} color="#ef4444" />
+                )}
+              </TouchableOpacity>
+
+              <View
+                style={[
+                  styles.actionDivider,
+                  { backgroundColor: theme.cardBorder },
+                ]}
+              />
+
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => setTampilkanModalHapus(true)}
+                style={styles.chevronButton}
+                accessibilityLabel="Konfirmasi hapus cache cuaca"
+              >
+                <Ionicons
+                  name="chevron-forward"
+                  size={16}
+                  color={theme.textMuted}
+                />
+              </TouchableOpacity>
             </View>
           </View>
-
-          <TouchableOpacity
-            style={[
-              styles.tombolHapusCache,
-              {
-                backgroundColor: theme.tombolHapusBg,
-                borderColor: theme.tombolHapusBorder,
-              },
-            ]}
-            activeOpacity={0.8}
-            onPress={() => setTampilkanModalHapus(true)}
-            disabled={sedangMenghapus}
-            accessibilityRole="button"
-            accessibilityLabel="Hapus Data Cuaca Tersimpan"
-          >
-            {sedangMenghapus ? (
-              <ActivityIndicator size="small" color="#ef4444" />
-            ) : (
-              <>
-                <Ionicons name="trash-outline" size={16} color="#ef4444" />
-                <Text style={styles.tombolHapusCacheText}>
-                  Hapus Data Cuaca Tersimpan
-                </Text>
-              </>
-            )}
-          </TouchableOpacity>
 
           {pesan && (
             <View
               style={[
                 styles.pesanBox,
                 {
-                  backgroundColor: darkMode ? "#1e293b" : "#eff6ff",
-                  borderColor: darkMode ? "#3b82f6" : "#bfdbfe",
+                  backgroundColor: darkMode ? "#064e3b" : "#ecfdf5",
+                  borderColor: darkMode ? "#047857" : "#a7f3d0",
                 },
               ]}
             >
+              <Ionicons
+                name="checkmark-circle-outline"
+                size={15}
+                color="#10b981"
+                style={{ marginRight: 6 }}
+              />
               <Text
                 style={[
-                  styles.pesanBoxText,
-                  { color: darkMode ? "#93c5fd" : "#1e40af" },
+                  styles.pesanText,
+                  { color: darkMode ? "#6ee7b7" : "#047857" },
                 ]}
-                accessibilityLabel={pesan}
               >
                 {pesan}
               </Text>
@@ -277,7 +283,9 @@ export default function TabPengaturan() {
         </View>
       </ScrollView>
 
-      {/* Modal Konfirmasi Hapus Cache Cuaca */}
+      {/* ======================================================== */}
+      {/* MODAL KONFIRMASI HAPUS CACHE CUACA                      */}
+      {/* ======================================================== */}
       <Modal
         visible={tampilkanModalHapus}
         transparent
@@ -307,54 +315,18 @@ export default function TabPengaturan() {
                 { backgroundColor: theme.tombolHapusBg },
               ]}
             >
-              <Ionicons name="trash-outline" size={28} color="#ef4444" />
+              <Ionicons name="trash-outline" size={26} color="#ef4444" />
             </View>
 
             <Text style={[styles.modalJudul, { color: theme.text }]}>
               Hapus Cache Cuaca?
             </Text>
             <Text
-              style={[
-                styles.modalKeterangan,
-                { color: theme.textSecondary },
-              ]}
+              style={[styles.modalKeterangan, { color: theme.textSecondary }]}
             >
-              Apakah Anda yakin ingin menghapus seluruh salinan data cuaca offline
-              dari perangkat? Tindakan ini akan mengosongkan cache lokal SQLite.
+              Tindakan ini akan mengosongkan semua salinan data cuaca offline dan
+              perkiraan lokal dari perangkat.
             </Text>
-
-            <View
-              style={[
-                styles.modalPreviewCard,
-                {
-                  backgroundColor: theme.cardSecondary,
-                  borderColor: theme.cardBorder,
-                },
-              ]}
-            >
-              <View style={styles.modalPreviewIconWrapper}>
-                <Ionicons
-                  name="cloud-offline-outline"
-                  size={18}
-                  color="#2563eb"
-                />
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text
-                  style={[styles.modalPreviewNama, { color: theme.text }]}
-                >
-                  Penyimpanan SQLite Lokal
-                </Text>
-                <Text
-                  style={[
-                    styles.modalPreviewKoordinat,
-                    { color: theme.textSecondary },
-                  ]}
-                >
-                  Semua cache perkiraan cuaca & AQI akan dibersihkan
-                </Text>
-              </View>
-            </View>
 
             <View style={styles.modalButtonGroup}>
               <TouchableOpacity
@@ -403,100 +375,95 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: spacing.sedang,
+    paddingBottom: 40,
   },
   sectionHeader: {
-    fontSize: 13,
+        fontSize: 12,
     fontWeight: "700",
     textTransform: "uppercase",
-    letterSpacing: 0.5,
+    letterSpacing: 0.8,
     marginBottom: 8,
     marginLeft: 4,
   },
   card: {
-    borderRadius: 14,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    borderRadius: 16,
     borderWidth: 1,
+    overflow: "hidden",
   },
   row: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
     paddingVertical: 12,
+    paddingHorizontal: 16,
   },
-  titleWithIcon: {
-    flexDirection: "row",
+  iconWrapper: {
+    width: 34,
+    height: 34,
+    borderRadius: 9,
     alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
+  },
+  textWrapper: {
+    flex: 1,
+    marginRight: 8,
   },
   itemTitle: {
-    fontSize: 15,
+        fontSize: 15,
     fontWeight: "600",
   },
   itemSubtitle: {
-    fontSize: 13,
+        fontSize: 12,
     marginTop: 2,
   },
-  itemValue: {
-    fontSize: 14,
-    fontWeight: "500",
-  },
-  divider: {
+  insetDivider: {
     height: 1,
+    marginLeft: 62,
   },
-  tombolHapusCache: {
+  actionGroup: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1,
-    paddingVertical: 12,
-    borderRadius: 10,
-    marginTop: 4,
-    marginBottom: 8,
-    gap: 8,
+    gap: 4,
   },
-  tombolHapusCacheText: {
-    color: "#ef4444",
-    fontSize: 14,
-    fontWeight: "700",
+  actionDivider: {
+    width: 1,
+    height: 18,
+    marginHorizontal: 4,
+  },
+  hapusButton: {
+    padding: 6,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  chevronButton: {
+    padding: 6,
+    justifyContent: "center",
+    alignItems: "center",
   },
   pesanBox: {
-    borderWidth: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    marginTop: 4,
-    marginBottom: 6,
-  },
-  pesanBoxText: {
-    fontSize: 13,
-    fontWeight: "500",
-    textAlign: "center",
-  },
-  satuanBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 8,
-    minWidth: 32,
-    alignItems: "center",
-  },
-  satuanBadgeText: {
-    fontSize: 12,
-    fontWeight: "700",
-  },
-  systemInfoBox: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 9,
-    paddingHorizontal: 12,
-    borderRadius: 10,
     borderWidth: 1,
-    marginTop: 4,
-    marginBottom: 6,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 10,
+    marginHorizontal: 16,
+    marginBottom: 12,
   },
-  systemInfoText: {
-    fontSize: 12,
+  pesanText: {
+        fontSize: 12,
     fontWeight: "500",
-    flex: 1,
+  },
+  footer: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 32,
+    marginBottom: 16,
+  },
+  footerText: {
+        fontSize: 12,
+    fontWeight: "500",
+    letterSpacing: 0.3,
   },
   modalOverlay: {
     flex: 1,
@@ -514,125 +481,66 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     width: "100%",
-    maxWidth: 380,
-    backgroundColor: "#ffffff",
-    borderRadius: 24,
-    padding: 24,
+    maxWidth: 340,
+    borderRadius: 20,
+    padding: 22,
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#e2e8f0",
-    shadowColor: "#0f172a",
-    shadowOffset: { width: 0, height: 16 },
-    shadowOpacity: 0.16,
-    shadowRadius: 24,
-    elevation: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
+    elevation: 8,
     zIndex: 10,
   },
   modalIconContainer: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: "#fee2e2",
+    width: 52,
+    height: 52,
+    borderRadius: 26,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 14,
-    borderWidth: 4,
-    borderColor: "#fef2f2",
-  },
-  modalIcon: {
-    fontSize: 26,
+    marginBottom: 12,
   },
   modalJudul: {
-    fontSize: 19,
-    fontWeight: "800",
-    color: "#0f172a",
-    marginBottom: 8,
+        fontSize: 18,
+    fontWeight: "700",
+    marginBottom: 6,
     textAlign: "center",
-    letterSpacing: 0.2,
   },
   modalKeterangan: {
-    fontSize: 14,
-    color: "#64748b",
+        fontSize: 13,
     textAlign: "center",
-    lineHeight: 20,
-    marginBottom: 16,
-  },
-  modalPreviewCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#f8fafc",
-    borderWidth: 1,
-    borderColor: "#e2e8f0",
-    borderRadius: 14,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    width: "100%",
+    lineHeight: 18,
     marginBottom: 20,
-    gap: 12,
-  },
-  modalPreviewIconWrapper: {
-    width: 34,
-    height: 34,
-    borderRadius: 10,
-    backgroundColor: "#eff6ff",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalPreviewNama: {
-    fontSize: 15,
-    fontWeight: "700",
-    color: "#0f172a",
-  },
-  modalPreviewKoordinat: {
-    fontSize: 12,
-    color: "#64748b",
-    marginTop: 2,
   },
   modalButtonGroup: {
     flexDirection: "row",
     width: "100%",
-    gap: 12,
+    gap: 10,
   },
   modalBatalButton: {
     flex: 1,
-    backgroundColor: "#f1f5f9",
-    paddingVertical: 13,
-    borderRadius: 12,
+    paddingVertical: 11,
+    borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
   },
   modalBatalButtonText: {
-    color: "#475569",
-    fontSize: 14,
-    fontWeight: "700",
+        fontSize: 14,
+    fontWeight: "600",
   },
   modalHapusButton: {
     flex: 1,
-    backgroundColor: "#dc2626",
-    paddingVertical: 13,
-    borderRadius: 12,
+    backgroundColor: "#ef4444",
+    paddingVertical: 11,
+    borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#dc2626",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
-    elevation: 3,
   },
   modalHapusButtonText: {
-    color: "#ffffff",
+        color: "#ffffff",
     fontSize: 14,
     fontWeight: "700",
   },
-  footer: {
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 32,
-    marginBottom: 16,
-  },
-  footerText: {
-    fontSize: 12,
-    fontWeight: "500",
-    letterSpacing: 0.3,
-  },
 });
+
