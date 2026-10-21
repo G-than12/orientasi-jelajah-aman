@@ -11,7 +11,7 @@ import {
 import { useLocalSearchParams, router, useFocusEffect } from "expo-router";
 import WeatherCard from "../../components/WeatherCard";
 import { Ionicons } from "@expo/vector-icons";
-import { spacing } from "../../constants/styles";
+import { fonts, spacing } from "../../constants/styles";
 import { ambilCuacaOfflineFirst } from "../../src/services/cuacaRepository";
 import { cariKota } from "../../services/geocodingService";
 import { konversiTingkatAQI } from "../../services/weatherAdapter";
@@ -180,7 +180,7 @@ export default function HalamanDetail() {
           color="#ef4444"
           style={{ marginBottom: 12 }}
         />
-        <Text style={{ color: "#ef4444", textAlign: "center", marginBottom: 16 }}>
+        <Text style={{ fontFamily: fonts.medium, color: "#ef4444", textAlign: "center", marginBottom: 16 }}>
           {pesanError}
         </Text>
         {koordinatAktif && (
@@ -199,7 +199,7 @@ export default function HalamanDetail() {
               )
             }
           >
-            <Text style={{ color: "#ffffff", fontWeight: "600" }}>Coba Lagi</Text>
+            <Text style={{ fontFamily: fonts.semiBold, color: "#ffffff" }}>Coba Lagi</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -238,6 +238,7 @@ export default function HalamanDetail() {
       <TouchableOpacity
         style={[
           styles.favButton,
+          { backgroundColor: theme.primary, shadowColor: theme.primary },
           sudahFavorit && styles.favButtonDisabled,
         ]}
         onPress={() =>
@@ -288,7 +289,7 @@ const styles = StyleSheet.create({
     gap: spacing.sedang,
   },
   favButton: {
-    backgroundColor: "#2563eb",
+    backgroundColor: "#4f46e5",
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -296,7 +297,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 14,
     marginTop: 4,
-    shadowColor: "#2563eb",
+    shadowColor: "#4f46e5",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
@@ -311,9 +312,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   favButtonText: {
+    fontFamily: fonts.bold,
     color: "#ffffff",
     fontSize: 15,
-    fontWeight: "700",
   },
   favButtonTextDisabled: {
     color: "#64748b",
