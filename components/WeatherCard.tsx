@@ -344,6 +344,7 @@ const styles = StyleSheet.create({
     marginVertical: 4,
   },
   suhu: {
+    fontFamily: fonts.extraBold,
     fontSize: 44,
     fontWeight: "800",
     color: "#1e293b",
@@ -353,11 +354,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   satuan: {
+    fontFamily: fonts.semiBold,
     fontSize: 15,
     color: "#64748b",
     fontWeight: "600",
   },
   rentangSuhuRingkas: {
+    fontFamily: fonts.medium,
     fontSize: 12,
     color: "#94a3b8",
     fontWeight: "500",
