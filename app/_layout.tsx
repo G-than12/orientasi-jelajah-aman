@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { View } from "react-native";
+import { View, Text, TextInput } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import {
   useFonts,
@@ -18,6 +18,17 @@ import {
   usePengaturan,
 } from "../contexts/PengaturanContext";
 import CircularThemeOverlay from "../components/CircularThemeOverlay";
+
+// Fallback font default global agar komponen teks tanpa style eksplisit tetap menggunakan Plus Jakarta Sans
+// @ts-ignore
+if (Text.defaultProps == null) (Text as any).defaultProps = {};
+// @ts-ignore
+(Text as any).defaultProps.style = { fontFamily: "PlusJakartaSans-Regular" };
+
+// @ts-ignore
+if (TextInput.defaultProps == null) (TextInput as any).defaultProps = {};
+// @ts-ignore
+(TextInput as any).defaultProps.style = { fontFamily: "PlusJakartaSans-Medium" };
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -36,7 +47,6 @@ function RootContent() {
           headerShadowVisible: false,
           headerTitleStyle: {
             fontFamily: "PlusJakartaSans-Bold",
-            fontWeight: "700",
             color: theme.text,
           },
           headerTintColor: theme.text,
