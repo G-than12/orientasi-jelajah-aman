@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
-import { spacing, typeScale } from "../constants/styles";
+import { fonts, spacing, typeScale } from "../constants/styles";
 import { tambahFavorit } from "../services/favoritStorage";
 import { usePengaturan } from "../contexts/PengaturanContext";
 
@@ -63,7 +63,7 @@ export default function ModalTambahFavorit() {
         </Text>
         <Text style={[styles.deskripsi, { color: theme.textSecondary }]}>
           Tambahkan{" "}
-          <Text style={{ fontWeight: "700", color: theme.text }}>
+          <Text style={{ fontFamily: fonts.bold, color: theme.text }}>
             {nama || "kota ini"}
           </Text>{" "}
           ke daftar favorit?
@@ -71,7 +71,7 @@ export default function ModalTambahFavorit() {
 
         <View style={styles.buttonGroup}>
           <TouchableOpacity
-            style={styles.simpanButton}
+            style={[styles.simpanButton, { backgroundColor: theme.primary }]}
             onPress={simpan}
             disabled={sedangMenyimpan}
             activeOpacity={0.8}
@@ -135,12 +135,13 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sedang,
   },
   judul: {
+    fontFamily: fonts.extraBold,
     fontSize: typeScale.judul,
-    fontWeight: "800",
     color: "#0f172a",
     marginBottom: spacing.kecil,
   },
   deskripsi: {
+    fontFamily: fonts.regular,
     fontSize: typeScale.isi,
     color: "#64748b",
     textAlign: "center",
@@ -152,15 +153,15 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   simpanButton: {
-    backgroundColor: "#2563eb",
+    backgroundColor: "#4f46e5",
     paddingVertical: 14,
     borderRadius: 12,
     alignItems: "center",
   },
   simpanButtonText: {
+    fontFamily: fonts.bold,
     color: "#ffffff",
     fontSize: 15,
-    fontWeight: "700",
   },
   batalButton: {
     backgroundColor: "transparent",
@@ -169,8 +170,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   batalButtonText: {
+    fontFamily: fonts.semiBold,
     color: "#64748b",
     fontSize: 15,
-    fontWeight: "600",
   },
 });
