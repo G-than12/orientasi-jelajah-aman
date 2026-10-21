@@ -24,7 +24,6 @@ export default function TabLayout() {
         },
         headerTitleStyle: {
           fontFamily: fonts.bold,
-          fontWeight: "700",
           color: theme.text,
         },
         headerTintColor: theme.text,
@@ -47,7 +46,6 @@ export default function TabLayout() {
         tabBarLabelStyle: {
           fontFamily: fonts.semiBold,
           fontSize: 12,
-          fontWeight: "600",
           lineHeight: 16,
           paddingBottom: 2,
         },
