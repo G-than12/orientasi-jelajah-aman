@@ -23,6 +23,7 @@ export default function TabLayout() {
           elevation: 0,
         },
         headerTitleStyle: {
+          fontFamily: fonts.bold,
           fontWeight: "700",
           color: theme.text,
         },
