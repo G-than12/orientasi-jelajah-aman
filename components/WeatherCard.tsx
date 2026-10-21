@@ -311,7 +311,6 @@ const styles = StyleSheet.create({
   kota: {
     fontFamily: fonts.bold,
     fontSize: 22,
-    fontWeight: "700",
     color: "#0f172a",
   },
   kondisiWrapper: {
@@ -323,7 +322,6 @@ const styles = StyleSheet.create({
   kondisiText: {
     fontFamily: fonts.medium,
     fontSize: 13,
-    fontWeight: "500",
     color: "#64748b",
   },
   badge: {
@@ -335,7 +333,6 @@ const styles = StyleSheet.create({
   badgeText: {
     fontFamily: fonts.bold,
     fontSize: 12,
-    fontWeight: "700",
   },
   content: {
     flexDirection: "row",
@@ -346,7 +343,6 @@ const styles = StyleSheet.create({
   suhu: {
     fontFamily: fonts.extraBold,
     fontSize: 44,
-    fontWeight: "800",
     color: "#1e293b",
     letterSpacing: -1,
   },
@@ -357,13 +353,11 @@ const styles = StyleSheet.create({
     fontFamily: fonts.semiBold,
     fontSize: 15,
     color: "#64748b",
-    fontWeight: "600",
   },
   rentangSuhuRingkas: {
     fontFamily: fonts.medium,
     fontSize: 12,
     color: "#94a3b8",
-    fontWeight: "500",
     marginTop: 2,
   },
   cardFooter: {
@@ -388,7 +382,6 @@ const styles = StyleSheet.create({
   statusFooterText: {
     fontFamily: fonts.medium,
     fontSize: 12,
-    fontWeight: "500",
   },
   detailLinkWrapper: {
     flexDirection: "row",
@@ -399,7 +392,6 @@ const styles = StyleSheet.create({
   detailLinkText: {
     fontFamily: fonts.semiBold,
     fontSize: 12,
-    fontWeight: "600",
   },
   infoTambahanContainer: {
     marginTop: 4,
@@ -431,13 +423,11 @@ const styles = StyleSheet.create({
   infoItemLabel: {
     fontFamily: fonts.semiBold,
     fontSize: 12,
-    fontWeight: "600",
     color: "#64748b",
   },
   infoItemValue: {
     fontFamily: fonts.bold,
     fontSize: 14,
-    fontWeight: "700",
     color: "#1e293b",
   },
 });
