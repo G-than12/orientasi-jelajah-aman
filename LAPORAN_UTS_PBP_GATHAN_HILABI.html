@@ -342,7 +342,7 @@
       background: #f8fafc !important;
     }
 
-    /* Framing Tangkapan Layar (Screenshots) Proporsional */
+    /* Framing Tangkapan Layar (Screenshots) Antarmuka Smartphone */
     div[align="center"] {
       text-align: center;
       margin: 10px 0 14px 0;
@@ -366,7 +366,7 @@
       vertical-align: top !important;
     }
 
-    div[align="center"] img {
+    div[align="center"] img:not(.code-screenshot) {
       max-height: 240px !important;
       max-width: 150px !important;
       width: auto !important;
@@ -379,10 +379,26 @@
     }
 
     /* Banner landscape Tab Bar */
-    div[align="center"] > img[alt*="Tab Bar"] {
+    div[align="center"] > img[alt*="Tab Bar"]:not(.code-screenshot) {
       max-width: 380px !important;
       max-height: 105px !important;
       border-radius: 10px;
+    }
+
+    /* Tangkapan Layar Editor Kode (Kutipan Gambar Kode) */
+    img.code-screenshot,
+    div[align="center"] img.code-screenshot {
+      max-width: 540px !important;
+      max-height: 800px !important;
+      width: 100% !important;
+      height: auto !important;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
+      display: block;
+      margin: 10px auto;
+      page-break-inside: avoid;
+      break-inside: avoid;
     }
 
     em {
@@ -534,16 +550,16 @@
     .toc-table {
       width: 100%;
       border: none;
-      margin: 10px 0;
-      font-size: 9.5pt;
+      margin: 4px 0;
+      font-size: 8.2pt;
+      line-height: 1.25;
+      page-break-inside: auto !important;
+      break-inside: auto !important;
     }
     .toc-table td {
       border: none !important;
       background: transparent !important;
-      padding: 3.5px 0 !important;
-    }
-    .toc-title {
-      font-weight: 600;
+      padding: 1.5px 0 !important;
     }
   </style>
 </head>
@@ -756,152 +772,65 @@
       <tr><td><strong>LEMBAR PENGESAHAN & PENILAIAN</strong></td><td align="right">ii</td></tr>
       <tr><td><strong>KATA PENGANTAR</strong></td><td align="right">iii</td></tr>
       <tr><td><strong>DAFTAR ISI</strong></td><td align="right">iv</td></tr>
-      <tr><td colspan="2" style="padding: 6px 0;"><hr style="border: 0; border-top: 1px solid #cbd5e1; margin: 2px 0;"></td></tr>
+      <tr><td colspan="2" style="padding: 4px 0;"><hr style="border: 0; border-top: 1px solid #cbd5e1; margin: 2px 0;"></td></tr>
       <tr><td><strong>BAB I: PENDAHULUAN & GAMBARAN UMUM APLIKASI</strong></td><td align="right">1</td></tr>
       <tr><td style="padding-left: 15px;">1.1 Latar Belakang Masalah</td><td align="right">1</td></tr>
       <tr><td style="padding-left: 15px;">1.2 Tujuan Penyempurnaan UTS</td><td align="right">1</td></tr>
-      <tr><td style="padding-left: 15px;">1.3 Ruang Lingkup & Batasan Masalah</td><td align="right">2</td></tr>
-      <tr><td style="padding-left: 15px;">1.4 Profil Mahasiswa & Informasi Repositori</td><td align="right">2</td></tr>
-      <tr><td><strong>BAB II: STRUKTUR PROYEK & ARSITEKTUR SISTEM</strong></td><td align="right">3</td></tr>
-      <tr><td style="padding-left: 15px;">2.1 Pola Arsitektur Folder Expo Router</td><td align="right">3</td></tr>
-      <tr><td style="padding-left: 15px;">2.2 Diagram Alur Data & State Terpusat</td><td align="right">4</td></tr>
-      <tr><td style="padding-left: 15px;">2.3 Pustaka Kunci & Dependensi</td><td align="right">4</td></tr>
-      <tr><td><strong>BAB III: TUGAS 1 – KUSTOMISASI IKON TAB BAR & LABEL NAVIGASI</strong></td><td align="right">5</td></tr>
-      <tr><td style="padding-left: 15px;">3.1 Analisis Kebutuhan</td><td align="right">5</td></tr>
-      <tr><td style="padding-left: 15px;">3.2 Langkah-Langkah Solusi</td><td align="right">5</td></tr>
-      <tr><td style="padding-left: 15px;">3.3 Potongan Kode Program Asli (<code>app/(tabs)/_layout.tsx</code>)</td><td align="right">5</td></tr>
-      <tr><td style="padding-left: 15px;">3.4 Penjelasan Teknis</td><td align="right">6</td></tr>
-      <tr><td style="padding-left: 15px;">3.5 Tangkapan Layar Hasil Implementasi (Screenshots)</td><td align="right">7</td></tr>
+      <tr><td style="padding-left: 15px;">1.3 Ruang Lingkup & Batasan Masalah</td><td align="right">1</td></tr>
+      <tr><td style="padding-left: 15px;">1.4 Profil Mahasiswa & Informasi Repositori</td><td align="right">1</td></tr>
+      <tr><td><strong>BAB II: STRUKTUR PROYEK & ARSITEKTUR SISTEM</strong></td><td align="right">2</td></tr>
+      <tr><td style="padding-left: 15px;">2.1 Pola Arsitektur Folder Expo Router</td><td align="right">2</td></tr>
+      <tr><td style="padding-left: 15px;">2.2 Diagram Alur Data & State Terpusat</td><td align="right">2</td></tr>
+      <tr><td style="padding-left: 15px;">2.3 Pustaka Kunci & Dependensi</td><td align="right">2</td></tr>
+      <tr><td><strong>BAB III: TUGAS 1 – KUSTOMISASI IKON TAB BAR & LABEL NAVIGASI</strong></td><td align="right">3</td></tr>
+      <tr><td style="padding-left: 15px;">3.1 Analisis Kebutuhan</td><td align="right">3</td></tr>
+      <tr><td style="padding-left: 15px;">3.2 Langkah-Langkah Solusi</td><td align="right">3</td></tr>
+      <tr><td style="padding-left: 15px;">3.3 Tangkapan Layar & Potongan Kode (<code>app/(tabs)/_layout.tsx</code>)</td><td align="right">3</td></tr>
+      <tr><td style="padding-left: 15px;">3.4 Penjelasan Teknis</td><td align="right">3</td></tr>
+      <tr><td style="padding-left: 15px;">3.5 Tangkapan Layar Hasil Implementasi Antarmuka</td><td align="right">3</td></tr>
       <tr><td><strong>BAB IV: TUGAS 2 – FITUR RIWAYAT PENCARIAN TERAKHIR</strong></td><td align="right">8</td></tr>
       <tr><td style="padding-left: 15px;">4.1 Analisis Kebutuhan</td><td align="right">8</td></tr>
       <tr><td style="padding-left: 15px;">4.2 Langkah-Langkah Solusi</td><td align="right">8</td></tr>
-      <tr><td style="padding-left: 15px;">4.3 Potongan Kode State Management (<code>contexts/RiwayatContext.tsx</code>)</td><td align="right">9</td></tr>
-      <tr><td style="padding-left: 15px;">4.4 Potongan Kode Integrasi & Navigasi (<code>app/(tabs)/riwayat.tsx</code>)</td><td align="right">11</td></tr>
-      <tr><td style="padding-left: 15px;">4.5 Tangkapan Layar Hasil Implementasi (Screenshots)</td><td align="right">13</td></tr>
-      <tr><td><strong>BAB V: TUGAS 3 – PENGHAPUSAN CACHE KOTA & MODAL KONFIRMASI</strong></td><td align="right">14</td></tr>
-      <tr><td style="padding-left: 15px;">5.1 Analisis Kebutuhan</td><td align="right">14</td></tr>
-      <tr><td style="padding-left: 15px;">5.2 Langkah-Langkah Solusi</td><td align="right">14</td></tr>
-      <tr><td style="padding-left: 15px;">5.3 Potongan Kode SQLite Service (<code>src/services/cacheRepository.ts</code>)</td><td align="right">15</td></tr>
-      <tr><td style="padding-left: 15px;">5.4 Potongan Kode Modal Konfirmasi (<code>app/(tabs)/index.tsx</code>)</td><td align="right">16</td></tr>
-      <tr><td style="padding-left: 15px;">5.5 Tangkapan Layar Hasil Implementasi (Screenshots)</td><td align="right">18</td></tr>
-      <tr><td><strong>BAB VI: TUGAS 4 – IMPLEMENTASI TEMA GELAP / TERANG / IKUTI SISTEM</strong></td><td align="right">19</td></tr>
-      <tr><td style="padding-left: 15px;">6.1 Analisis Kebutuhan</td><td align="right">19</td></tr>
-      <tr><td style="padding-left: 15px;">6.2 Langkah-Langkah Solusi</td><td align="right">19</td></tr>
-      <tr><td style="padding-left: 15px;">6.3 Token Palet Tema (<code>constants/theme.ts</code>)</td><td align="right">19</td></tr>
-      <tr><td style="padding-left: 15px;">6.4 Cara Kerja & Kode Logika "Ikuti Tema Sistem"</td><td align="right">20</td></tr>
-      <tr><td style="padding-left: 15px;">6.5 Antarmuka Pengaturan & Sakelar Ikuti Sistem</td><td align="right">22</td></tr>
-      <tr><td style="padding-left: 15px;">6.6 Tombol Sakelar Cepat Header Kanan Atas</td><td align="right">24</td></tr>
-      <tr><td style="padding-left: 15px;">6.7 Tangkapan Layar Hasil Implementasi (Screenshots)</td><td align="right">25</td></tr>
-      <tr><td><strong>BAB VII: FITUR TAMBAHAN & NILAI PLUS (KREATIVITAS MAHASISWA)</strong></td><td align="right">27</td></tr>
-      <tr><td style="padding-left: 15px;">7.1 Fitur Konversi Satuan Suhu Dinamis (°C vs °F)</td><td align="right">27</td></tr>
-      <tr><td style="padding-left: 15px;">7.2 Tipografi Modern Google Fonts (Plus Jakarta Sans)</td><td align="right">28</td></tr>
-      <tr><td style="padding-left: 15px;">7.3 Palet Warna Atmospheric Indigo & Electric Sky</td><td align="right">28</td></tr>
-      <tr><td style="padding-left: 15px;">7.4 Status Data Terpadu Minimalis</td><td align="right">28</td></tr>
-      <tr><td style="padding-left: 15px;">7.5 Penjaminan Mutu & Type-Safety</td><td align="right">29</td></tr>
-      <tr><td style="padding-left: 15px;">7.6 Tangkapan Layar Hasil Implementasi (Screenshots)</td><td align="right">29</td></tr>
-      <tr><td><strong>BAB VIII: RIWAYAT COMMIT GIT (25++ COMMITS)</strong></td><td align="right">30</td></tr>
-      <tr><td><strong>BAB IX: KESIMPULAN & PENUTUP</strong></td><td align="right">33</td></tr>
+      <tr><td style="padding-left: 15px;">4.3 Tangkapan Layar & Potongan Kode State (<code>contexts/RiwayatContext.tsx</code>)</td><td align="right">8</td></tr>
+      <tr><td style="padding-left: 15px;">4.4 Tangkapan Layar & Potongan Kode Layar (<code>app/(tabs)/riwayat.tsx</code>)</td><td align="right">8</td></tr>
+      <tr><td style="padding-left: 15px;">4.5 Tangkapan Layar Hasil Implementasi Antarmuka</td><td align="right">8</td></tr>
+      <tr><td><strong>BAB V: TUGAS 3 – PENGHAPUSAN CACHE KOTA & MODAL KONFIRMASI</strong></td><td align="right">15</td></tr>
+      <tr><td style="padding-left: 15px;">5.1 Analisis Kebutuhan</td><td align="right">15</td></tr>
+      <tr><td style="padding-left: 15px;">5.2 Langkah-Langkah Solusi</td><td align="right">15</td></tr>
+      <tr><td style="padding-left: 15px;">5.3 Tangkapan Layar & Potongan Kode SQLite (<code>src/services/cacheRepository.ts</code>)</td><td align="right">15</td></tr>
+      <tr><td style="padding-left: 15px;">5.4 Tangkapan Layar & Potongan Kode Modal (<code>app/(tabs)/index.tsx</code>)</td><td align="right">15</td></tr>
+      <tr><td style="padding-left: 15px;">5.5 Tangkapan Layar Hasil Implementasi Antarmuka</td><td align="right">15</td></tr>
+      <tr><td><strong>BAB VI: TUGAS 4 – IMPLEMENTASI TEMA GELAP / TERANG / IKUTI SISTEM</strong></td><td align="right">21</td></tr>
+      <tr><td style="padding-left: 15px;">6.1 Analisis Kebutuhan</td><td align="right">21</td></tr>
+      <tr><td style="padding-left: 15px;">6.2 Langkah-Langkah Solusi</td><td align="right">21</td></tr>
+      <tr><td style="padding-left: 15px;">6.3 Tangkapan Layar & Token Palet Tema (<code>constants/theme.ts</code>)</td><td align="right">21</td></tr>
+      <tr><td style="padding-left: 15px;">6.4 Tangkapan Layar & Logika "Ikuti Tema Sistem" (<code>contexts/PengaturanContext.tsx</code>)</td><td align="right">21</td></tr>
+      <tr><td style="padding-left: 15px;">6.5 Tangkapan Layar & Antarmuka Pengaturan (<code>app/(tabs)/pengaturan.tsx</code>)</td><td align="right">21</td></tr>
+      <tr><td style="padding-left: 15px;">6.6 Tombol Sakelar Cepat Header Kanan Atas</td><td align="right">21</td></tr>
+      <tr><td style="padding-left: 15px;">6.7 Tangkapan Layar Hasil Implementasi Antarmuka</td><td align="right">21</td></tr>
+      <tr><td><strong>BAB VII: FITUR TAMBAHAN & NILAI PLUS (KREATIVITAS MAHASISWA)</strong></td><td align="right">31</td></tr>
+      <tr><td style="padding-left: 15px;">7.1 Tangkapan Layar & Konversi Satuan Suhu Dinamis (°C vs °F)</td><td align="right">31</td></tr>
+      <tr><td style="padding-left: 15px;">7.2 Tangkapan Layar & Tipografi Modern (Plus Jakarta Sans)</td><td align="right">31</td></tr>
+      <tr><td style="padding-left: 15px;">7.3 Palet Warna Atmospheric Indigo & Electric Sky</td><td align="right">31</td></tr>
+      <tr><td style="padding-left: 15px;">7.4 Status Data Terpadu Minimalis</td><td align="right">31</td></tr>
+      <tr><td style="padding-left: 15px;">7.5 Penjaminan Mutu & Type-Safety TypeScript</td><td align="right">31</td></tr>
+      <tr><td style="padding-left: 15px;">7.6 Tangkapan Layar Hasil Implementasi Antarmuka</td><td align="right">31</td></tr>
+      <tr><td><strong>BAB VIII: RIWAYAT COMMIT GIT (28++ COMMITS)</strong></td><td align="right">36</td></tr>
+      <tr><td><strong>BAB IX: KESIMPULAN & PENUTUP</strong></td><td align="right">37</td></tr>
+      <tr><td><strong>BAB X: DAFTAR PUSTAKA</strong></td><td align="right">38</td></tr>
     </table>
   </div>
 
   <!-- ========================================================== -->
-  <!-- 5. ISI UTAMA LAPORAN (BAB I SAMPAI BAB IX)                 -->
+  <!-- 5. ISI UTAMA LAPORAN (BAB I SAMPAI BAB X)                 -->
   <!-- ========================================================== -->
   <div class="academic-body">
-    <h1>LAPORAN UJIAN TENGAH SEMESTER (UTS)</h1>
-<h2>PEMROGRAMAN BERBASIS PLATFORM (PBP)</h2>
-<h3>PENGEMBANGAN &amp; PENYEMPURNAAN APLIKASI &quot;JELAJAH AMAN&quot;</h3>
-<hr>
-<h2>IDENTITAS MAHASISWA &amp; INFORMASI KULIAH</h2>
-<table>
-<thead>
-<tr>
-<th align="left">Parameter</th>
-<th align="left">Keterangan</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left"><strong>Nama Lengkap</strong></td>
-<td align="left"><strong>Gathan Hilabi</strong></td>
-</tr>
-<tr>
-<td align="left"><strong>NIM</strong></td>
-<td align="left"><strong>60324059</strong></td>
-</tr>
-<tr>
-<td align="left"><strong>Kelas</strong></td>
-<td align="left"><strong>PBP A</strong></td>
-</tr>
-<tr>
-<td align="left"><strong>Semester</strong></td>
-<td align="left"><strong>5 (Lima)</strong></td>
-</tr>
-<tr>
-<td align="left"><strong>Angkatan</strong></td>
-<td align="left"><strong>2024</strong></td>
-</tr>
-<tr>
-<td align="left"><strong>Program Studi</strong></td>
-<td align="left">S1 Informatika</td>
-</tr>
-<tr>
-<td align="left"><strong>Fakultas</strong></td>
-<td align="left">Fakultas Sains dan Teknologi</td>
-</tr>
-<tr>
-<td align="left"><strong>Perguruan Tinggi</strong></td>
-<td align="left">Universitas Islam Negeri K.H. Abdurrahman Wahid Pekalongan</td>
-</tr>
-<tr>
-<td align="left"><strong>Mata Kuliah</strong></td>
-<td align="left">Pemrograman Berbasis Platform (4 SKS)</td>
-</tr>
-<tr>
-<td align="left"><strong>Bobot Penilaian</strong></td>
-<td align="left">Pertemuan 8 (UTS) — Bobot 25% dari Nilai Akhir</td>
-</tr>
-<tr>
-<td align="left"><strong>Cakupan Materi</strong></td>
-<td align="left">Pertemuan 1–7 (CPMK-1, CPMK-2, CPMK-3)</td>
-</tr>
-<tr>
-<td align="left"><strong>Tautan Repositori GitHub</strong></td>
-<td align="left"><a href="https://github.com/G-than12/orientasi-jelajah-aman">https://github.com/G-than12/orientasi-jelajah-aman</a></td>
-</tr>
-</tbody></table>
-<hr>
-<h2>DAFTAR ISI</h2>
-<ol>
-<li><a href="#bab-i-pendahuluan--gambaran-umum-aplikasi">BAB I: Pendahuluan &amp; Gambaran Umum Aplikasi</a></li>
-<li><a href="#bab-ii-struktur-proyek--arsitektur-sistem">BAB II: Struktur Proyek &amp; Arsitektur Sistem</a></li>
-<li><a href="#bab-iii-tugas-1--kustomisasi-ikon-tab-bar--perbaikan-label-navigasi">BAB III: Tugas 1 – Kustomisasi Ikon Tab Bar &amp; Perbaikan Label Navigasi</a><ul>
-<li><a href="#35-tangkapan-layar-hasil-implementasi-screenshots">3.5 Tangkapan Layar Hasil Implementasi (Screenshots)</a></li>
-</ul>
-</li>
-<li><a href="#bab-iv-tugas-2--fitur-riwayat-pencarian-terakhir-recent-search-history">BAB IV: Tugas 2 – Fitur Riwayat Pencarian Terakhir (Recent Search History)</a><ul>
-<li><a href="#45-tangkapan-layar-hasil-implementasi-screenshots">4.5 Tangkapan Layar Hasil Implementasi (Screenshots)</a></li>
-</ul>
-</li>
-<li><a href="#bab-v-tugas-3--penghapusan-cache-kota--modal-konfirmasi">BAB V: Tugas 3 – Penghapusan Cache Kota &amp; Modal Konfirmasi</a><ul>
-<li><a href="#55-tangkapan-layar-hasil-implementasi-screenshots">5.5 Tangkapan Layar Hasil Implementasi (Screenshots)</a></li>
-</ul>
-</li>
-<li><a href="#bab-vi-tugas-4--implementasi-tema-gelap--terang--ikuti-sistem">BAB VI: Tugas 4 – Implementasi Tema Gelap / Terang / Ikuti Sistem</a><ul>
-<li><a href="#64-cara-kerja--kode-logika-ikuti-tema-sistem-contextspengaturancontexttsx">6.4 Cara Kerja &amp; Kode Logika &quot;Ikuti Tema Sistem&quot;</a></li>
-<li><a href="#66-tombol-sakelar-cepat-di-pojok-kanan-atas-header-animatedthemetoggle">6.6 Tombol Sakelar Cepat di Header Kanan Atas</a></li>
-<li><a href="#67-tangkapan-layar-hasil-implementasi-screenshots">6.7 Tangkapan Layar Hasil Implementasi (Screenshots)</a></li>
-</ul>
-</li>
-<li><a href="#bab-vii-fitur-tambahan--nilai-plus-kreativitas-mahasiswa">BAB VII: Fitur Tambahan &amp; Nilai Plus (Kreativitas Mahasiswa)</a><ul>
-<li><a href="#71-fitur-konversi-satuan-suhu-dinamis-celsius-vs-fahrenheit">7.1 Fitur Konversi Satuan Suhu Dinamis (Celsius vs Fahrenheit)</a></li>
-<li><a href="#76-tangkapan-layar-hasil-implementasi-screenshots">7.6 Tangkapan Layar Hasil Implementasi (Screenshots)</a></li>
-</ul>
-</li>
-<li><a href="#bab-viii-riwayat-commit-git-25-commits">BAB VIII: Riwayat Commit Git (25++ Commits)</a></li>
-<li><a href="#bab-ix-kesimpulan--penutup">BAB IX: Kesimpulan &amp; Penutup</a></li>
-</ol>
-<hr>
-<h2>BAB I: PENDAHULUAN &amp; GAMBARAN UMUM APLIKASI</h2>
+    <div class="bab-break"></div>
+    <div class="academic-bab-header" id="bab-i">
+      <div class="bab-title-top">BAB I</div>
+      <div class="bab-title-main">PENDAHULUAN &amp; GAMBARAN UMUM APLIKASI</div>
+      <div class="bab-underline"></div>
+    </div>
 <h3>1.1 Latar Belakang</h3>
 <p>Aplikasi <strong>&quot;Jelajah Aman&quot;</strong> adalah aplikasi mobile berbasis <em>cross-platform</em> (Android, iOS, dan Web) yang dirancang untuk membantu masyarakat dan pelancong memantau kondisi cuaca real-time, indeks kualitas udara (<em>Air Quality Index</em> - AQI), parameter polutan partikulat (PM<sub>2.5</sub> dan PM<sub>10</sub>), serta kecepatan angin di berbagai wilayah. </p>
 <p>Dalam rangka Ujian Tengah Semester (UTS) Praktikum Pemrograman Berbasis Platform, dilakukan penyempurnaan menyeluruh terhadap antarmuka pengguna (<em>User Interface</em>), pengalaman pengguna (<em>User Experience</em>), manajemen <em>state</em>, persistensi penyimpanan lokal (<em>Local Storage</em> dan <em>SQLite</em>), serta mekanisme <em>offline-first</em> agar aplikasi dapat diandalkan bahkan tanpa koneksi internet.</p>
@@ -914,7 +843,12 @@
 <li><strong>Implementasi Tema Gelap / Terang (<em>Dark/Light Mode</em>)</strong>: Menyediakan opsi tema Terang, Gelap, atau Otomatis Mengikuti Sistem perangkat, serta memastikan perubahan warna terpropagasi dinamis ke seluruh layar.</li>
 </ol>
 <hr>
-<h2>BAB II: STRUKTUR PROYEK &amp; ARSITEKTUR SISTEM</h2>
+<div class="bab-break"></div>
+    <div class="academic-bab-header" id="bab-ii">
+      <div class="bab-title-top">BAB II</div>
+      <div class="bab-title-main">STRUKTUR PROYEK &amp; ARSITEKTUR SISTEM</div>
+      <div class="bab-underline"></div>
+    </div>
 <p>Aplikasi dibangun menggunakan ekosistem <strong>Expo (React Native)</strong> dengan file-based router <strong>Expo Router</strong>, bahasa pemrograman <strong>TypeScript</strong>, serta database lokal <strong>SQLite</strong> (<code>expo-sqlite</code>) dan <strong>AsyncStorage</strong> (<code>@react-native-async-storage/async-storage</code>).</p>
 <pre><code>orientasi-jelajah-aman/
 ├── app/
@@ -952,7 +886,12 @@
 └── package.json                 # Konfigurasi Dependensi &amp; Skrip Proyek
 </code></pre>
 <hr>
-<h2>BAB III: TUGAS 1 – KUSTOMISASI IKON TAB BAR &amp; PERBAIKAN LABEL NAVIGASI</h2>
+<div class="bab-break"></div>
+    <div class="academic-bab-header" id="bab-iii">
+      <div class="bab-title-top">BAB III</div>
+      <div class="bab-title-main">TUGAS 1 – KUSTOMISASI IKON TAB BAR &amp; PERBAIKAN LABEL NAVIGASI</div>
+      <div class="bab-underline"></div>
+    </div>
 <h3>3.1 Analisis Kebutuhan</h3>
 <p>Pada kondisi awal praktikum, navigasi bawah Expo Router Tabs masih menggunakan ikon bawaan segitiga (<code>TabBarIcon</code> default) yang seragam di seluruh tab, dan penamaan label belum terorganisir dengan jelas antara data favorit, riwayat pencarian, dan pengaturan sistem.</p>
 <h3>3.2 Langkah-Langkah Solusi</h3>
@@ -970,6 +909,9 @@
 <li>Memasang tombol sakelar tema adaptif (<code>AnimatedThemeToggle</code>) langsung pada <code>headerRight</code> di tab bar atas.</li>
 </ol>
 <h3>3.3 Potongan Kode Program Asli (<code>app/(tabs)/_layout.tsx</code>)</h3>
+<p>Berikut adalah bukti visual tangkapan layar editor kode program asli implementasi navigasi tab bar dan kustomisasi ikon <code>Ionicons</code>:</p>
+<div align="center"><img src="./docs/screenshots/3.3.png" class="code-screenshot" width="540" alt="Tangkapan Layar Kode app/(tabs)/_layout.tsx" /><p><em>Gambar 3.1: Tangkapan layar kode implementasi navigasi Tab Bar pada app/(tabs)/_layout.tsx</em></p>
+</div><p>Cuplikan teks kode program:</p>
 <div class="code-wrapper">
       <div class="code-header">
         <span class="code-dot red"></span>
@@ -1085,13 +1027,18 @@ export default function TabLayout() {
 </ul>
 <h3>3.5 Tangkapan Layar Hasil Implementasi (Screenshots)</h3>
 <p>Berikut adalah bukti visual implementasi kustomisasi ikon tab bar dan label navigasi:</p>
-<div align="center"><img src="./docs/screenshots/01_tab_bar_navigation.png" width="460" alt="Navigasi Tab Bar Bawah" /><p><em>Gambar 3.1: Navigasi Tab Bar bawah dengan ikon kustom Ionicons (<code>Beranda</code>, <code>Aktivitas</code>, <code>Pengaturan</code>, <code>Tentang</code>)</em></p>
+<div align="center"><img src="./docs/screenshots/01_tab_bar_navigation.png" width="460" alt="Navigasi Tab Bar Bawah" /><p><em>Gambar 3.2: Navigasi Tab Bar bawah dengan ikon kustom Ionicons (<code>Beranda</code>, <code>Aktivitas</code>, <code>Pengaturan</code>, <code>Tentang</code>)</em></p>
 </div><blockquote>
 <p>[!NOTE]
 Aset tangkapan layar navigasi tab bar tersimpan pada: <code>docs/screenshots/01_tab_bar_navigation.png</code>.</p>
 </blockquote>
 <hr>
-<h2>BAB IV: TUGAS 2 – FITUR RIWAYAT PENCARIAN TERAKHIR (RECENT SEARCH HISTORY)</h2>
+<div class="bab-break"></div>
+    <div class="academic-bab-header" id="bab-iv">
+      <div class="bab-title-top">BAB IV</div>
+      <div class="bab-title-main">TUGAS 2 – FITUR RIWAYAT PENCARIAN TERAKHIR (RECENT SEARCH HISTORY)</div>
+      <div class="bab-underline"></div>
+    </div>
 <h3>4.1 Analisis Kebutuhan</h3>
 <p>Aplikasi wajib menyimpan data kota yang dicari pengguna secara otomatis ke penyimpanan lokal perangkat dengan ketentuan:</p>
 <ol>
@@ -1107,6 +1054,9 @@ Aset tangkapan layar navigasi tab bar tersimpan pada: <code>docs/screenshots/01_
 <li>Pada layar <code>app/(tabs)/riwayat.tsx</code>, merender daftar riwayat menggunakan kartu interaktif yang memiliki tombol hapus individual dan fungsi klik untuk navigasi langsung ke halaman Detail Cuaca (<code>/detail/[kota]</code>).</li>
 </ol>
 <h3>4.3 Potongan Kode Program Asli State Management (<code>contexts/RiwayatContext.tsx</code>)</h3>
+<p>Berikut adalah bukti visual tangkapan layar editor kode program asli implementasi context riwayat pencarian berbasis <code>AsyncStorage</code>:</p>
+<div align="center"><img src="./docs/screenshots/4.3.png" class="code-screenshot" width="540" alt="Tangkapan Layar Kode contexts/RiwayatContext.tsx" /><p><em>Gambar 4.1: Tangkapan layar kode state management RiwayatContext.tsx</em></p>
+</div><p>Cuplikan teks kode program:</p>
 <div class="code-wrapper">
       <div class="code-header">
         <span class="code-dot red"></span>
@@ -1228,6 +1178,9 @@ export function useRiwayat() {
 </code></pre>
     </div>
 <h3>4.4 Potongan Kode Integrasi &amp; Interaktivitas Klik (<code>app/(tabs)/riwayat.tsx</code>)</h3>
+<p>Berikut adalah bukti visual tangkapan layar editor kode antarmuka riwayat dan penanganan klik item:</p>
+<div align="center"><img src="./docs/screenshots/4.4.png" class="code-screenshot" width="540" alt="Tangkapan Layar Kode app/(tabs)/riwayat.tsx" /><p><em>Gambar 4.2: Tangkapan layar kode layar aktivitas riwayat pencarian pada app/(tabs)/riwayat.tsx</em></p>
+</div><p>Cuplikan teks kode program:</p>
 <div class="code-wrapper">
       <div class="code-header">
         <span class="code-dot red"></span>
@@ -1290,8 +1243,8 @@ export default function TabRiwayat() {
 <td align="center"><img src="./docs/screenshots/02_riwayat_klik_detail.png" width="340" alt="Halaman Detail Cuaca dari Riwayat" /></td>
 </tr>
 <tr>
-<td align="center"><em>Gambar 4.1: Daftar riwayat pencarian (maksimal 10 item, LIFO &amp; deduplikasi)</em></td>
-<td align="center"><em>Gambar 4.2: Tampilan detail informasi cuaca setelah salah satu riwayat diklik</em></td>
+<td align="center"><em>Gambar 4.3: Daftar riwayat pencarian (maksimal 10 item, LIFO &amp; deduplikasi)</em></td>
+<td align="center"><em>Gambar 4.4: Tampilan detail informasi cuaca setelah salah satu riwayat diklik</em></td>
 </tr>
 </tbody></table>
 </div><blockquote>
@@ -1299,7 +1252,12 @@ export default function TabRiwayat() {
 Aset tangkapan layar fitur riwayat pencarian tersimpan pada: <code>docs/screenshots/02_riwayat_pencarian.png</code> dan <code>docs/screenshots/02_riwayat_klik_detail.png</code>.</p>
 </blockquote>
 <hr>
-<h2>BAB V: TUGAS 3 – PENGHAPUSAN CACHE KOTA &amp; MODAL KONFIRMASI</h2>
+<div class="bab-break"></div>
+    <div class="academic-bab-header" id="bab-v">
+      <div class="bab-title-top">BAB V</div>
+      <div class="bab-title-main">TUGAS 3 – PENGHAPUSAN CACHE KOTA &amp; MODAL KONFIRMASI</div>
+      <div class="bab-underline"></div>
+    </div>
 <h3>5.1 Analisis Kebutuhan</h3>
 <p>Pada pertemuan 7, aplikasi menerapkan strategi <em>offline-first</em> menggunakan SQLite lokal (<code>cache_cuaca</code>). Tugas UTS nomor 3 mewajibkan:</p>
 <ol>
@@ -1317,6 +1275,9 @@ Aset tangkapan layar fitur riwayat pencarian tersimpan pada: <code>docs/screensh
 <li>Mengimplementasikan <em>Optimistic UI Update</em>: saat pengguna menekan tombol konfirmasi &quot;Hapus&quot;, state daftar kota di layar langsung dimutakhirkan secara instan, disusul eksekusi query SQLite di latar belakang.</li>
 </ol>
 <h3>5.3 Potongan Kode Program Asli SQLite Service (<code>src/services/cacheRepository.ts</code>)</h3>
+<p>Berikut adalah bukti visual tangkapan layar editor kode layanan SQLite untuk penghapusan cache offline:</p>
+<div align="center"><img src="./docs/screenshots/5.3.png" class="code-screenshot" width="540" alt="Tangkapan Layar Kode src/services/cacheRepository.ts" /><p><em>Gambar 5.1: Tangkapan layar kode fungsi penghapusan cache pada src/services/cacheRepository.ts</em></p>
+</div><p>Cuplikan teks kode program:</p>
 <div class="code-wrapper">
       <div class="code-header">
         <span class="code-dot red"></span>
@@ -1353,6 +1314,9 @@ export async function hapusSemuaCache(): Promise&lt;void&gt; {
 </code></pre>
     </div>
 <h3>5.4 Potongan Kode Modal Konfirmasi Hapus Cache (<code>app/(tabs)/index.tsx</code>)</h3>
+<p>Berikut adalah bukti visual tangkapan layar editor kode modal konfirmasi hapus cache:</p>
+<div align="center"><img src="./docs/screenshots/5.4.png" class="code-screenshot" width="540" alt="Tangkapan Layar Kode Modal Konfirmasi Hapus Cache" /><p><em>Gambar 5.2: Tangkapan layar kode modal dialog konfirmasi hapus cache pada app/(tabs)/index.tsx</em></p>
+</div><p>Cuplikan teks kode program:</p>
 <div class="code-wrapper">
       <div class="code-header">
         <span class="code-dot red"></span>
@@ -1458,8 +1422,8 @@ export default function HalamanUtama() {
 <td align="center"><img src="./docs/screenshots/03_modal_konfirmasi_hapus.png" width="340" alt="Modal Konfirmasi Hapus Cache" /></td>
 </tr>
 <tr>
-<td align="center"><em>Gambar 5.1: Tombol tempat sampah merah pada kartu cuaca tersimpan (offline)</em></td>
-<td align="center"><em>Gambar 5.2: Modal konfirmasi &quot;Hapus Cache Offline?&quot; dengan tombol Batal &amp; Hapus</em></td>
+<td align="center"><em>Gambar 5.3: Tombol tempat sampah merah pada kartu cuaca tersimpan (offline)</em></td>
+<td align="center"><em>Gambar 5.4: Modal konfirmasi &quot;Hapus Cache Offline?&quot; dengan tombol Batal &amp; Hapus</em></td>
 </tr>
 </tbody></table>
 </div><blockquote>
@@ -1467,7 +1431,12 @@ export default function HalamanUtama() {
 Aset tangkapan layar fitur penghapusan cache dan modal konfirmasi tersimpan pada: <code>docs/screenshots/03_tombol_hapus_cache.png</code> dan <code>docs/screenshots/03_modal_konfirmasi_hapus.png</code>.</p>
 </blockquote>
 <hr>
-<h2>BAB VI: TUGAS 4 – IMPLEMENTASI TEMA GELAP / TERANG / IKUTI SISTEM</h2>
+<div class="bab-break"></div>
+    <div class="academic-bab-header" id="bab-vi">
+      <div class="bab-title-top">BAB VI</div>
+      <div class="bab-title-main">TUGAS 4 – IMPLEMENTASI TEMA GELAP / TERANG / IKUTI SISTEM</div>
+      <div class="bab-underline"></div>
+    </div>
 <h3>6.1 Analisis Kebutuhan</h3>
 <p>Aplikasi standar hanya memiliki satu warna statis. Tugas UTS nomor 4 mewajibkan:</p>
 <ol>
@@ -1483,6 +1452,9 @@ Aset tangkapan layar fitur penghapusan cache dan modal konfirmasi tersimpan pada
 <li>Menyediakan animasi transisi melingkar (<em>Circular Reveal Animation</em>) saat tema berganti melalui <code>CircularThemeOverlay.tsx</code> dan tombol sakelar visual <code>AnimatedThemeToggle.tsx</code>.</li>
 </ol>
 <h3>6.3 Potongan Kode Program Asli Token Tema (<code>constants/theme.ts</code>)</h3>
+<p>Berikut adalah bukti visual tangkapan layar editor kode definisi token palet tema Atmospheric Indigo dan Electric Sky:</p>
+<div align="center"><img src="./docs/screenshots/6.3.png" class="code-screenshot" width="540" alt="Tangkapan Layar Kode constants/theme.ts" /><p><em>Gambar 6.1: Tangkapan layar kode palet tema Atmospheric Indigo pada constants/theme.ts</em></p>
+</div><p>Cuplikan teks kode program:</p>
 <div class="code-wrapper">
       <div class="code-header">
         <span class="code-dot red"></span>
@@ -1599,6 +1571,9 @@ export const darkTheme: ThemeColors = {
 </ul>
 </li>
 </ol>
+<p>Berikut adalah bukti visual tangkapan layar editor kode logika evaluasi tema sistem:</p>
+<div align="center"><img src="./docs/screenshots/6.4.png" class="code-screenshot" width="540" alt="Tangkapan Layar Kode contexts/PengaturanContext.tsx" /><p><em>Gambar 6.2: Tangkapan layar kode evaluasi tema sistem pada contexts/PengaturanContext.tsx</em></p>
+</div><p>Cuplikan teks kode program:</p>
 <div class="code-wrapper">
       <div class="code-header">
         <span class="code-dot red"></span>
@@ -1656,6 +1631,9 @@ export function PengaturanProvider({ children }: { children: ReactNode }) {
 <li><strong>Penguncian Sakelar (<em>Switch Disabled</em>)</strong>: Ketika <em>Ikuti Tema Sistem</em> aktif, baris sakelar <em>Mode Gelap</em> secara otomatis terkunci (<code>disabled={ikutiSistem}</code>) dan tampilannya dibuat redup (<code>styles.rowDisabled</code>) untuk memberi tahu pengguna bahwa warna sedang dikendalikan oleh sistem.</li>
 <li><strong>Keterangan Status Dinamis</strong>: Subtitle menampilkan status real-time, misalnya <code>&quot;Otomatis (Gelap)&quot;</code> atau <code>&quot;Otomatis (Terang)&quot;</code>.</li>
 </ul>
+<p>Berikut adalah bukti visual tangkapan layar editor kode antarmuka pengaturan sakelar tema:</p>
+<div align="center"><img src="./docs/screenshots/6.5.png" class="code-screenshot" width="540" alt="Tangkapan Layar Kode app/(tabs)/pengaturan.tsx" /><p><em>Gambar 6.3: Tangkapan layar kode antarmuka pengaturan tema pada app/(tabs)/pengaturan.tsx</em></p>
+</div><p>Cuplikan teks kode program:</p>
 <div class="code-wrapper">
       <div class="code-header">
         <span class="code-dot red"></span>
@@ -1783,8 +1761,8 @@ headerRight: () =&gt; (
 <td align="center"><img src="./docs/screenshots/04_pengaturan_tema.png" width="340" alt="Menu Pengaturan Tema" /></td>
 </tr>
 <tr>
-<td align="center"><em>Gambar 6.1: Tombol sakelar cepat animasi matahari/bulan di kanan atas header</em></td>
-<td align="center"><em>Gambar 6.2: Sakelar Ikuti Tema Sistem &amp; Mode Gelap di menu Pengaturan</em></td>
+<td align="center"><em>Gambar 6.4: Tombol sakelar cepat animasi matahari/bulan di kanan atas header</em></td>
+<td align="center"><em>Gambar 6.5: Sakelar Ikuti Tema Sistem &amp; Mode Gelap di menu Pengaturan</em></td>
 </tr>
 </tbody></table>
 <table>
@@ -1799,8 +1777,8 @@ headerRight: () =&gt; (
 <td align="center"><img src="./docs/screenshots/04_tampilan_gelap.png" width="340" alt="Beranda Mode Gelap" /></td>
 </tr>
 <tr>
-<td align="center"><em>Gambar 6.3: Layar Beranda bertema Terang (Light Mode)</em></td>
-<td align="center"><em>Gambar 6.4: Layar Beranda bertema Gelap Indigo (Dark Mode)</em></td>
+<td align="center"><em>Gambar 6.6: Layar Beranda bertema Terang (Light Mode)</em></td>
+<td align="center"><em>Gambar 6.7: Layar Beranda bertema Gelap Indigo (Dark Mode)</em></td>
 </tr>
 </tbody></table>
 </div><blockquote>
@@ -1808,7 +1786,12 @@ headerRight: () =&gt; (
 Seluruh aset tangkapan layar fitur tema dinamis di atas tersimpan pada: <code>docs/screenshots/04_header_theme_toggle.png</code>, <code>docs/screenshots/04_pengaturan_tema.png</code>, <code>docs/screenshots/04_tampilan_terang.png</code>, dan <code>docs/screenshots/04_tampilan_gelap.png</code>.</p>
 </blockquote>
 <hr>
-<h2>BAB VII: FITUR TAMBAHAN &amp; NILAI PLUS (KREATIVITAS MAHASISWA)</h2>
+<div class="bab-break"></div>
+    <div class="academic-bab-header" id="bab-vii">
+      <div class="bab-title-top">BAB VII</div>
+      <div class="bab-title-main">FITUR TAMBAHAN &amp; NILAI PLUS (KREATIVITAS MAHASISWA)</div>
+      <div class="bab-underline"></div>
+    </div>
 <p>Sebagai wujud inovasi dan eksplorasi materi di luar batas minimum tugas UTS, mahasiswa menambahkan beberapa penyempurnaan unggulan:</p>
 <h3>7.1 Fitur Konversi Satuan Suhu Dinamis (Celsius vs Fahrenheit)</h3>
 <ul>
@@ -1818,6 +1801,9 @@ Seluruh aset tangkapan layar fitur tema dinamis di atas tersimpan pada: <code>do
 Sebagai bukti visual nyata pada tangkapan layar, suhu kota Batang sebesar <strong>32°C</strong> dikonversi secara akurat menjadi <strong>89°F</strong> ($32 \times 1.8 + 32 = 89.6 \approx 89^\circ\text{F}$).</li>
 <li><strong>Potongan Kode Logika Konversi (<code>contexts/PengaturanContext.tsx</code>)</strong>:</li>
 </ul>
+<p>Berikut adalah bukti visual tangkapan layar editor kode implementasi fungsi konversi suhu:</p>
+<div align="center"><img src="./docs/screenshots/7.1.1.png" class="code-screenshot" width="540" alt="Tangkapan Layar Kode Rumus Konversi Suhu" /><p><em>Gambar 7.1: Tangkapan layar kode fungsi konversi suhu hitungKonversiSuhu pada contexts/PengaturanContext.tsx</em></p>
+</div><p>Cuplikan teks kode program:</p>
 <div class="code-wrapper">
       <div class="code-header">
         <span class="code-dot red"></span>
@@ -1840,6 +1826,9 @@ export function hitungKonversiSuhu(
 <ul>
 <li><strong>Penerapan pada Komponen Antarmuka (<code>components/WeatherCard.tsx</code>)</strong>:</li>
 </ul>
+<p>Berikut adalah bukti visual tangkapan layar editor kode render satuan suhu dinamis:</p>
+<div align="center"><img src="./docs/screenshots/7.1.2.png" class="code-screenshot" width="540" alt="Tangkapan Layar Kode Render Suhu Dinamis" /><p><em>Gambar 7.2: Tangkapan layar kode render suhu dinamis pada components/WeatherCard.tsx</em></p>
+</div><p>Cuplikan teks kode program:</p>
 <div class="code-wrapper">
       <div class="code-header">
         <span class="code-dot red"></span>
@@ -1871,6 +1860,9 @@ return (
 <li>Mengonfigurasi <code>SplashScreen.preventAutoHideAsync()</code> di root layout (<code>app/_layout.tsx</code>) agar font ter-load sempurna sebelum antarmuka dirender.</li>
 <li><strong>Pembersihan Bentrok Android <code>fontWeight</code></strong>: Menghapus redundansi <code>fontWeight</code> pada komponen yang telah menggunakan <code>fontFamily</code> khusus bobot tertentu, sehingga Android tidak mengalami <em>fallback</em> ke font sistem bawaan (Roboto) melainkan murni menampilkan tipografi Plus Jakarta Sans yang tajam dan elegan.</li>
 </ul>
+<p>Berikut adalah bukti visual tangkapan layar editor kode konfigurasi font kustom:</p>
+<div align="center"><img src="./docs/screenshots/7.2.png" class="code-screenshot" width="540" alt="Tangkapan Layar Kode Konfigurasi Plus Jakarta Sans" /><p><em>Gambar 7.3: Tangkapan layar kode inisialisasi font Plus Jakarta Sans pada app/_layout.tsx</em></p>
+</div><p>Cuplikan teks kode program:</p>
 <div class="code-wrapper">
       <div class="code-header">
         <span class="code-dot red"></span>
@@ -1927,9 +1919,9 @@ const [fontsLoaded, fontError] = useFonts({
 <td align="center"><img src="./docs/screenshots/05_status_badge.png" width="240" alt="Status Data Badge" /></td>
 </tr>
 <tr>
-<td align="center"><em>Gambar 7.1: Suhu 89° Fahrenheit hasil konversi dari 32°C &amp; Plus Jakarta Sans</em></td>
-<td align="center"><em>Gambar 7.2: Modal Tambah Favorit dalam Mode Gelap</em></td>
-<td align="center"><em>Gambar 7.3: Status data Online &amp; Tersimpan pada Beranda</em></td>
+<td align="center"><em>Gambar 7.4: Suhu 89° Fahrenheit hasil konversi dari 32°C &amp; Plus Jakarta Sans</em></td>
+<td align="center"><em>Gambar 7.5: Modal Tambah Favorit dalam Mode Gelap</em></td>
+<td align="center"><em>Gambar 7.6: Status data Online &amp; Tersimpan pada Beranda</em></td>
 </tr>
 </tbody></table>
 </div><div class="code-wrapper">
@@ -1949,7 +1941,12 @@ $ npx tsc --noEmit
 Seluruh aset tangkapan layar di atas tersimpan secara persisten pada direktori repositori: <code>docs/screenshots/</code>.</p>
 </blockquote>
 <hr>
-<h2>BAB VIII: RIWAYAT COMMIT GIT (25++ COMMITS)</h2>
+<div class="bab-break"></div>
+    <div class="academic-bab-header" id="bab-viii">
+      <div class="bab-title-top">BAB VIII</div>
+      <div class="bab-title-main">RIWAYAT COMMIT GIT (25++ COMMITS)</div>
+      <div class="bab-underline"></div>
+    </div>
 <p>Pengembangan dilakukan secara disiplin dan bertahap dengan menerapkan standar <strong>Conventional Commits</strong> (<code>feat:</code>, <code>style:</code>, <code>refactor:</code>, <code>fix:</code>). Berikut adalah riwayat commit aktual pada repositori GitHub:</p>
 <div class="code-wrapper">
       <div class="code-header">
@@ -1988,7 +1985,12 @@ c4e3651 style(riwayat): terapkan tipografi Plus Jakarta Sans pada kartu riwayat 
 </code></pre>
     </div>
 <hr>
-<h2>BAB IX: KESIMPULAN &amp; PENUTUP</h2>
+<div class="bab-break"></div>
+    <div class="academic-bab-header" id="bab-ix">
+      <div class="bab-title-top">BAB IX</div>
+      <div class="bab-title-main">KESIMPULAN &amp; PENUTUP</div>
+      <div class="bab-underline"></div>
+    </div>
 <h3>9.1 Kesimpulan</h3>
 <p>Seluruh target penugasan Ujian Tengah Semester (UTS) mata kuliah Pemrograman Berbasis Platform telah berhasil diselesaikan dengan baik dan teruji secara fungsional pada platform Android (Expo Go) maupun Web Browser:</p>
 <ol>
@@ -2000,6 +2002,22 @@ c4e3651 style(riwayat): terapkan tipografi Plus Jakarta Sans pada kartu riwayat 
 <li><strong>Kualitas &amp; Kreativitas Tambahan</strong>: Dilengkapi tipografi Google Fonts <strong>Plus Jakarta Sans</strong>, palet visual modern <strong>Atmospheric Indigo &amp; Electric Sky</strong>, modal dialog custom bergaya twilight, serta arsitektur kode TypeScript yang bebas dari galat (<em>0 error Clean Compile</em>).</li>
 </ol>
 <p>Laporan ini disusun dengan sebenar-benarnya berdasarkan kode program riil yang terdapat pada repositori proyek.</p>
+<hr>
+<div class="bab-break"></div>
+    <div class="academic-bab-header" id="bab-x">
+      <div class="bab-title-top">BAB X</div>
+      <div class="bab-title-main">DAFTAR PUSTAKA</div>
+      <div class="bab-underline"></div>
+    </div>
+<ol>
+<li><strong>Expo Documentation</strong>. (2026). <em>Expo SDK 57: Universal Native Apps with React</em>. Diakses dari: <a href="https://docs.expo.dev/versions/v57.0.0/">https://docs.expo.dev/versions/v57.0.0/</a></li>
+<li><strong>React Native Core Team</strong>. (2026). <em>React Native Architecture &amp; Components</em>. Meta Open Source. Diakses dari: <a href="https://reactnative.dev/docs/getting-started">https://reactnative.dev/docs/getting-started</a></li>
+<li><strong>Open-Meteo GmbH</strong>. (2026). <em>Free Weather &amp; Air Quality API Documentation</em>. Diakses dari: <a href="https://open-meteo.com/en/docs">https://open-meteo.com/en/docs</a></li>
+<li><strong>Expo SQLite Team</strong>. (2026). <em>Expo SQLite Next: Fast Offline-First Database for Mobile</em>. Diakses dari: <a href="https://docs.expo.dev/versions/v57.0.0/sdk/sqlite/">https://docs.expo.dev/versions/v57.0.0/sdk/sqlite/</a></li>
+<li><strong>React Navigation &amp; Expo Router</strong>. (2026). <em>File-Based Routing for React Native</em>. Software Mansion &amp; Expo. Diakses dari: <a href="https://docs.expo.dev/router/introduction/">https://docs.expo.dev/router/introduction/</a></li>
+<li><strong>Tokopedia Design &amp; Google Fonts</strong>. (2020). <em>Plus Jakarta Sans: Clean Geometric Sans-Serif Typeface</em>. Diakses dari: <a href="https://fonts.google.com/specimen/Plus+Jakarta+Sans">https://fonts.google.com/specimen/Plus+Jakarta+Sans</a></li>
+<li><strong>AsyncStorage Team</strong>. (2026). <em>Async Storage for React Native</em>. React Native Community. Diakses dari: <a href="https://react-native-async-storage.github.io/async-storage/">https://react-native-async-storage.github.io/async-storage/</a></li>
+</ol>
 <hr>
 <p><em>Pekalongan, 21 Oktober 2026</em><br><strong>Mahasiswa Penyusun,</strong></p>
 <p><strong>Gathan Hilabi</strong><br>NIM: 60324059</p>

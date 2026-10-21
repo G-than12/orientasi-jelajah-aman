@@ -40,8 +40,9 @@
 7. [BAB VII: Fitur Tambahan & Nilai Plus (Kreativitas Mahasiswa)](#bab-vii-fitur-tambahan--nilai-plus-kreativitas-mahasiswa)
    - [7.1 Fitur Konversi Satuan Suhu Dinamis (Celsius vs Fahrenheit)](#71-fitur-konversi-satuan-suhu-dinamis-celsius-vs-fahrenheit)
    - [7.6 Tangkapan Layar Hasil Implementasi (Screenshots)](#76-tangkapan-layar-hasil-implementasi-screenshots)
-8. [BAB VIII: Riwayat Commit Git (25++ Commits)](#bab-viii-riwayat-commit-git-25-commits)
+8. [BAB VIII: Riwayat Commit Git (28++ Commits)](#bab-viii-riwayat-commit-git-25-commits)
 9. [BAB IX: Kesimpulan & Penutup](#bab-ix-kesimpulan--penutup)
+10. [BAB X: Daftar Pustaka](#bab-x-daftar-pustaka)
 
 ---
 
@@ -121,6 +122,18 @@ Pada kondisi awal praktikum, navigasi bawah Expo Router Tabs masih menggunakan i
 5. Memasang tombol sakelar tema adaptif (`AnimatedThemeToggle`) langsung pada `headerRight` di tab bar atas.
 
 ### 3.3 Potongan Kode Program Asli (`app/(tabs)/_layout.tsx`)
+
+Berikut adalah bukti visual tangkapan layar editor kode program asli implementasi navigasi tab bar dan kustomisasi ikon `Ionicons`:
+
+<div align="center">
+
+<img src="./docs/screenshots/3.3.png" class="code-screenshot" width="540" alt="Tangkapan Layar Kode app/(tabs)/_layout.tsx" />
+
+*Gambar 3.1: Tangkapan layar kode implementasi navigasi Tab Bar pada app/(tabs)/_layout.tsx*
+
+</div>
+
+Cuplikan teks kode program:
 
 ```tsx
 // app/(tabs)/_layout.tsx
@@ -236,7 +249,7 @@ Berikut adalah bukti visual implementasi kustomisasi ikon tab bar dan label navi
 
 <img src="./docs/screenshots/01_tab_bar_navigation.png" width="460" alt="Navigasi Tab Bar Bawah" />
 
-*Gambar 3.1: Navigasi Tab Bar bawah dengan ikon kustom Ionicons (`Beranda`, `Aktivitas`, `Pengaturan`, `Tentang`)*
+*Gambar 3.2: Navigasi Tab Bar bawah dengan ikon kustom Ionicons (`Beranda`, `Aktivitas`, `Pengaturan`, `Tentang`)*
 
 </div>
 
@@ -260,6 +273,18 @@ Aplikasi wajib menyimpan data kota yang dicari pengguna secara otomatis ke penyi
 4. Pada layar `app/(tabs)/riwayat.tsx`, merender daftar riwayat menggunakan kartu interaktif yang memiliki tombol hapus individual dan fungsi klik untuk navigasi langsung ke halaman Detail Cuaca (`/detail/[kota]`).
 
 ### 4.3 Potongan Kode Program Asli State Management (`contexts/RiwayatContext.tsx`)
+
+Berikut adalah bukti visual tangkapan layar editor kode program asli implementasi context riwayat pencarian berbasis `AsyncStorage`:
+
+<div align="center">
+
+<img src="./docs/screenshots/4.3.png" class="code-screenshot" width="540" alt="Tangkapan Layar Kode contexts/RiwayatContext.tsx" />
+
+*Gambar 4.1: Tangkapan layar kode state management RiwayatContext.tsx*
+
+</div>
+
+Cuplikan teks kode program:
 
 ```tsx
 // contexts/RiwayatContext.tsx
@@ -377,6 +402,18 @@ export function useRiwayat() {
 
 ### 4.4 Potongan Kode Integrasi & Interaktivitas Klik (`app/(tabs)/riwayat.tsx`)
 
+Berikut adalah bukti visual tangkapan layar editor kode antarmuka riwayat dan penanganan klik item:
+
+<div align="center">
+
+<img src="./docs/screenshots/4.4.png" class="code-screenshot" width="540" alt="Tangkapan Layar Kode app/(tabs)/riwayat.tsx" />
+
+*Gambar 4.2: Tangkapan layar kode layar aktivitas riwayat pencarian pada app/(tabs)/riwayat.tsx*
+
+</div>
+
+Cuplikan teks kode program:
+
 ```tsx
 // Cuplikan dari app/(tabs)/riwayat.tsx
 export default function TabRiwayat() {
@@ -428,7 +465,7 @@ Berikut adalah bukti visual implementasi fitur riwayat pencarian terakhir dan in
 | Riwayat Pencarian Terakhir (Tab Aktivitas) | Hasil Navigasi Saat Riwayat Diklik (Detail Cuaca) |
 | :---: | :---: |
 | <img src="./docs/screenshots/02_riwayat_pencarian.png" width="340" alt="Daftar Riwayat Pencarian" /> | <img src="./docs/screenshots/02_riwayat_klik_detail.png" width="340" alt="Halaman Detail Cuaca dari Riwayat" /> |
-| *Gambar 4.1: Daftar riwayat pencarian (maksimal 10 item, LIFO & deduplikasi)* | *Gambar 4.2: Tampilan detail informasi cuaca setelah salah satu riwayat diklik* |
+| *Gambar 4.3: Daftar riwayat pencarian (maksimal 10 item, LIFO & deduplikasi)* | *Gambar 4.4: Tampilan detail informasi cuaca setelah salah satu riwayat diklik* |
 
 </div>
 
@@ -452,6 +489,18 @@ Pada pertemuan 7, aplikasi menerapkan strategi *offline-first* menggunakan SQLit
 3. Mengimplementasikan *Optimistic UI Update*: saat pengguna menekan tombol konfirmasi "Hapus", state daftar kota di layar langsung dimutakhirkan secara instan, disusul eksekusi query SQLite di latar belakang.
 
 ### 5.3 Potongan Kode Program Asli SQLite Service (`src/services/cacheRepository.ts`)
+
+Berikut adalah bukti visual tangkapan layar editor kode layanan SQLite untuk penghapusan cache offline:
+
+<div align="center">
+
+<img src="./docs/screenshots/5.3.png" class="code-screenshot" width="540" alt="Tangkapan Layar Kode src/services/cacheRepository.ts" />
+
+*Gambar 5.1: Tangkapan layar kode fungsi penghapusan cache pada src/services/cacheRepository.ts*
+
+</div>
+
+Cuplikan teks kode program:
 
 ```tsx
 // src/services/cacheRepository.ts
@@ -483,6 +532,18 @@ export async function hapusSemuaCache(): Promise<void> {
 ```
 
 ### 5.4 Potongan Kode Modal Konfirmasi Hapus Cache (`app/(tabs)/index.tsx`)
+
+Berikut adalah bukti visual tangkapan layar editor kode modal konfirmasi hapus cache:
+
+<div align="center">
+
+<img src="./docs/screenshots/5.4.png" class="code-screenshot" width="540" alt="Tangkapan Layar Kode Modal Konfirmasi Hapus Cache" />
+
+*Gambar 5.2: Tangkapan layar kode modal dialog konfirmasi hapus cache pada app/(tabs)/index.tsx*
+
+</div>
+
+Cuplikan teks kode program:
 
 ```tsx
 // Cuplikan dari app/(tabs)/index.tsx
@@ -578,7 +639,7 @@ Berikut adalah bukti visual implementasi penghapusan cache kota offline beserta 
 | Tombol Hapus Cache pada Kartu Kota Tersimpan | Dialog Modal Konfirmasi Interaktif |
 | :---: | :---: |
 | <img src="./docs/screenshots/03_tombol_hapus_cache.png" width="340" alt="Tombol Hapus Cache Offline" /> | <img src="./docs/screenshots/03_modal_konfirmasi_hapus.png" width="340" alt="Modal Konfirmasi Hapus Cache" /> |
-| *Gambar 5.1: Tombol tempat sampah merah pada kartu cuaca tersimpan (offline)* | *Gambar 5.2: Modal konfirmasi "Hapus Cache Offline?" dengan tombol Batal & Hapus* |
+| *Gambar 5.3: Tombol tempat sampah merah pada kartu cuaca tersimpan (offline)* | *Gambar 5.4: Modal konfirmasi "Hapus Cache Offline?" dengan tombol Batal & Hapus* |
 
 </div>
 
@@ -602,6 +663,18 @@ Aplikasi standar hanya memiliki satu warna statis. Tugas UTS nomor 4 mewajibkan:
 5. Menyediakan animasi transisi melingkar (*Circular Reveal Animation*) saat tema berganti melalui `CircularThemeOverlay.tsx` dan tombol sakelar visual `AnimatedThemeToggle.tsx`.
 
 ### 6.3 Potongan Kode Program Asli Token Tema (`constants/theme.ts`)
+
+Berikut adalah bukti visual tangkapan layar editor kode definisi token palet tema Atmospheric Indigo dan Electric Sky:
+
+<div align="center">
+
+<img src="./docs/screenshots/6.3.png" class="code-screenshot" width="540" alt="Tangkapan Layar Kode constants/theme.ts" />
+
+*Gambar 6.1: Tangkapan layar kode palet tema Atmospheric Indigo pada constants/theme.ts*
+
+</div>
+
+Cuplikan teks kode program:
 
 ```tsx
 // constants/theme.ts
@@ -701,6 +774,18 @@ Fitur **"Ikuti Tema Sistem"** memungkinkan aplikasi menyelaraskan tampilannya se
 3. **Persistensi Penyimpanan Lokal (`AsyncStorage`)**:
    - Preferensi tema disimpan secara persisten dengan kunci `@jelajah_aman:preferensi` dalam format JSON, sehingga saat aplikasi ditutup dan dibuka kembali, preferensi pengguna tetap dipertahankan.
 
+Berikut adalah bukti visual tangkapan layar editor kode logika evaluasi tema sistem:
+
+<div align="center">
+
+<img src="./docs/screenshots/6.4.png" class="code-screenshot" width="540" alt="Tangkapan Layar Kode contexts/PengaturanContext.tsx" />
+
+*Gambar 6.2: Tangkapan layar kode evaluasi tema sistem pada contexts/PengaturanContext.tsx*
+
+</div>
+
+Cuplikan teks kode program:
+
 ```tsx
 // Cuplikan logika Ikuti Tema Sistem pada contexts/PengaturanContext.tsx
 export function PengaturanProvider({ children }: { children: ReactNode }) {
@@ -752,6 +837,18 @@ export function PengaturanProvider({ children }: { children: ReactNode }) {
 Pada layar Pengaturan, antarmuka dirancang dengan UX yang intuitif untuk mencegah konflik preferensi:
 - **Penguncian Sakelar (*Switch Disabled*)**: Ketika *Ikuti Tema Sistem* aktif, baris sakelar *Mode Gelap* secara otomatis terkunci (`disabled={ikutiSistem}`) dan tampilannya dibuat redup (`styles.rowDisabled`) untuk memberi tahu pengguna bahwa warna sedang dikendalikan oleh sistem.
 - **Keterangan Status Dinamis**: Subtitle menampilkan status real-time, misalnya `"Otomatis (Gelap)"` atau `"Otomatis (Terang)"`.
+
+Berikut adalah bukti visual tangkapan layar editor kode antarmuka pengaturan sakelar tema:
+
+<div align="center">
+
+<img src="./docs/screenshots/6.5.png" class="code-screenshot" width="540" alt="Tangkapan Layar Kode app/(tabs)/pengaturan.tsx" />
+
+*Gambar 6.3: Tangkapan layar kode antarmuka pengaturan tema pada app/(tabs)/pengaturan.tsx*
+
+</div>
+
+Cuplikan teks kode program:
 
 ```tsx
 // Cuplikan dari app/(tabs)/pengaturan.tsx
@@ -859,12 +956,12 @@ Berikut adalah bukti visual implementasi lengkap fitur tema dinamis (Pengaturan,
 | Sakelar Cepat Header Kanan Atas | Menu Pengaturan Tema |
 | :---: | :---: |
 | <img src="./docs/screenshots/04_header_theme_toggle.png" width="340" alt="Tombol Sakelar Cepat Header Kanan Atas" /> | <img src="./docs/screenshots/04_pengaturan_tema.png" width="340" alt="Menu Pengaturan Tema" /> |
-| *Gambar 6.1: Tombol sakelar cepat animasi matahari/bulan di kanan atas header* | *Gambar 6.2: Sakelar Ikuti Tema Sistem & Mode Gelap di menu Pengaturan* |
+| *Gambar 6.4: Tombol sakelar cepat animasi matahari/bulan di kanan atas header* | *Gambar 6.5: Sakelar Ikuti Tema Sistem & Mode Gelap di menu Pengaturan* |
 
 | Tampilan Beranda Mode Terang (*Light Mode*) | Tampilan Beranda Mode Gelap (*Atmospheric Dark*) |
 | :---: | :---: |
 | <img src="./docs/screenshots/04_tampilan_terang.png" width="340" alt="Beranda Mode Terang" /> | <img src="./docs/screenshots/04_tampilan_gelap.png" width="340" alt="Beranda Mode Gelap" /> |
-| *Gambar 6.3: Layar Beranda bertema Terang (Light Mode)* | *Gambar 6.4: Layar Beranda bertema Gelap Indigo (Dark Mode)* |
+| *Gambar 6.6: Layar Beranda bertema Terang (Light Mode)* | *Gambar 6.7: Layar Beranda bertema Gelap Indigo (Dark Mode)* |
 
 </div>
 
@@ -884,6 +981,18 @@ Sebagai wujud inovasi dan eksplorasi materi di luar batas minimum tugas UTS, mah
   Sebagai bukti visual nyata pada tangkapan layar, suhu kota Batang sebesar **$32^\circ\text{C}$** dikonversi secara akurat menjadi **$89^\circ\text{F}$** ($32 \times 1.8 + 32 = 89.6 \approx 89^\circ\text{F}$).
 - **Potongan Kode Logika Konversi (`contexts/PengaturanContext.tsx`)**:
 
+Berikut adalah bukti visual tangkapan layar editor kode implementasi fungsi konversi suhu:
+
+<div align="center">
+
+<img src="./docs/screenshots/7.1.1.png" class="code-screenshot" width="540" alt="Tangkapan Layar Kode Rumus Konversi Suhu" />
+
+*Gambar 7.1: Tangkapan layar kode fungsi konversi suhu hitungKonversiSuhu pada contexts/PengaturanContext.tsx*
+
+</div>
+
+Cuplikan teks kode program:
+
 ```tsx
 // contexts/PengaturanContext.tsx
 export function hitungKonversiSuhu(
@@ -898,6 +1007,18 @@ export function hitungKonversiSuhu(
 ```
 
 - **Penerapan pada Komponen Antarmuka (`components/WeatherCard.tsx`)**:
+
+Berikut adalah bukti visual tangkapan layar editor kode render satuan suhu dinamis:
+
+<div align="center">
+
+<img src="./docs/screenshots/7.1.2.png" class="code-screenshot" width="540" alt="Tangkapan Layar Kode Render Suhu Dinamis" />
+
+*Gambar 7.2: Tangkapan layar kode render suhu dinamis pada components/WeatherCard.tsx*
+
+</div>
+
+Cuplikan teks kode program:
 
 ```tsx
 // components/WeatherCard.tsx
@@ -922,6 +1043,18 @@ return (
 - Mengintegrasikan pustaka `@expo-google-fonts/plus-jakarta-sans` dengan 5 bobot lengkap: `Regular (400)`, `Medium (500)`, `SemiBold (600)`, `Bold (700)`, dan `ExtraBold (800)`.
 - Mengonfigurasi `SplashScreen.preventAutoHideAsync()` di root layout (`app/_layout.tsx`) agar font ter-load sempurna sebelum antarmuka dirender.
 - **Pembersihan Bentrok Android `fontWeight`**: Menghapus redundansi `fontWeight` pada komponen yang telah menggunakan `fontFamily` khusus bobot tertentu, sehingga Android tidak mengalami *fallback* ke font sistem bawaan (Roboto) melainkan murni menampilkan tipografi Plus Jakarta Sans yang tajam dan elegan.
+
+Berikut adalah bukti visual tangkapan layar editor kode konfigurasi font kustom:
+
+<div align="center">
+
+<img src="./docs/screenshots/7.2.png" class="code-screenshot" width="540" alt="Tangkapan Layar Kode Konfigurasi Plus Jakarta Sans" />
+
+*Gambar 7.3: Tangkapan layar kode inisialisasi font Plus Jakarta Sans pada app/_layout.tsx*
+
+</div>
+
+Cuplikan teks kode program:
 
 ```tsx
 // Cuplikan konfigurasi font pada app/_layout.tsx
@@ -961,7 +1094,7 @@ Berikut adalah bukti visual implementasi fitur kreativitas mahasiswa (Konversi S
 | Konversi Suhu Fahrenheit ($89^\circ\text{F}$) & Tipografi | Modal Dialog Tambah Favorit (*Dark Theme*) | Indikator Status Data (*Online / Tersimpan*) |
 | :---: | :---: | :---: |
 | <img src="./docs/screenshots/05_tipografi_dan_kartu.png" width="240" alt="Konversi Suhu Fahrenheit dan Tipografi" /> | <img src="./docs/screenshots/05_modal_favorit_dark.png" width="240" alt="Modal Simpan Favorit Dark Mode" /> | <img src="./docs/screenshots/05_status_badge.png" width="240" alt="Status Data Badge" /> |
-| *Gambar 7.1: Suhu 89° Fahrenheit hasil konversi dari 32°C & Plus Jakarta Sans* | *Gambar 7.2: Modal Tambah Favorit dalam Mode Gelap* | *Gambar 7.3: Status data Online & Tersimpan pada Beranda* |
+| *Gambar 7.4: Suhu 89° Fahrenheit hasil konversi dari 32°C & Plus Jakarta Sans* | *Gambar 7.5: Modal Tambah Favorit dalam Mode Gelap* | *Gambar 7.6: Status data Online & Tersimpan pada Beranda* |
 
 </div>
 
@@ -1026,6 +1159,19 @@ Seluruh target penugasan Ujian Tengah Semester (UTS) mata kuliah Pemrograman Ber
 Laporan ini disusun dengan sebenar-benarnya berdasarkan kode program riil yang terdapat pada repositori proyek.
 
 ---
+
+## BAB X: DAFTAR PUSTAKA
+
+1. **Expo Documentation**. (2026). *Expo SDK 57: Universal Native Apps with React*. Diakses dari: https://docs.expo.dev/versions/v57.0.0/
+2. **React Native Core Team**. (2026). *React Native Architecture & Components*. Meta Open Source. Diakses dari: https://reactnative.dev/docs/getting-started
+3. **Open-Meteo GmbH**. (2026). *Free Weather & Air Quality API Documentation*. Diakses dari: https://open-meteo.com/en/docs
+4. **Expo SQLite Team**. (2026). *Expo SQLite Next: Fast Offline-First Database for Mobile*. Diakses dari: https://docs.expo.dev/versions/v57.0.0/sdk/sqlite/
+5. **React Navigation & Expo Router**. (2026). *File-Based Routing for React Native*. Software Mansion & Expo. Diakses dari: https://docs.expo.dev/router/introduction/
+6. **Tokopedia Design & Google Fonts**. (2020). *Plus Jakarta Sans: Clean Geometric Sans-Serif Typeface*. Diakses dari: https://fonts.google.com/specimen/Plus+Jakarta+Sans
+7. **AsyncStorage Team**. (2026). *Async Storage for React Native*. React Native Community. Diakses dari: https://react-native-async-storage.github.io/async-storage/
+
+---
+
 *Pekalongan, 21 Oktober 2026*  
 **Mahasiswa Penyusun,**
 

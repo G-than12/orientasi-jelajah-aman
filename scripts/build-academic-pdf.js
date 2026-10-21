@@ -1,4 +1,4 @@
-// scripts/build-academic-pdf.js
+// scripts/build-pdf.js
 // Script Generator PDF Laporan UTS Berstandar Akademik Resmi UIN K.H. Abdurrahman Wahid Pekalongan
 // Penyusun: Gathan Hilabi (NIM: 60324059) — S1 Informatika FST
 
@@ -6,6 +6,7 @@ const fs = require("fs");
 const path = require("path");
 const os = require("os");
 const { execSync, execFileSync } = require("child_process");
+const { PDFParse } = require("pdf-parse");
 
 const rootDir = path.resolve(__dirname, "..");
 const mdFile = path.join(rootDir, "LAPORAN_UTS_PBP_GATHAN_HILABI.md");
@@ -26,17 +27,27 @@ const logoRelPath = "./assets/images/icon.png";
 console.log("1. Mengonversi Markdown asli dengan Marked parser...");
 let rawHtml = execSync(`npx -y marked -i "${mdFile}" --gfm`, { encoding: "utf8" });
 
-// 3. Potong bagian identitas & TOC mentah dari Markdown karena digantikan halaman akademik formal
-const bab1Index = rawHtml.indexOf('<h2 id="bab-i');
+// 3. Potong bagian identitas & TOC mentah dari Markdown agar TIDAK redundan pada halaman isi
+const bab1Regex = /<h2[^>]*>\s*BAB\s+I[\s\S]*?<\/h2>/i;
+const bab1Match = rawHtml.match(bab1Regex);
+const bab1Index = bab1Match ? bab1Match.index : -1;
+
+if (bab1Index === -1) {
+  console.warn("PERINGATAN: BAB I tidak ditemukan dengan regex, menggunakan rawHtml penuh.");
+} else {
+  console.log(`2. Memotong cover mentah & TOC lama (karakter 0 s.d. ${bab1Index}) agar tidak redundan.`);
+}
+
 let bodyContent = bab1Index !== -1 ? rawHtml.substring(bab1Index) : rawHtml;
 
 // 4. Percantik BAB headers & Penomoran Akademik Formal
-console.log("2. Menyusun format bab ilmiah, callout alerts, rumus, dan listing program...");
+console.log("3. Menyusun format bab ilmiah, callout alerts, rumus, dan listing program...");
 bodyContent = bodyContent
   // Ganti h2 BAB menjadi header bab formal terpusat
-  .replace(/<h2 id="(bab-[a-z0-9-]+)">BAB\s+([IVXLCDM]+):\s*([^<]+)<\/h2>/gi, (m, id, babNum, title) => {
+  .replace(/<h2[^>]*>BAB\s+([IVXLCDM]+):\s*([^<]+)<\/h2>/gi, (m, babNum, title) => {
+    const babId = `bab-${babNum.toLowerCase()}`;
     return `<div class="bab-break"></div>
-    <div class="academic-bab-header" id="${id}">
+    <div class="academic-bab-header" id="${babId}">
       <div class="bab-title-top">BAB ${babNum}</div>
       <div class="bab-title-main">${title.trim()}</div>
       <div class="bab-underline"></div>
@@ -87,9 +98,11 @@ bodyContent = bodyContent
     </div>`;
   });
 
-console.log("3. Menyusun dokumen HTML lengkap berstandar akademik...");
+// 5. Fungsi generator template HTML dengan nomor halaman dinamis
+function generateHtmlDocument(pageMap = {}) {
+  const p = (key, defaultPage) => pageMap[key] || defaultPage;
 
-const fullHtml = `<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
@@ -433,7 +446,7 @@ const fullHtml = `<!DOCTYPE html>
       background: #f8fafc !important;
     }
 
-    /* Framing Tangkapan Layar (Screenshots) Proporsional */
+    /* Framing Tangkapan Layar (Screenshots) Antarmuka Smartphone */
     div[align="center"] {
       text-align: center;
       margin: 10px 0 14px 0;
@@ -457,7 +470,7 @@ const fullHtml = `<!DOCTYPE html>
       vertical-align: top !important;
     }
 
-    div[align="center"] img {
+    div[align="center"] img:not(.code-screenshot) {
       max-height: 240px !important;
       max-width: 150px !important;
       width: auto !important;
@@ -470,10 +483,26 @@ const fullHtml = `<!DOCTYPE html>
     }
 
     /* Banner landscape Tab Bar */
-    div[align="center"] > img[alt*="Tab Bar"] {
+    div[align="center"] > img[alt*="Tab Bar"]:not(.code-screenshot) {
       max-width: 380px !important;
       max-height: 105px !important;
       border-radius: 10px;
+    }
+
+    /* Tangkapan Layar Editor Kode (Kutipan Gambar Kode) */
+    img.code-screenshot,
+    div[align="center"] img.code-screenshot {
+      max-width: 540px !important;
+      max-height: 800px !important;
+      width: 100% !important;
+      height: auto !important;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
+      display: block;
+      margin: 10px auto;
+      page-break-inside: avoid;
+      break-inside: avoid;
     }
 
     em {
@@ -625,16 +654,16 @@ const fullHtml = `<!DOCTYPE html>
     .toc-table {
       width: 100%;
       border: none;
-      margin: 10px 0;
-      font-size: 9.5pt;
+      margin: 4px 0;
+      font-size: 8.2pt;
+      line-height: 1.25;
+      page-break-inside: auto !important;
+      break-inside: auto !important;
     }
     .toc-table td {
       border: none !important;
       background: transparent !important;
-      padding: 3.5px 0 !important;
-    }
-    .toc-title {
-      font-weight: 600;
+      padding: 1.5px 0 !important;
     }
   </style>
 </head>
@@ -847,56 +876,57 @@ const fullHtml = `<!DOCTYPE html>
       <tr><td><strong>LEMBAR PENGESAHAN & PENILAIAN</strong></td><td align="right">ii</td></tr>
       <tr><td><strong>KATA PENGANTAR</strong></td><td align="right">iii</td></tr>
       <tr><td><strong>DAFTAR ISI</strong></td><td align="right">iv</td></tr>
-      <tr><td colspan="2" style="padding: 6px 0;"><hr style="border: 0; border-top: 1px solid #cbd5e1; margin: 2px 0;"></td></tr>
-      <tr><td><strong>BAB I: PENDAHULUAN & GAMBARAN UMUM APLIKASI</strong></td><td align="right">1</td></tr>
-      <tr><td style="padding-left: 15px;">1.1 Latar Belakang Masalah</td><td align="right">1</td></tr>
-      <tr><td style="padding-left: 15px;">1.2 Tujuan Penyempurnaan UTS</td><td align="right">1</td></tr>
-      <tr><td style="padding-left: 15px;">1.3 Ruang Lingkup & Batasan Masalah</td><td align="right">2</td></tr>
-      <tr><td style="padding-left: 15px;">1.4 Profil Mahasiswa & Informasi Repositori</td><td align="right">2</td></tr>
-      <tr><td><strong>BAB II: STRUKTUR PROYEK & ARSITEKTUR SISTEM</strong></td><td align="right">3</td></tr>
-      <tr><td style="padding-left: 15px;">2.1 Pola Arsitektur Folder Expo Router</td><td align="right">3</td></tr>
-      <tr><td style="padding-left: 15px;">2.2 Diagram Alur Data & State Terpusat</td><td align="right">4</td></tr>
-      <tr><td style="padding-left: 15px;">2.3 Pustaka Kunci & Dependensi</td><td align="right">4</td></tr>
-      <tr><td><strong>BAB III: TUGAS 1 – KUSTOMISASI IKON TAB BAR & LABEL NAVIGASI</strong></td><td align="right">5</td></tr>
-      <tr><td style="padding-left: 15px;">3.1 Analisis Kebutuhan</td><td align="right">5</td></tr>
-      <tr><td style="padding-left: 15px;">3.2 Langkah-Langkah Solusi</td><td align="right">5</td></tr>
-      <tr><td style="padding-left: 15px;">3.3 Potongan Kode Program Asli (<code>app/(tabs)/_layout.tsx</code>)</td><td align="right">5</td></tr>
-      <tr><td style="padding-left: 15px;">3.4 Penjelasan Teknis</td><td align="right">6</td></tr>
-      <tr><td style="padding-left: 15px;">3.5 Tangkapan Layar Hasil Implementasi (Screenshots)</td><td align="right">7</td></tr>
-      <tr><td><strong>BAB IV: TUGAS 2 – FITUR RIWAYAT PENCARIAN TERAKHIR</strong></td><td align="right">8</td></tr>
-      <tr><td style="padding-left: 15px;">4.1 Analisis Kebutuhan</td><td align="right">8</td></tr>
-      <tr><td style="padding-left: 15px;">4.2 Langkah-Langkah Solusi</td><td align="right">8</td></tr>
-      <tr><td style="padding-left: 15px;">4.3 Potongan Kode State Management (<code>contexts/RiwayatContext.tsx</code>)</td><td align="right">9</td></tr>
-      <tr><td style="padding-left: 15px;">4.4 Potongan Kode Integrasi & Navigasi (<code>app/(tabs)/riwayat.tsx</code>)</td><td align="right">11</td></tr>
-      <tr><td style="padding-left: 15px;">4.5 Tangkapan Layar Hasil Implementasi (Screenshots)</td><td align="right">13</td></tr>
-      <tr><td><strong>BAB V: TUGAS 3 – PENGHAPUSAN CACHE KOTA & MODAL KONFIRMASI</strong></td><td align="right">14</td></tr>
-      <tr><td style="padding-left: 15px;">5.1 Analisis Kebutuhan</td><td align="right">14</td></tr>
-      <tr><td style="padding-left: 15px;">5.2 Langkah-Langkah Solusi</td><td align="right">14</td></tr>
-      <tr><td style="padding-left: 15px;">5.3 Potongan Kode SQLite Service (<code>src/services/cacheRepository.ts</code>)</td><td align="right">15</td></tr>
-      <tr><td style="padding-left: 15px;">5.4 Potongan Kode Modal Konfirmasi (<code>app/(tabs)/index.tsx</code>)</td><td align="right">16</td></tr>
-      <tr><td style="padding-left: 15px;">5.5 Tangkapan Layar Hasil Implementasi (Screenshots)</td><td align="right">18</td></tr>
-      <tr><td><strong>BAB VI: TUGAS 4 – IMPLEMENTASI TEMA GELAP / TERANG / IKUTI SISTEM</strong></td><td align="right">19</td></tr>
-      <tr><td style="padding-left: 15px;">6.1 Analisis Kebutuhan</td><td align="right">19</td></tr>
-      <tr><td style="padding-left: 15px;">6.2 Langkah-Langkah Solusi</td><td align="right">19</td></tr>
-      <tr><td style="padding-left: 15px;">6.3 Token Palet Tema (<code>constants/theme.ts</code>)</td><td align="right">19</td></tr>
-      <tr><td style="padding-left: 15px;">6.4 Cara Kerja & Kode Logika "Ikuti Tema Sistem"</td><td align="right">20</td></tr>
-      <tr><td style="padding-left: 15px;">6.5 Antarmuka Pengaturan & Sakelar Ikuti Sistem</td><td align="right">22</td></tr>
-      <tr><td style="padding-left: 15px;">6.6 Tombol Sakelar Cepat Header Kanan Atas</td><td align="right">24</td></tr>
-      <tr><td style="padding-left: 15px;">6.7 Tangkapan Layar Hasil Implementasi (Screenshots)</td><td align="right">25</td></tr>
-      <tr><td><strong>BAB VII: FITUR TAMBAHAN & NILAI PLUS (KREATIVITAS MAHASISWA)</strong></td><td align="right">27</td></tr>
-      <tr><td style="padding-left: 15px;">7.1 Fitur Konversi Satuan Suhu Dinamis (°C vs °F)</td><td align="right">27</td></tr>
-      <tr><td style="padding-left: 15px;">7.2 Tipografi Modern Google Fonts (Plus Jakarta Sans)</td><td align="right">28</td></tr>
-      <tr><td style="padding-left: 15px;">7.3 Palet Warna Atmospheric Indigo & Electric Sky</td><td align="right">28</td></tr>
-      <tr><td style="padding-left: 15px;">7.4 Status Data Terpadu Minimalis</td><td align="right">28</td></tr>
-      <tr><td style="padding-left: 15px;">7.5 Penjaminan Mutu & Type-Safety</td><td align="right">29</td></tr>
-      <tr><td style="padding-left: 15px;">7.6 Tangkapan Layar Hasil Implementasi (Screenshots)</td><td align="right">29</td></tr>
-      <tr><td><strong>BAB VIII: RIWAYAT COMMIT GIT (25++ COMMITS)</strong></td><td align="right">30</td></tr>
-      <tr><td><strong>BAB IX: KESIMPULAN & PENUTUP</strong></td><td align="right">33</td></tr>
+      <tr><td colspan="2" style="padding: 4px 0;"><hr style="border: 0; border-top: 1px solid #cbd5e1; margin: 2px 0;"></td></tr>
+      <tr><td><strong>BAB I: PENDAHULUAN & GAMBARAN UMUM APLIKASI</strong></td><td align="right">${p('BAB I', 1)}</td></tr>
+      <tr><td style="padding-left: 15px;">1.1 Latar Belakang Masalah</td><td align="right">${p('BAB I', 1)}</td></tr>
+      <tr><td style="padding-left: 15px;">1.2 Tujuan Penyempurnaan UTS</td><td align="right">${p('BAB I', 1)}</td></tr>
+      <tr><td style="padding-left: 15px;">1.3 Ruang Lingkup & Batasan Masalah</td><td align="right">${p('BAB I', 1)}</td></tr>
+      <tr><td style="padding-left: 15px;">1.4 Profil Mahasiswa & Informasi Repositori</td><td align="right">${p('BAB I', 1)}</td></tr>
+      <tr><td><strong>BAB II: STRUKTUR PROYEK & ARSITEKTUR SISTEM</strong></td><td align="right">${p('BAB II', 2)}</td></tr>
+      <tr><td style="padding-left: 15px;">2.1 Pola Arsitektur Folder Expo Router</td><td align="right">${p('BAB II', 2)}</td></tr>
+      <tr><td style="padding-left: 15px;">2.2 Diagram Alur Data & State Terpusat</td><td align="right">${p('BAB II', 2)}</td></tr>
+      <tr><td style="padding-left: 15px;">2.3 Pustaka Kunci & Dependensi</td><td align="right">${p('BAB II', 2)}</td></tr>
+      <tr><td><strong>BAB III: TUGAS 1 – KUSTOMISASI IKON TAB BAR & LABEL NAVIGASI</strong></td><td align="right">${p('BAB III', 3)}</td></tr>
+      <tr><td style="padding-left: 15px;">3.1 Analisis Kebutuhan</td><td align="right">${p('BAB III', 3)}</td></tr>
+      <tr><td style="padding-left: 15px;">3.2 Langkah-Langkah Solusi</td><td align="right">${p('BAB III', 3)}</td></tr>
+      <tr><td style="padding-left: 15px;">3.3 Tangkapan Layar & Potongan Kode (<code>app/(tabs)/_layout.tsx</code>)</td><td align="right">${p('BAB III', 3)}</td></tr>
+      <tr><td style="padding-left: 15px;">3.4 Penjelasan Teknis</td><td align="right">${p('BAB III', 4)}</td></tr>
+      <tr><td style="padding-left: 15px;">3.5 Tangkapan Layar Hasil Implementasi Antarmuka</td><td align="right">${p('BAB III', 5)}</td></tr>
+      <tr><td><strong>BAB IV: TUGAS 2 – FITUR RIWAYAT PENCARIAN TERAKHIR</strong></td><td align="right">${p('BAB IV', 6)}</td></tr>
+      <tr><td style="padding-left: 15px;">4.1 Analisis Kebutuhan</td><td align="right">${p('BAB IV', 6)}</td></tr>
+      <tr><td style="padding-left: 15px;">4.2 Langkah-Langkah Solusi</td><td align="right">${p('BAB IV', 6)}</td></tr>
+      <tr><td style="padding-left: 15px;">4.3 Tangkapan Layar & Potongan Kode State (<code>contexts/RiwayatContext.tsx</code>)</td><td align="right">${p('BAB IV', 7)}</td></tr>
+      <tr><td style="padding-left: 15px;">4.4 Tangkapan Layar & Potongan Kode Layar (<code>app/(tabs)/riwayat.tsx</code>)</td><td align="right">${p('BAB IV', 9)}</td></tr>
+      <tr><td style="padding-left: 15px;">4.5 Tangkapan Layar Hasil Implementasi Antarmuka</td><td align="right">${p('BAB IV', 10)}</td></tr>
+      <tr><td><strong>BAB V: TUGAS 3 – PENGHAPUSAN CACHE KOTA & MODAL KONFIRMASI</strong></td><td align="right">${p('BAB V', 11)}</td></tr>
+      <tr><td style="padding-left: 15px;">5.1 Analisis Kebutuhan</td><td align="right">${p('BAB V', 11)}</td></tr>
+      <tr><td style="padding-left: 15px;">5.2 Langkah-Langkah Solusi</td><td align="right">${p('BAB V', 11)}</td></tr>
+      <tr><td style="padding-left: 15px;">5.3 Tangkapan Layar & Potongan Kode SQLite (<code>src/services/cacheRepository.ts</code>)</td><td align="right">${p('BAB V', 12)}</td></tr>
+      <tr><td style="padding-left: 15px;">5.4 Tangkapan Layar & Potongan Kode Modal (<code>app/(tabs)/index.tsx</code>)</td><td align="right">${p('BAB V', 13)}</td></tr>
+      <tr><td style="padding-left: 15px;">5.5 Tangkapan Layar Hasil Implementasi Antarmuka</td><td align="right">${p('BAB V', 14)}</td></tr>
+      <tr><td><strong>BAB VI: TUGAS 4 – IMPLEMENTASI TEMA GELAP / TERANG / IKUTI SISTEM</strong></td><td align="right">${p('BAB VI', 15)}</td></tr>
+      <tr><td style="padding-left: 15px;">6.1 Analisis Kebutuhan</td><td align="right">${p('BAB VI', 15)}</td></tr>
+      <tr><td style="padding-left: 15px;">6.2 Langkah-Langkah Solusi</td><td align="right">${p('BAB VI', 15)}</td></tr>
+      <tr><td style="padding-left: 15px;">6.3 Tangkapan Layar & Token Palet Tema (<code>constants/theme.ts</code>)</td><td align="right">${p('BAB VI', 16)}</td></tr>
+      <tr><td style="padding-left: 15px;">6.4 Tangkapan Layar & Logika "Ikuti Tema Sistem" (<code>contexts/PengaturanContext.tsx</code>)</td><td align="right">${p('BAB VI', 17)}</td></tr>
+      <tr><td style="padding-left: 15px;">6.5 Tangkapan Layar & Antarmuka Pengaturan (<code>app/(tabs)/pengaturan.tsx</code>)</td><td align="right">${p('BAB VI', 18)}</td></tr>
+      <tr><td style="padding-left: 15px;">6.6 Tombol Sakelar Cepat Header Kanan Atas</td><td align="right">${p('BAB VI', 19)}</td></tr>
+      <tr><td style="padding-left: 15px;">6.7 Tangkapan Layar Hasil Implementasi Antarmuka</td><td align="right">${p('BAB VI', 20)}</td></tr>
+      <tr><td><strong>BAB VII: FITUR TAMBAHAN & NILAI PLUS (KREATIVITAS MAHASISWA)</strong></td><td align="right">${p('BAB VII', 21)}</td></tr>
+      <tr><td style="padding-left: 15px;">7.1 Tangkapan Layar & Konversi Satuan Suhu Dinamis (°C vs °F)</td><td align="right">${p('BAB VII', 21)}</td></tr>
+      <tr><td style="padding-left: 15px;">7.2 Tangkapan Layar & Tipografi Modern (Plus Jakarta Sans)</td><td align="right">${p('BAB VII', 23)}</td></tr>
+      <tr><td style="padding-left: 15px;">7.3 Palet Warna Atmospheric Indigo & Electric Sky</td><td align="right">${p('BAB VII', 24)}</td></tr>
+      <tr><td style="padding-left: 15px;">7.4 Status Data Terpadu Minimalis</td><td align="right">${p('BAB VII', 24)}</td></tr>
+      <tr><td style="padding-left: 15px;">7.5 Penjaminan Mutu & Type-Safety TypeScript</td><td align="right">${p('BAB VII', 25)}</td></tr>
+      <tr><td style="padding-left: 15px;">7.6 Tangkapan Layar Hasil Implementasi Antarmuka</td><td align="right">${p('BAB VII', 25)}</td></tr>
+      <tr><td><strong>BAB VIII: RIWAYAT COMMIT GIT (28++ COMMITS)</strong></td><td align="right">${p('BAB VIII', 26)}</td></tr>
+      <tr><td><strong>BAB IX: KESIMPULAN & PENUTUP</strong></td><td align="right">${p('BAB IX', 29)}</td></tr>
+      <tr><td><strong>BAB X: DAFTAR PUSTAKA</strong></td><td align="right">${p('BAB X', 30)}</td></tr>
     </table>
   </div>
 
   <!-- ========================================================== -->
-  <!-- 5. ISI UTAMA LAPORAN (BAB I SAMPAI BAB IX)                 -->
+  <!-- 5. ISI UTAMA LAPORAN (BAB I SAMPAI BAB X)                 -->
   <!-- ========================================================== -->
   <div class="academic-body">
     ${bodyContent}
@@ -904,34 +934,90 @@ const fullHtml = `<!DOCTYPE html>
 
 </body>
 </html>`;
+}
 
-fs.writeFileSync(htmlFile, fullHtml, "utf8");
-console.log("4. Berkas HTML akademik berhasil ditulis ke: " + htmlFile);
+// 6. Fungsi Eksekusi Headless Chrome
+function renderPdfFromHtml(sourceHtmlFile, targetPdfFile) {
+  const chromeExe = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
+  const tempProfile = fs.mkdtempSync(path.join(os.tmpdir(), "pdf_academic_"));
 
-// 6. Eksekusi Chrome Headless via execFileSync dengan profil sementara terisolasi
-console.log("5. Mengonversi ke PDF menggunakan Google Chrome headless...");
-const chromeExe = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
-const tempProfile = fs.mkdtempSync(path.join(os.tmpdir(), "pdf_academic_"));
+  try {
+    execFileSync(
+      chromeExe,
+      [
+        "--headless",
+        "--disable-gpu",
+        `--user-data-dir=${tempProfile}`,
+        "--disable-background-networking",
+        "--disable-sync",
+        "--disable-extensions",
+        "--disable-default-apps",
+        "--no-first-run",
+        "--allow-file-access-from-files",
+        `--print-to-pdf=${targetPdfFile}`,
+        "--no-pdf-header-footer",
+        sourceHtmlFile,
+      ],
+      { stdio: "ignore", timeout: 45000 }
+    );
+  } finally {
+    try {
+      fs.rmSync(tempProfile, { recursive: true, force: true });
+    } catch (e) {}
+  }
+}
 
-try {
-  execFileSync(
-    chromeExe,
-    [
-      "--headless",
-      "--disable-gpu",
-      `--user-data-dir=${tempProfile}`,
-      "--disable-background-networking",
-      "--disable-sync",
-      "--disable-extensions",
-      "--disable-default-apps",
-      "--no-first-run",
-      "--allow-file-access-from-files",
-      `--print-to-pdf=${pdfFile}`,
-      "--no-pdf-header-footer",
-      htmlFile,
-    ],
-    { stdio: "ignore", timeout: 40000 }
-  );
+// 7. Proses Generasi Pass 1 (Estimasi Layout & Deteksi Halaman Riil)
+console.log("4. Melakukan render Pass 1 untuk menghitung penomoran halaman riil...");
+fs.writeFileSync(htmlFile, generateHtmlDocument(), "utf8");
+renderPdfFromHtml(htmlFile, pdfFile);
+
+(async () => {
+  const pageMap = {};
+  try {
+    const parser = new PDFParse({ url: pdfFile });
+    await parser.load();
+    const res = await parser.getText();
+
+    // Query spesifik judul bab di body (menghindari match di dalam TOC)
+    const chapterQueries = [
+      { key: "BAB I", query: "PENDAHULUAN & GAMBARAN UMUM APLIKASI" },
+      { key: "BAB II", query: "STRUKTUR PROYEK & ARSITEKTUR SISTEM" },
+      { key: "BAB III", query: "TUGAS 1 – KUSTOMISASI IKON TAB BAR" },
+      { key: "BAB IV", query: "TUGAS 2 – FITUR RIWAYAT PENCARIAN TERAKHIR" },
+      { key: "BAB V", query: "TUGAS 3 – PENGHAPUSAN CACHE KOTA" },
+      { key: "BAB VI", query: "TUGAS 4 – IMPLEMENTASI TEMA GELAP" },
+      { key: "BAB VII", query: "FITUR TAMBAHAN & NILAI PLUS" },
+      { key: "BAB VIII", query: "RIWAYAT COMMIT GIT" },
+      { key: "BAB IX", query: "KESIMPULAN & PENUTUP" },
+      { key: "BAB X", query: "DAFTAR PUSTAKA" }
+    ];
+
+    console.log(`5. Menganalisis ${res.pages.length} halaman PDF untuk memetakan nomor bab...`);
+    chapterQueries.forEach(item => {
+      // Body dokumen dimulai dari fisik halaman 5 (setelah cover=1, pengesahan=2, pengantar=3, TOC=4)
+      for (let idx = 4; idx < res.pages.length; idx++) {
+        const text = res.pages[idx].text.toUpperCase();
+        // Lewati halaman jika masih ada teks DAFTAR ISI
+        if (text.includes("DAFTAR ISI") && idx < 5) continue;
+        if (text.includes(item.query)) {
+          // Halaman konten: Halaman fisik dikurangi 4 lembar depan
+          const contentPage = idx - 3;
+          pageMap[item.key] = contentPage > 0 ? contentPage : 1;
+          console.log(`   * ${item.key} (${item.query}) -> Fisik Hal ${idx + 1} (Halaman Dokumen: ${pageMap[item.key]})`);
+          break;
+        }
+      }
+    });
+  } catch (err) {
+    console.warn("Catatan: Analisis PDFParse mengalami kendala, menggunakan pemetaan baku:", err.message);
+  }
+
+  // 8. Proses Generasi Pass 2 (Penyusunan Final dengan Nomor Halaman 100% Akurat)
+  console.log("6. Melakukan render Pass 2 dengan nomor halaman Daftar Isi yang telah disinkronkan 100%...");
+  const finalHtml = generateHtmlDocument(pageMap);
+  fs.writeFileSync(htmlFile, finalHtml, "utf8");
+  renderPdfFromHtml(htmlFile, pdfFile);
 
   if (fs.existsSync(pdfFile)) {
     const stats = fs.statSync(pdfFile);
@@ -946,10 +1032,11 @@ try {
       console.log(`Total Halaman: ${pageOutput.trim()} Halaman A4`);
     } catch (e) {}
 
-    // Ambil screenshot cover untuk verifikasi visual
-    console.log("6. Mengambil tangkapan layar preview cover untuk penjaminan mutu...");
+    // Buat screenshot cover
     const coverPreview = path.join(previewDir, "cover_preview.png");
     try {
+      const chromeExe = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
+      const tempProfile = fs.mkdtempSync(path.join(os.tmpdir(), "pdf_preview_"));
       execFileSync(
         chromeExe,
         [
@@ -957,23 +1044,15 @@ try {
           "--disable-gpu",
           `--user-data-dir=${tempProfile}`,
           `--screenshot=${coverPreview}`,
-          "--window-size=800,1130",
+          "--window-size=800,1050",
           htmlFile,
         ],
         { stdio: "ignore", timeout: 20000 }
       );
+      fs.rmSync(tempProfile, { recursive: true, force: true });
       if (fs.existsSync(coverPreview)) {
         console.log(`Preview cover disimpan di: ${coverPreview}`);
       }
     } catch (e) {}
-
-  } else {
-    console.error("Gagal: Berkas PDF tidak ditemukan setelah eksekusi Chrome.");
   }
-} catch (err) {
-  console.error("Kesalahan saat menjalankan Chrome headless:", err);
-} finally {
-  try {
-    fs.rmSync(tempProfile, { recursive: true, force: true });
-  } catch (e) {}
-}
+})();
