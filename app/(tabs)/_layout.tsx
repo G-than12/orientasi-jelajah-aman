@@ -45,6 +45,7 @@ export default function TabLayout() {
           borderTopColor: theme.tabBarBorder,
         },
         tabBarLabelStyle: {
+          fontFamily: fonts.semiBold,
           fontSize: 12,
           fontWeight: "600",
           lineHeight: 16,
