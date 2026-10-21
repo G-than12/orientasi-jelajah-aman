@@ -7,6 +7,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { fonts } from "../constants/styles";
 import { usePengaturan } from "../contexts/PengaturanContext";
 
 interface SearchBoxProps {
@@ -93,6 +94,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   input: {
+    fontFamily: fonts.medium,
     flex: 1,
     fontSize: 15,
     color: "#0f172a",
