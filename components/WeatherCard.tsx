@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { WeatherCardProps } from "../types/cuaca";
-import { typeScale, spacing } from "../constants/styles";
+import { fonts, typeScale, spacing } from "../constants/styles";
 import { infoCuaca } from "../constants/weatherCodes";
 import { usePengaturan } from "../contexts/PengaturanContext";
 import { formatUmur } from "./StatusData";
@@ -52,7 +52,7 @@ export default function WeatherCard({
 
   const teksAQI =
     indeksAQI !== undefined
-      ? `AQI: ${indeksAQI} • ${tema.label}`
+      ? `AQI: ${indeksAQI} â€¢ ${tema.label}`
       : `AQI: ${tema.label}`;
 
   const labelAksesibilitas =
@@ -136,7 +136,7 @@ export default function WeatherCard({
 
       {/* 2. Suhu Utama & Satuan */}
       <View style={styles.content}>
-        <Text style={[styles.suhu, { color: theme.text }]}>{suhuTampil}°</Text>
+        <Text style={[styles.suhu, { color: theme.text }]}>{suhuTampil}Â°</Text>
         <View style={styles.satuanContainer}>
           <Text style={[styles.satuan, { color: theme.textSecondary }]}>
             {namaSatuan}
@@ -190,7 +190,7 @@ export default function WeatherCard({
                   </Text>
                 </View>
                 <Text style={[styles.infoItemValue, { color: theme.text }]}>
-                  {suhuMinTampil}° / {suhuMaksTampil}°
+                  {suhuMinTampil}Â° / {suhuMaksTampil}Â°
                 </Text>
               </View>
             )}
@@ -216,7 +216,7 @@ export default function WeatherCard({
                     </Text>
                   </View>
                   <Text style={[styles.infoItemValue, { color: theme.text }]}>
-                    {pm25} µg/m³
+                    {pm25} Âµg/mÂ³
                   </Text>
                 </View>
               )}
@@ -238,7 +238,7 @@ export default function WeatherCard({
                     </Text>
                   </View>
                   <Text style={[styles.infoItemValue, { color: theme.text }]}>
-                    {pm10} µg/m³
+                    {pm10} Âµg/mÂ³
                   </Text>
                 </View>
               )}
@@ -264,7 +264,7 @@ export default function WeatherCard({
                   { color: theme.textSecondary },
                 ]}
               >
-                {statusInfo.label} • {statusInfo.umur}
+                {statusInfo.label} â€¢ {statusInfo.umur}
               </Text>
             </View>
           ) : (
