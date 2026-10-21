@@ -208,43 +208,21 @@ export default function TabPengaturan() {
               </Text>
             </TouchableOpacity>
 
-            <View style={styles.actionGroup}>
-              <TouchableOpacity
-                style={styles.hapusButton}
-                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                onPress={() => setTampilkanModalHapus(true)}
-                disabled={sedangMenghapus}
-                activeOpacity={0.6}
-                accessibilityRole="button"
-                accessibilityLabel="Hapus cache cuaca"
-              >
-                {sedangMenghapus ? (
-                  <ActivityIndicator size="small" color="#ef4444" />
-                ) : (
-                  <Ionicons name="trash-outline" size={19} color="#ef4444" />
-                )}
-              </TouchableOpacity>
-
-              <View
-                style={[
-                  styles.actionDivider,
-                  { backgroundColor: theme.cardBorder },
-                ]}
-              />
-
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={() => setTampilkanModalHapus(true)}
-                style={styles.chevronButton}
-                accessibilityLabel="Konfirmasi hapus cache cuaca"
-              >
-                <Ionicons
-                  name="chevron-forward"
-                  size={16}
-                  color={theme.textMuted}
-                />
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              style={styles.hapusButton}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              onPress={() => setTampilkanModalHapus(true)}
+              disabled={sedangMenghapus}
+              activeOpacity={0.6}
+              accessibilityRole="button"
+              accessibilityLabel="Hapus cache cuaca"
+            >
+              {sedangMenghapus ? (
+                <ActivityIndicator size="small" color="#ef4444" />
+              ) : (
+                <Ionicons name="trash-outline" size={19} color="#ef4444" />
+              )}
+            </TouchableOpacity>
           </View>
 
           {pesan && (
@@ -423,22 +401,7 @@ const styles = StyleSheet.create({
     height: 1,
     marginLeft: 62,
   },
-  actionGroup: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-  },
-  actionDivider: {
-    width: 1,
-    height: 18,
-    marginHorizontal: 4,
-  },
   hapusButton: {
-    padding: 6,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  chevronButton: {
     padding: 6,
     justifyContent: "center",
     alignItems: "center",
