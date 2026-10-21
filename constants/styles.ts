@@ -1,4 +1,12 @@
 // constants/styles.ts
+export const fonts = {
+  regular: "PlusJakartaSans-Regular",
+  medium: "PlusJakartaSans-Medium",
+  semiBold: "PlusJakartaSans-SemiBold",
+  bold: "PlusJakartaSans-Bold",
+  extraBold: "PlusJakartaSans-ExtraBold",
+};
+
 export const typeScale = {
   judul: 24, // nama kota, judul halaman
   subjudul: 16, // label section
@@ -11,3 +19,4 @@ export const spacing = {
   sedang: 16,
   besar: 24,
 };
+
