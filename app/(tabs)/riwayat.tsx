@@ -518,7 +518,7 @@ export default function TabRiwayat() {
                   <Ionicons
                     name="time-outline"
                     size={16}
-                    color="#2563eb"
+                    color={theme.primary}
                   />
                 </View>
                 <View style={{ flex: 1 }}>
@@ -745,7 +745,6 @@ const styles = StyleSheet.create({
   judulSection: {
     fontFamily: fonts.bold,
     fontSize: 17,
-    fontWeight: "800",
     letterSpacing: 0.2,
   },
   badgeJumlah: {
@@ -757,7 +756,6 @@ const styles = StyleSheet.create({
   badgeJumlahText: {
     fontFamily: fonts.bold,
     fontSize: 12,
-    fontWeight: "700",
   },
   list: {
     gap: 10,
@@ -791,7 +789,6 @@ const styles = StyleSheet.create({
   kotaText: {
     fontFamily: fonts.bold,
     fontSize: 16,
-    fontWeight: "700",
     letterSpacing: -0.2,
     marginBottom: 4,
   },
@@ -804,7 +801,6 @@ const styles = StyleSheet.create({
   tagBadgeText: {
     fontFamily: fonts.bold,
     fontSize: 10,
-    fontWeight: "700",
     textTransform: "uppercase",
     letterSpacing: 0.3,
   },
@@ -816,7 +812,6 @@ const styles = StyleSheet.create({
   koordinatText: {
     fontFamily: fonts.medium,
     fontSize: 12,
-    fontWeight: "500",
   },
   actionGroup: {
     flexDirection: "row",
@@ -925,7 +920,6 @@ const styles = StyleSheet.create({
   modalJudul: {
     fontFamily: fonts.bold,
     fontSize: 19,
-    fontWeight: "800",
     marginBottom: 8,
     textAlign: "center",
     letterSpacing: 0.2,
@@ -959,7 +953,6 @@ const styles = StyleSheet.create({
   modalPreviewNama: {
     fontFamily: fonts.bold,
     fontSize: 15,
-    fontWeight: "700",
   },
   modalPreviewKoordinat: {
     fontFamily: fonts.medium,
@@ -981,7 +974,6 @@ const styles = StyleSheet.create({
   modalBatalButtonText: {
     fontFamily: fonts.semiBold,
     fontSize: 14,
-    fontWeight: "700",
   },
   modalHapusButton: {
     flex: 1,
@@ -1000,6 +992,5 @@ const styles = StyleSheet.create({
     fontFamily: fonts.bold,
     color: "#ffffff",
     fontSize: 14,
-    fontWeight: "700",
   },
 });
