@@ -40,7 +40,7 @@
 7. [BAB VII: Fitur Tambahan & Nilai Plus (Kreativitas Mahasiswa)](#bab-vii-fitur-tambahan--nilai-plus-kreativitas-mahasiswa)
    - [7.1 Fitur Konversi Satuan Suhu Dinamis (Celsius vs Fahrenheit)](#71-fitur-konversi-satuan-suhu-dinamis-celsius-vs-fahrenheit)
    - [7.6 Tangkapan Layar Hasil Implementasi (Screenshots)](#76-tangkapan-layar-hasil-implementasi-screenshots)
-8. [BAB VIII: Riwayat Commit Git (28++ Commits)](#bab-viii-riwayat-commit-git-25-commits)
+8. [BAB VIII: Riwayat Commit Git (28++ Commits)](#bab-viii-riwayat-commit-git-28-commits)
 9. [BAB IX: Kesimpulan & Penutup](#bab-ix-kesimpulan--penutup)
 10. [BAB X: Daftar Pustaka](#bab-x-daftar-pustaka)
 
@@ -1109,7 +1109,7 @@ $ npx tsc --noEmit
 
 ---
 
-## BAB VIII: RIWAYAT COMMIT GIT (25++ COMMITS)
+## BAB VIII: RIWAYAT COMMIT GIT (28++ COMMITS)
 
 Pengembangan dilakukan secara disiplin dan bertahap dengan menerapkan standar **Conventional Commits** (`feat:`, `style:`, `refactor:`, `fix:`). Berikut adalah bukti visual tangkapan layar riwayat commit aktual pada repositori GitHub:
 
