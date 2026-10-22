@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>PENGEMBANGAN SISTEM APLIKASI MODERN BERBASIS PLATFORM HYBRID</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <style>
+    @page {
+      size: A4 portrait;
+      margin-top: 25mm;
+      margin-bottom: 22mm;
+      margin-left: 28mm;
+      margin-right: 20mm;
+
+      @top-right {
+        content: "PENGEMBANGAN SISTEM APLIKASI MODERN BERBASIS PLATFORM HYBRID — GATHAN HILABI (60324059)";
+        font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+        font-size: 8pt; color: #94a3b8; font-weight: 500;
+        border-bottom: 0.5px solid #e2e8f0; padding-bottom: 2mm;
+      }
+      @bottom-left {
+        content: "UNIVERSITAS ISLAM NEGERI K.H. ABDURRAHMAN WAHID PEKALONGAN";
+        font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+        font-size: 8pt; color: #94a3b8;
+        border-top: 0.5px solid #e2e8f0; padding-top: 2mm;
+      }
+      @bottom-right {
+        content: "Halaman " counter(page);
+        font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+        font-size: 8.5pt; font-weight: 600; color: #475569;
+        border-top: 0.5px solid #e2e8f0; padding-top: 2mm;
+      }
+    }
+    @page :first {
+      margin: 15mm 20mm;
+      @top-right { content: none; }
+      @bottom-left { content: none; }
+      @bottom-right { content: none; }
+    }
+    * { box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 9.8pt; line-height: 1.55; color: #1e293b; background: #ffffff; margin: 0; padding: 0;
+    }
+    .cover-page {
+      height: 240mm; max-height: 240mm; display: flex; flex-direction: column; justify-content: space-between;
+      align-items: center; text-align: center; page-break-after: always; break-after: page; padding: 4mm 0;
+    }
+    .instansi-kemenag { font-size: 11pt; font-weight: 700; color: #334155; letter-spacing: 0.8px; }
+    .instansi-kampus { font-size: 13.5pt; font-weight: 800; color: #1e1b4b; margin: 4px 0 2px 0; }
+    .instansi-fakultas { font-size: 11pt; font-weight: 700; color: #4338ca; }
+    .cover-badge {
+      display: inline-block; font-size: 11pt; font-weight: 800; color: #1e1b4b; background: #e0e7ff;
+      padding: 5px 18px; border-radius: 6px; border: 1.5px solid #6366f1; letter-spacing: 1px; margin-bottom: 10px;
+    }
+    .cover-judul-mk { font-size: 12pt; font-weight: 700; color: #475569; margin-bottom: 8px; }
+    .cover-judul { font-size: 15pt; font-weight: 800; color: #1e1b4b; line-height: 1.4; max-width: 540px; margin: 0 auto; text-transform: uppercase; }
+    .cover-logo { width: 110px; height: 110px; border-radius: 20px; border: 3px solid #6366f1; box-shadow: 0 8px 24px rgba(79,70,229,0.2); }
+    .cover-table { width: 100%; max-width: 470px; margin: 0 auto; background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 10px 18px; font-size: 9.5pt; }
+    .cover-table td { border: none !important; padding: 3px 4px !important; }
+    .page-break { page-break-after: always; break-after: page; }
+    .bab-break { page-break-before: always; break-before: page; }
+    .academic-page { padding-top: 5px; }
+    .academic-title-center { text-align: center; font-size: 13.5pt; font-weight: 800; color: #1e1b4b; text-transform: uppercase; margin-bottom: 4px; }
+    .title-underline { width: 80px; height: 3px; background: #4f46e5; margin: 0 auto 16px auto; }
+    .academic-bab-header { text-align: center; margin: 15px 0 22px 0; page-break-after: avoid; break-after: avoid; }
+    .bab-title-top { font-size: 14pt; font-weight: 800; color: #1e1b4b; letter-spacing: 1px; }
+    .bab-title-main { font-size: 12pt; font-weight: 700; color: #4338ca; margin-top: 4px; text-transform: uppercase; }
+    .bab-underline { width: 60px; height: 2.5px; background: #6366f1; margin: 8px auto 0 auto; }
+    h3 { font-size: 10.5pt; font-weight: 700; color: #0f172a; margin-top: 18px; margin-bottom: 6px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 3px; page-break-after: avoid; }
+    p { text-align: justify; margin: 0 0 8px 0; text-indent: 20px; }
+    .academic-page > p:first-of-type, .academic-bab-header + p { text-indent: 0; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 8.8pt; page-break-inside: avoid; }
+    th { background: #eef2ff !important; color: #312e81; font-weight: 700; padding: 6px 9px; border: 1px solid #cbd5e1; }
+    td { padding: 5.5px 9px; border: 1px solid #cbd5e1; }
+    .code-wrapper { margin: 10px 0 14px 0; border-radius: 6px; border: 1px solid #cbd5e1; overflow: hidden; page-break-inside: avoid; background: #f8fafc; }
+    .code-header { background: #f1f5f9; border-bottom: 1px solid #cbd5e1; padding: 4px 10px; display: flex; align-items: center; gap: 5px; }
+    .code-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+    .code-dot.red { background: #ef4444; } .code-dot.yellow { background: #f59e0b; } .code-dot.green { background: #10b981; }
+    .code-title { font-family: monospace; font-size: 7.5pt; font-weight: 600; color: #334155; margin-left: 6px; }
+    pre { margin: 0; padding: 10px 14px; font-family: 'JetBrains Mono', Consolas, monospace; font-size: 7.2pt; line-height: 1.45; color: #0f172a; white-space: pre-wrap; word-break: break-word; }
+    div[align="center"] img { max-width: 540px !important; width: 100% !important; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: 0 4px 14px rgba(15,23,42,0.12); display: block; margin: 10px auto; page-break-inside: avoid; }
+    div[align="center"] p { text-indent: 0 !important; text-align: center; }
+    div[align="center"] em { font-size: 8.5pt; color: #475569; font-style: italic; font-weight: 600; }
+    /* KaTeX & Math Box */
+    @font-face{font-display:block;font-family:KaTeX_AMS;font-style:normal;font-weight:400;src:url(fonts/KaTeX_AMS-Regular.woff2) format("woff2"),url(fonts/KaTeX_AMS-Regular.woff) format("woff"),url(fonts/KaTeX_AMS-Regular.ttf) format("truetype")}@font-face{font-display:block;font-family:KaTeX_Caligraphic;font-style:normal;font-weight:700;src:url(fonts/KaTeX_Caligraphic-Bold.woff2) format("woff2"),url(fonts/KaTeX_Caligraphic-Bold.woff) format("woff"),url(fonts/KaTeX_Caligraphic-Bold.ttf) format("truetype")}@font-face{font-display:block;font-family:KaTeX_Caligraphic;font-style:normal;font-weight:400;src:url(fonts/KaTeX_Caligraphic-Regular.woff2) format("woff2"),url(fonts/KaTeX_Caligraphic-Regular.woff) format("woff"),url(fonts/KaTeX_Caligraphic-Regular.ttf) format("truetype")}@font-face{font-display:block;font-family:KaTeX_Fraktur;font-style:normal;font-weight:700;src:url(fonts/KaTeX_Fraktur-Bold.woff2) format("woff2"),url(fonts/KaTeX_Fraktur-Bold.woff) format("woff"),url(fonts/KaTeX_Fraktur-Bold.ttf) format("truetype")}@font-face{font-display:block;font-family:KaTeX_Fraktur;font-style:normal;font-weight:400;src:url(fonts/KaTeX_Fraktur-Regular.woff2) format("woff2"),url(fonts/KaTeX_Fraktur-Regular.woff) format("woff"),url(fonts/KaTeX_Fraktur-Regular.ttf) format("truetype")}@font-face{font-display:block;font-family:KaTeX_Main;font-style:normal;font-weight:700;src:url(fonts/KaTeX_Main-Bold.woff2) format("woff2"),url(fonts/KaTeX_Main-Bold.woff) format("woff"),url(fonts/KaTeX_Main-Bold.ttf) format("truetype")}@font-face{font-display:block;font-family:KaTeX_Main;font-style:italic;font-weight:700;src:url(fonts/KaTeX_Main-BoldItalic.woff2) format("woff2"),url(fonts/KaTeX_Main-BoldItalic.woff) format("woff"),url(fonts/KaTeX_Main-BoldItalic.ttf) format("truetype")}@font-face{font-display:block;font-family:KaTeX_Main;font-style:italic;font-weight:400;src:url(fonts/KaTeX_Main-Italic.woff2) format("woff2"),url(fonts/KaTeX_Main-Italic.woff) format("woff"),url(fonts/KaTeX_Main-Italic.ttf) format("truetype")}@font-face{font-display:block;font-family:KaTeX_Main;font-style:normal;font-weight:400;src:url(fonts/KaTeX_Main-Regular.woff2) format("woff2"),url(fonts/KaTeX_Main-Regular.woff) format("woff"),url(fonts/KaTeX_Main-Regular.ttf) format("truetype")}@font-face{font-display:block;font-family:KaTeX_Math;font-style:italic;font-weight:700;src:url(fonts/KaTeX_Math-BoldItalic.woff2) format("woff2"),url(fonts/KaTeX_Math-BoldItalic.woff) format("woff"),url(fonts/KaTeX_Math-BoldItalic.ttf) format("truetype")}@font-face{font-display:block;font-family:KaTeX_Math;font-style:italic;font-weight:400;src:url(fonts/KaTeX_Math-Italic.woff2) format("woff2"),url(fonts/KaTeX_Math-Italic.woff) format("woff"),url(fonts/KaTeX_Math-Italic.ttf) format("truetype")}@font-face{font-display:block;font-family:"KaTeX_SansSerif";font-style:normal;font-weight:700;src:url(fonts/KaTeX_SansSerif-Bold.woff2) format("woff2"),url(fonts/KaTeX_SansSerif-Bold.woff) format("woff"),url(fonts/KaTeX_SansSerif-Bold.ttf) format("truetype")}@font-face{font-display:block;font-family:"KaTeX_SansSerif";font-style:italic;font-weight:400;src:url(fonts/KaTeX_SansSerif-Italic.woff2) format("woff2"),url(fonts/KaTeX_SansSerif-Italic.woff) format("woff"),url(fonts/KaTeX_SansSerif-Italic.ttf) format("truetype")}@font-face{font-display:block;font-family:"KaTeX_SansSerif";font-style:normal;font-weight:400;src:url(fonts/KaTeX_SansSerif-Regular.woff2) format("woff2"),url(fonts/KaTeX_SansSerif-Regular.woff) format("woff"),url(fonts/KaTeX_SansSerif-Regular.ttf) format("truetype")}@font-face{font-display:block;font-family:KaTeX_Script;font-style:normal;font-weight:400;src:url(fonts/KaTeX_Script-Regular.woff2) format("woff2"),url(fonts/KaTeX_Script-Regular.woff) format("woff"),url(fonts/KaTeX_Script-Regular.ttf) format("truetype")}@font-face{font-display:block;font-family:KaTeX_Size1;font-style:normal;font-weight:400;src:url(fonts/KaTeX_Size1-Regular.woff2) format("woff2"),url(fonts/KaTeX_Size1-Regular.woff) format("woff"),url(fonts/KaTeX_Size1-Regular.ttf) format("truetype")}@font-face{font-display:block;font-family:KaTeX_Size2;font-style:normal;font-weight:400;src:url(fonts/KaTeX_Size2-Regular.woff2) format("woff2"),url(fonts/KaTeX_Size2-Regular.woff) format("woff"),url(fonts/KaTeX_Size2-Regular.ttf) format("truetype")}@font-face{font-display:block;font-family:KaTeX_Size3;font-style:normal;font-weight:400;src:url(fonts/KaTeX_Size3-Regular.woff2) format("woff2"),url(fonts/KaTeX_Size3-Regular.woff) format("woff"),url(fonts/KaTeX_Size3-Regular.ttf) format("truetype")}@font-face{font-display:block;font-family:KaTeX_Size4;font-style:normal;font-weight:400;src:url(fonts/KaTeX_Size4-Regular.woff2) format("woff2"),url(fonts/KaTeX_Size4-Regular.woff) format("woff"),url(fonts/KaTeX_Size4-Regular.ttf) format("truetype")}@font-face{font-display:block;font-family:KaTeX_Typewriter;font-style:normal;font-weight:400;src:url(fonts/KaTeX_Typewriter-Regular.woff2) format("woff2"),url(fonts/KaTeX_Typewriter-Regular.woff) format("woff"),url(fonts/KaTeX_Typewriter-Regular.ttf) format("truetype")}.katex{font:normal 1.21em KaTeX_Main,math,Times New Roman,serif;line-height:1.2;position:relative;text-indent:0;text-rendering:auto}.katex *{-ms-high-contrast-adjust:none!important;border-color:currentColor}.katex .katex-version:after{content:"0.19.0"}.katex .katex-mathml{border:0;-webkit-clip-path:inset(50%);clip-path:inset(50%);height:1px;overflow:hidden;padding:0;position:absolute;width:1px}.katex .katex-html>.katex-newline{display:block}.katex .katex-base{position:relative;white-space:nowrap;width:-webkit-min-content;width:-moz-min-content;width:min-content}.katex .katex-base,.katex .katex-strut{display:inline-block}.katex .textbf{font-weight:700}.katex .textit{font-style:italic}.katex .textrm{font-family:KaTeX_Main}.katex .textsf{font-family:KaTeX_SansSerif}.katex .texttt{font-family:KaTeX_Typewriter}.katex .mathnormal{font-family:KaTeX_Math;font-style:italic}.katex .mathit{font-family:KaTeX_Main;font-style:italic}.katex .mathrm{font-style:normal}.katex .mathbf{font-family:KaTeX_Main;font-weight:700}.katex .boldsymbol{font-family:KaTeX_Math;font-style:italic;font-weight:700}.katex .amsrm,.katex .mathbb,.katex .textbb{font-family:KaTeX_AMS}.katex .mathcal{font-family:KaTeX_Caligraphic}.katex .mathfrak,.katex .textfrak{font-family:KaTeX_Fraktur}.katex .mathboldfrak,.katex .textboldfrak{font-family:KaTeX_Fraktur;font-weight:700}.katex .mathtt{font-family:KaTeX_Typewriter}.katex .mathscr,.katex .textscr{font-family:KaTeX_Script}.katex .mathsf,.katex .textsf{font-family:KaTeX_SansSerif}.katex .mathboldsf,.katex .textboldsf{font-family:KaTeX_SansSerif;font-weight:700}.katex .mathitsf,.katex .mathsfit,.katex .textitsf{font-family:KaTeX_SansSerif;font-style:italic}.katex .mainrm{font-family:KaTeX_Main;font-style:normal}.katex .vlist-t{border-collapse:collapse;display:inline-table;table-layout:fixed}.katex .vlist-r{display:table-row}.katex .vlist{display:table-cell;position:relative;vertical-align:bottom}.katex .vlist>span{display:block;height:0;position:relative}.katex .vlist>span>span{display:inline-block}.katex .vlist>span>.pstrut{overflow:hidden;width:0}.katex .vlist-t2{margin-right:-2px}.katex .vlist-s{display:table-cell;font-size:1px;min-width:2px;vertical-align:bottom;width:2px}.katex .katex-vbox{align-items:baseline;display:inline-flex;flex-direction:column}.katex .katex-thinbox{display:inline-flex;flex-direction:row;max-width:0;width:0}.katex .msupsub{text-align:left}.katex .mfrac>span>span{text-align:center}.katex .mfrac .frac-line{border-bottom-style:solid;display:inline-block;width:100%}.katex .katex-hdashline,.katex .katex-hline,.katex .katex-overline .overline-line,.katex .katex-rule,.katex .katex-underline .underline-line,.katex .mfrac .frac-line{min-height:1px}.katex .mspace{display:inline-block}.katex .katex-smash{display:inline;line-height:0}.katex .clap,.katex .llap,.katex .rlap{position:relative;width:0}.katex .clap>.katex-inner,.katex .llap>.katex-inner,.katex .rlap>.katex-inner{position:absolute}.katex .clap>.katex-fix,.katex .llap>.katex-fix,.katex .rlap>.katex-fix{display:inline-block}.katex .llap>.katex-inner{right:0}.katex .clap>.katex-inner,.katex .rlap>.katex-inner{left:0}.katex .clap>.katex-inner>span{margin-left:-50%;margin-right:50%}.katex .katex-rule{border:0 solid;display:inline-block;position:relative}.katex .katex-hline,.katex .katex-overline .overline-line,.katex .katex-underline .underline-line{border-bottom-style:solid;display:inline-block;width:100%}.katex .katex-hdashline{border-bottom-style:dashed;display:inline-block;width:100%}.katex .sqrt>.katex-root{margin-left:.2777777778em;margin-right:-.5555555556em}.katex .fontsize-ensurer.reset-size1.size1,.katex .katex-sizing.reset-size1.size1{font-size:1em}.katex .fontsize-ensurer.reset-size1.size2,.katex .katex-sizing.reset-size1.size2{font-size:1.2em}.katex .fontsize-ensurer.reset-size1.size3,.katex .katex-sizing.reset-size1.size3{font-size:1.4em}.katex .fontsize-ensurer.reset-size1.size4,.katex .katex-sizing.reset-size1.size4{font-size:1.6em}.katex .fontsize-ensurer.reset-size1.size5,.katex .katex-sizing.reset-size1.size5{font-size:1.8em}.katex .fontsize-ensurer.reset-size1.size6,.katex .katex-sizing.reset-size1.size6{font-size:2em}.katex .fontsize-ensurer.reset-size1.size7,.katex .katex-sizing.reset-size1.size7{font-size:2.4em}.katex .fontsize-ensurer.reset-size1.size8,.katex .katex-sizing.reset-size1.size8{font-size:2.88em}.katex .fontsize-ensurer.reset-size1.size9,.katex .katex-sizing.reset-size1.size9{font-size:3.456em}.katex .fontsize-ensurer.reset-size1.size10,.katex .katex-sizing.reset-size1.size10{font-size:4.148em}.katex .fontsize-ensurer.reset-size1.size11,.katex .katex-sizing.reset-size1.size11{font-size:4.976em}.katex .fontsize-ensurer.reset-size2.size1,.katex .katex-sizing.reset-size2.size1{font-size:.8333333333em}.katex .fontsize-ensurer.reset-size2.size2,.katex .katex-sizing.reset-size2.size2{font-size:1em}.katex .fontsize-ensurer.reset-size2.size3,.katex .katex-sizing.reset-size2.size3{font-size:1.1666666667em}.katex .fontsize-ensurer.reset-size2.size4,.katex .katex-sizing.reset-size2.size4{font-size:1.3333333333em}.katex .fontsize-ensurer.reset-size2.size5,.katex .katex-sizing.reset-size2.size5{font-size:1.5em}.katex .fontsize-ensurer.reset-size2.size6,.katex .katex-sizing.reset-size2.size6{font-size:1.6666666667em}.katex .fontsize-ensurer.reset-size2.size7,.katex .katex-sizing.reset-size2.size7{font-size:2em}.katex .fontsize-ensurer.reset-size2.size8,.katex .katex-sizing.reset-size2.size8{font-size:2.4em}.katex .fontsize-ensurer.reset-size2.size9,.katex .katex-sizing.reset-size2.size9{font-size:2.88em}.katex .fontsize-ensurer.reset-size2.size10,.katex .katex-sizing.reset-size2.size10{font-size:3.4566666667em}.katex .fontsize-ensurer.reset-size2.size11,.katex .katex-sizing.reset-size2.size11{font-size:4.1466666667em}.katex .fontsize-ensurer.reset-size3.size1,.katex .katex-sizing.reset-size3.size1{font-size:.7142857143em}.katex .fontsize-ensurer.reset-size3.size2,.katex .katex-sizing.reset-size3.size2{font-size:.8571428571em}.katex .fontsize-ensurer.reset-size3.size3,.katex .katex-sizing.reset-size3.size3{font-size:1em}.katex .fontsize-ensurer.reset-size3.size4,.katex .katex-sizing.reset-size3.size4{font-size:1.1428571429em}.katex .fontsize-ensurer.reset-size3.size5,.katex .katex-sizing.reset-size3.size5{font-size:1.2857142857em}.katex .fontsize-ensurer.reset-size3.size6,.katex .katex-sizing.reset-size3.size6{font-size:1.4285714286em}.katex .fontsize-ensurer.reset-size3.size7,.katex .katex-sizing.reset-size3.size7{font-size:1.7142857143em}.katex .fontsize-ensurer.reset-size3.size8,.katex .katex-sizing.reset-size3.size8{font-size:2.0571428571em}.katex .fontsize-ensurer.reset-size3.size9,.katex .katex-sizing.reset-size3.size9{font-size:2.4685714286em}.katex .fontsize-ensurer.reset-size3.size10,.katex .katex-sizing.reset-size3.size10{font-size:2.9628571429em}.katex .fontsize-ensurer.reset-size3.size11,.katex .katex-sizing.reset-size3.size11{font-size:3.5542857143em}.katex .fontsize-ensurer.reset-size4.size1,.katex .katex-sizing.reset-size4.size1{font-size:.625em}.katex .fontsize-ensurer.reset-size4.size2,.katex .katex-sizing.reset-size4.size2{font-size:.75em}.katex .fontsize-ensurer.reset-size4.size3,.katex .katex-sizing.reset-size4.size3{font-size:.875em}.katex .fontsize-ensurer.reset-size4.size4,.katex .katex-sizing.reset-size4.size4{font-size:1em}.katex .fontsize-ensurer.reset-size4.size5,.katex .katex-sizing.reset-size4.size5{font-size:1.125em}.katex .fontsize-ensurer.reset-size4.size6,.katex .katex-sizing.reset-size4.size6{font-size:1.25em}.katex .fontsize-ensurer.reset-size4.size7,.katex .katex-sizing.reset-size4.size7{font-size:1.5em}.katex .fontsize-ensurer.reset-size4.size8,.katex .katex-sizing.reset-size4.size8{font-size:1.8em}.katex .fontsize-ensurer.reset-size4.size9,.katex .katex-sizing.reset-size4.size9{font-size:2.16em}.katex .fontsize-ensurer.reset-size4.size10,.katex .katex-sizing.reset-size4.size10{font-size:2.5925em}.katex .fontsize-ensurer.reset-size4.size11,.katex .katex-sizing.reset-size4.size11{font-size:3.11em}.katex .fontsize-ensurer.reset-size5.size1,.katex .katex-sizing.reset-size5.size1{font-size:.5555555556em}.katex .fontsize-ensurer.reset-size5.size2,.katex .katex-sizing.reset-size5.size2{font-size:.6666666667em}.katex .fontsize-ensurer.reset-size5.size3,.katex .katex-sizing.reset-size5.size3{font-size:.7777777778em}.katex .fontsize-ensurer.reset-size5.size4,.katex .katex-sizing.reset-size5.size4{font-size:.8888888889em}.katex .fontsize-ensurer.reset-size5.size5,.katex .katex-sizing.reset-size5.size5{font-size:1em}.katex .fontsize-ensurer.reset-size5.size6,.katex .katex-sizing.reset-size5.size6{font-size:1.1111111111em}.katex .fontsize-ensurer.reset-size5.size7,.katex .katex-sizing.reset-size5.size7{font-size:1.3333333333em}.katex .fontsize-ensurer.reset-size5.size8,.katex .katex-sizing.reset-size5.size8{font-size:1.6em}.katex .fontsize-ensurer.reset-size5.size9,.katex .katex-sizing.reset-size5.size9{font-size:1.92em}.katex .fontsize-ensurer.reset-size5.size10,.katex .katex-sizing.reset-size5.size10{font-size:2.3044444444em}.katex .fontsize-ensurer.reset-size5.size11,.katex .katex-sizing.reset-size5.size11{font-size:2.7644444444em}.katex .fontsize-ensurer.reset-size6.size1,.katex .katex-sizing.reset-size6.size1{font-size:.5em}.katex .fontsize-ensurer.reset-size6.size2,.katex .katex-sizing.reset-size6.size2{font-size:.6em}.katex .fontsize-ensurer.reset-size6.size3,.katex .katex-sizing.reset-size6.size3{font-size:.7em}.katex .fontsize-ensurer.reset-size6.size4,.katex .katex-sizing.reset-size6.size4{font-size:.8em}.katex .fontsize-ensurer.reset-size6.size5,.katex .katex-sizing.reset-size6.size5{font-size:.9em}.katex .fontsize-ensurer.reset-size6.size6,.katex .katex-sizing.reset-size6.size6{font-size:1em}.katex .fontsize-ensurer.reset-size6.size7,.katex .katex-sizing.reset-size6.size7{font-size:1.2em}.katex .fontsize-ensurer.reset-size6.size8,.katex .katex-sizing.reset-size6.size8{font-size:1.44em}.katex .fontsize-ensurer.reset-size6.size9,.katex .katex-sizing.reset-size6.size9{font-size:1.728em}.katex .fontsize-ensurer.reset-size6.size10,.katex .katex-sizing.reset-size6.size10{font-size:2.074em}.katex .fontsize-ensurer.reset-size6.size11,.katex .katex-sizing.reset-size6.size11{font-size:2.488em}.katex .fontsize-ensurer.reset-size7.size1,.katex .katex-sizing.reset-size7.size1{font-size:.4166666667em}.katex .fontsize-ensurer.reset-size7.size2,.katex .katex-sizing.reset-size7.size2{font-size:.5em}.katex .fontsize-ensurer.reset-size7.size3,.katex .katex-sizing.reset-size7.size3{font-size:.5833333333em}.katex .fontsize-ensurer.reset-size7.size4,.katex .katex-sizing.reset-size7.size4{font-size:.6666666667em}.katex .fontsize-ensurer.reset-size7.size5,.katex .katex-sizing.reset-size7.size5{font-size:.75em}.katex .fontsize-ensurer.reset-size7.size6,.katex .katex-sizing.reset-size7.size6{font-size:.8333333333em}.katex .fontsize-ensurer.reset-size7.size7,.katex .katex-sizing.reset-size7.size7{font-size:1em}.katex .fontsize-ensurer.reset-size7.size8,.katex .katex-sizing.reset-size7.size8{font-size:1.2em}.katex .fontsize-ensurer.reset-size7.size9,.katex .katex-sizing.reset-size7.size9{font-size:1.44em}.katex .fontsize-ensurer.reset-size7.size10,.katex .katex-sizing.reset-size7.size10{font-size:1.7283333333em}.katex .fontsize-ensurer.reset-size7.size11,.katex .katex-sizing.reset-size7.size11{font-size:2.0733333333em}.katex .fontsize-ensurer.reset-size8.size1,.katex .katex-sizing.reset-size8.size1{font-size:.3472222222em}.katex .fontsize-ensurer.reset-size8.size2,.katex .katex-sizing.reset-size8.size2{font-size:.4166666667em}.katex .fontsize-ensurer.reset-size8.size3,.katex .katex-sizing.reset-size8.size3{font-size:.4861111111em}.katex .fontsize-ensurer.reset-size8.size4,.katex .katex-sizing.reset-size8.size4{font-size:.5555555556em}.katex .fontsize-ensurer.reset-size8.size5,.katex .katex-sizing.reset-size8.size5{font-size:.625em}.katex .fontsize-ensurer.reset-size8.size6,.katex .katex-sizing.reset-size8.size6{font-size:.6944444444em}.katex .fontsize-ensurer.reset-size8.size7,.katex .katex-sizing.reset-size8.size7{font-size:.8333333333em}.katex .fontsize-ensurer.reset-size8.size8,.katex .katex-sizing.reset-size8.size8{font-size:1em}.katex .fontsize-ensurer.reset-size8.size9,.katex .katex-sizing.reset-size8.size9{font-size:1.2em}.katex .fontsize-ensurer.reset-size8.size10,.katex .katex-sizing.reset-size8.size10{font-size:1.4402777778em}.katex .fontsize-ensurer.reset-size8.size11,.katex .katex-sizing.reset-size8.size11{font-size:1.7277777778em}.katex .fontsize-ensurer.reset-size9.size1,.katex .katex-sizing.reset-size9.size1{font-size:.2893518519em}.katex .fontsize-ensurer.reset-size9.size2,.katex .katex-sizing.reset-size9.size2{font-size:.3472222222em}.katex .fontsize-ensurer.reset-size9.size3,.katex .katex-sizing.reset-size9.size3{font-size:.4050925926em}.katex .fontsize-ensurer.reset-size9.size4,.katex .katex-sizing.reset-size9.size4{font-size:.462962963em}.katex .fontsize-ensurer.reset-size9.size5,.katex .katex-sizing.reset-size9.size5{font-size:.5208333333em}.katex .fontsize-ensurer.reset-size9.size6,.katex .katex-sizing.reset-size9.size6{font-size:.5787037037em}.katex .fontsize-ensurer.reset-size9.size7,.katex .katex-sizing.reset-size9.size7{font-size:.6944444444em}.katex .fontsize-ensurer.reset-size9.size8,.katex .katex-sizing.reset-size9.size8{font-size:.8333333333em}.katex .fontsize-ensurer.reset-size9.size9,.katex .katex-sizing.reset-size9.size9{font-size:1em}.katex .fontsize-ensurer.reset-size9.size10,.katex .katex-sizing.reset-size9.size10{font-size:1.2002314815em}.katex .fontsize-ensurer.reset-size9.size11,.katex .katex-sizing.reset-size9.size11{font-size:1.4398148148em}.katex .fontsize-ensurer.reset-size10.size1,.katex .katex-sizing.reset-size10.size1{font-size:.2410800386em}.katex .fontsize-ensurer.reset-size10.size2,.katex .katex-sizing.reset-size10.size2{font-size:.2892960463em}.katex .fontsize-ensurer.reset-size10.size3,.katex .katex-sizing.reset-size10.size3{font-size:.337512054em}.katex .fontsize-ensurer.reset-size10.size4,.katex .katex-sizing.reset-size10.size4{font-size:.3857280617em}.katex .fontsize-ensurer.reset-size10.size5,.katex .katex-sizing.reset-size10.size5{font-size:.4339440694em}.katex .fontsize-ensurer.reset-size10.size6,.katex .katex-sizing.reset-size10.size6{font-size:.4821600771em}.katex .fontsize-ensurer.reset-size10.size7,.katex .katex-sizing.reset-size10.size7{font-size:.5785920926em}.katex .fontsize-ensurer.reset-size10.size8,.katex .katex-sizing.reset-size10.size8{font-size:.6943105111em}.katex .fontsize-ensurer.reset-size10.size9,.katex .katex-sizing.reset-size10.size9{font-size:.8331726133em}.katex .fontsize-ensurer.reset-size10.size10,.katex .katex-sizing.reset-size10.size10{font-size:1em}.katex .fontsize-ensurer.reset-size10.size11,.katex .katex-sizing.reset-size10.size11{font-size:1.1996142719em}.katex .fontsize-ensurer.reset-size11.size1,.katex .katex-sizing.reset-size11.size1{font-size:.2009646302em}.katex .fontsize-ensurer.reset-size11.size2,.katex .katex-sizing.reset-size11.size2{font-size:.2411575563em}.katex .fontsize-ensurer.reset-size11.size3,.katex .katex-sizing.reset-size11.size3{font-size:.2813504823em}.katex .fontsize-ensurer.reset-size11.size4,.katex .katex-sizing.reset-size11.size4{font-size:.3215434084em}.katex .fontsize-ensurer.reset-size11.size5,.katex .katex-sizing.reset-size11.size5{font-size:.3617363344em}.katex .fontsize-ensurer.reset-size11.size6,.katex .katex-sizing.reset-size11.size6{font-size:.4019292605em}.katex .fontsize-ensurer.reset-size11.size7,.katex .katex-sizing.reset-size11.size7{font-size:.4823151125em}.katex .fontsize-ensurer.reset-size11.size8,.katex .katex-sizing.reset-size11.size8{font-size:.578778135em}.katex .fontsize-ensurer.reset-size11.size9,.katex .katex-sizing.reset-size11.size9{font-size:.6945337621em}.katex .fontsize-ensurer.reset-size11.size10,.katex .katex-sizing.reset-size11.size10{font-size:.8336012862em}.katex .fontsize-ensurer.reset-size11.size11,.katex .katex-sizing.reset-size11.size11{font-size:1em}.katex .delimsizing.size1{font-family:KaTeX_Size1}.katex .delimsizing.size2{font-family:KaTeX_Size2}.katex .delimsizing.size3{font-family:KaTeX_Size3}.katex .delimsizing.size4{font-family:KaTeX_Size4}.katex .delimsizing.mult .delim-size1>span{font-family:KaTeX_Size1}.katex .delimsizing.mult .delim-size4>span{font-family:KaTeX_Size4}.katex .nulldelimiter{display:inline-block;width:.12em}.katex .delimcenter,.katex .op-symbol{position:relative}.katex .op-symbol.small-op{font-family:KaTeX_Size1}.katex .op-symbol.large-op{font-family:KaTeX_Size2}.katex .katex-accent>.vlist-t,.katex .op-limits>.vlist-t{text-align:center}.katex .katex-accent .accent-body{position:relative}.katex .katex-accent .accent-body:not(.accent-full){width:0}.katex .katex-overlay{display:block}.katex .mtable .vertical-separator{display:inline-block;min-width:1px}.katex .mtable .arraycolsep{display:inline-block}.katex .mtable .col-align-c>.vlist-t{text-align:center}.katex .mtable .col-align-l>.vlist-t{text-align:left}.katex .mtable .col-align-r>.vlist-t{text-align:right}.katex .svg-align{text-align:left}.katex svg{fill:currentColor;stroke:currentColor;display:block;height:inherit;position:absolute;width:100%}.katex svg path{stroke:none}.katex svg{fill-rule:nonzero;fill-opacity:1;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1}.katex img{border-style:none;max-height:none;max-width:none;min-height:0;min-width:0}.katex .katex-stretchy{display:block;overflow:hidden;position:relative;width:100%}.katex .katex-stretchy:after,.katex .katex-stretchy:before{content:""}.katex .hide-tail{overflow:hidden;position:relative;width:100%}.katex .halfarrow-left{left:0;overflow:hidden;position:absolute;width:50.2%}.katex .halfarrow-right{overflow:hidden;position:absolute;right:0;width:50.2%}.katex .brace-left{left:0;overflow:hidden;position:absolute;width:25.1%}.katex .brace-center{left:25%;overflow:hidden;position:absolute;width:50%}.katex .brace-right{overflow:hidden;position:absolute;right:0;width:25.1%}.katex .x-arrow-pad{padding:0 .5em}.katex .cd-arrow-pad{padding:0 .55556em 0 .27778em}.katex .mover,.katex .munder,.katex .x-arrow{text-align:center}.katex .boxpad{padding:0 .3em}.katex .fbox,.katex .fcolorbox{border:.04em solid;box-sizing:border-box}.katex .cancel-pad{padding:0 .2em}.katex .cancel-lap{margin-left:-.2em;margin-right:-.2em}.katex .katex-sout{border-bottom-style:solid;border-bottom-width:.08em}.katex .angl{border-right:.049em solid;border-top:.049em solid;box-sizing:border-box;margin-right:.03889em}.katex .anglpad{padding:0 .03889em}.katex .reflectbox{display:inline-block;transform:scaleX(-1)}.katex .eqn-num:before{content:"(" counter(katexEqnNo) ")";counter-increment:katexEqnNo}.katex .mml-eqn-num:before{content:"(" counter(mmlEqnNo) ")";counter-increment:mmlEqnNo}.katex .mtr-glue{width:50%}.katex .cd-vert-arrow{display:inline-block;position:relative}.katex .cd-label-left{display:inline-block;position:absolute;right:calc(50% + .3em);text-align:left}.katex .cd-label-right{display:inline-block;left:calc(50% + .3em);position:absolute;text-align:right}.katex-display{display:block;margin:1em 0;text-align:center}.katex-display>.katex{display:block;text-align:center;white-space:nowrap}.katex-display>.katex>.katex-html{display:block;position:relative}.katex-display>.katex>.katex-html>.katex-tag{position:absolute;right:0}.katex-display.leqno>.katex>.katex-html>.katex-tag{left:0;right:auto}.katex-display.fleqn>.katex{padding-left:2em;text-align:left}body{counter-reset:katexEqnNo mmlEqnNo}
+
+    .math-box { background: #f8faff; border: 1.5px solid #818cf8; border-radius: 8px; padding: 10px 18px; margin: 10px 0 14px 0; text-align: center; page-break-inside: avoid; }
+    .math-tag { font-weight: 700; font-size: 8pt; color: #3730a3; text-align: left; margin-bottom: 6px; }
+    .katex-display { margin: 8px 0 4px 0 !important; }
+    .katex { font-size: 1.15em !important; color: #1e1b4b; }
+    /* Callout Alerts */
+    .academic-alert { margin: 10px 0 14px 0; padding: 8px 14px; border-radius: 6px; font-size: 8.5pt; page-break-inside: avoid; border-left: 4px solid; }
+    .alert-note { background: #eff6ff; border-color: #3b82f6; color: #1e3a8a; }
+    .alert-tip { background: #f0fdf4; border-color: #22c55e; color: #14532d; }
+    .alert-important { background: #fef2f2; border-color: #ef4444; color: #7f1d1d; }
+    .alert-label { font-weight: 700; font-size: 8pt; margin-bottom: 2px; }
+    /* Tanda Tangan */
+    .ttd-box { display: flex; justify-content: space-between; margin-top: 35px; page-break-inside: avoid; }
+    .ttd-col { width: 44%; text-align: center; font-size: 9.5pt; }
+    .ttd-space { height: 65px; }
+    /* TOC */
+    .toc-table { width: 100%; border: none; font-size: 8.4pt; }
+    .toc-table td { border: none !important; padding: 2px 0 !important; }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================== -->
+  <!-- 1. HALAMAN SAMPUL DEPAN (COVER RESMI)                      -->
+  <!-- ========================================================== -->
+  <div class="cover-page">
+    <div>
+      <div class="instansi-kemenag">KEMENTERIAN AGAMA REPUBLIK INDONESIA</div>
+      <div class="instansi-kampus">UNIVERSITAS ISLAM NEGERI K.H. ABDURRAHMAN WAHID PEKALONGAN</div>
+      <div class="instansi-fakultas">FAKULTAS SAINS DAN TEKNOLOGI — PROGRAM STUDI S1 INFORMATIKA</div>
+      <div style="height: 3px; background: #1e1b4b; margin: 10px 0 1.5px 0;"></div>
+      <div style="height: 1px; background: #1e1b4b;"></div>
+    </div>
+
+    <div>
+      <div class="cover-badge">LAPORAN PRAKTIKUM / TUGAS AKHIR SEMESTER</div>
+      <div class="cover-judul-mk">MATA KULIAH: PEMROGRAMAN BERBASIS PLATFORM</div>
+      <div class="cover-judul">PENGEMBANGAN SISTEM APLIKASI MODERN BERBASIS PLATFORM HYBRID</div>
+    </div>
+
+    <div>
+      <img src="./assets/images/logo.png" class="cover-logo" alt="Logo" />
+    </div>
+
+    <table class="cover-table">
+      <tr><td style="width: 160px; font-weight: 600; color: #475569;">Nama Lengkap</td><td style="width: 10px;">:</td><td><strong>GATHAN HILABI</strong></td></tr>
+      <tr><td style="font-weight: 600; color: #475569;">Nomor Induk Mahasiswa (NIM)</td><td>:</td><td><strong>60324059</strong></td></tr>
+      <tr><td style="font-weight: 600; color: #475569;">Dosen Pengampu</td><td>:</td><td><strong>Reza Iqbal Pramudya, M.Kom</strong></td></tr>
+    </table>
+
+    <div style="font-size: 10.5pt; font-weight: 800; color: #4338ca;">TAHUN AKADEMIK 2026 / 2027</div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- 2. LEMBAR PENGESAHAN                                       -->
+  <!-- ========================================================== -->
+  <div class="academic-page page-break">
+    <div class="academic-title-center">LEMBAR PENGESAHAN & PENILAIAN</div>
+    <div class="title-underline"></div>
+    <p>Laporan tugas praktikum ini telah diperiksa, disetujui, dan disahkan oleh Dosen Pengampu mata kuliah sebagai pemenuhan evaluasi akademik.</p>
+    
+    <div class="ttd-box">
+      <div class="ttd-col">
+        <div>Mengetahui,</div>
+        <div><strong>Dosen Pengampu Mata Kuliah</strong></div>
+        <div class="ttd-space"></div>
+        <div><strong><u>Reza Iqbal Pramudya, M.Kom</u></strong></div>
+        <div>Dosen Pengampu Mata Kuliah</div>
+      </div>
+      <div class="ttd-col">
+        <div>Pekalongan, 21 Oktober 2026</div>
+        <div><strong>Mahasiswa Penyusun,</strong></div>
+        <div class="ttd-space"></div>
+        <div><strong><u>GATHAN HILABI</u></strong></div>
+        <div>NIM. 60324059</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- 3. KATA PENGANTAR                                          -->
+  <!-- ========================================================== -->
+  <div class="academic-page page-break">
+    <div class="academic-title-center">KATA PENGANTAR</div>
+    <div class="title-underline"></div>
+    <p>Puji dan syukur ke hadirat Allah SWT, Tuhan Yang Maha Esa, atas limpahan rahmat dan hidayah-Nya sehingga laporan ini dapat diselesaikan dengan baik dan tepat waktu.</p>
+    <p>Penulis menyampaikan ucapan terima kasih yang tulus kepada Bapak/Ibu Dosen Pengampu, rekan-rekan mahasiswa, serta seluruh pihak yang telah memberikan bimbingan dan dukungan.</p>
+    <div style="text-align: right; margin-top: 30px;">
+      <div>Pekalongan, 21 Oktober 2026</div>
+      <div style="margin-top: 4px;">Penulis,</div>
+      <div style="height: 50px;"></div>
+      <div><strong><u>GATHAN HILABI</u></strong></div>
+      <div>NIM. 60324059</div>
+    </div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- 4. DAFTAR ISI FORMAL                                       -->
+  <!-- ========================================================== -->
+  <div class="academic-page page-break">
+    <div class="academic-title-center">DAFTAR ISI</div>
+    <div class="title-underline"></div>
+    <table class="toc-table">
+      <tr><td><strong>HALAMAN SAMPUL DEPAN (COVER)</strong></td><td align="right">i</td></tr>
+      <tr><td><strong>LEMBAR PENGESAHAN & PENILAIAN</strong></td><td align="right">ii</td></tr>
+      <tr><td><strong>KATA PENGANTAR</strong></td><td align="right">iii</td></tr>
+      <tr><td><strong>DAFTAR ISI</strong></td><td align="right">iv</td></tr>
+      <tr><td colspan="2"><hr style="border: 0; border-top: 1px solid #cbd5e1; margin: 4px 0;"></td></tr>
+      <tr><td><strong>BAB I: PENDAHULUAN</strong></td><td align="right">1</td></tr>
+      <tr><td><strong>BAB II: TINJAUAN PUSTAKA & ARSITEKTUR</strong></td><td align="right">2</td></tr>
+      <tr><td><strong>BAB III: METODOLOGI & IMPLEMENTASI</strong></td><td align="right">3</td></tr>
+      <tr><td><strong>BAB IV: HASIL PENGUJIAN & ANALISIS</strong></td><td align="right">4</td></tr>
+      <tr><td><strong>BAB V: KESIMPULAN & PENUTUP</strong></td><td align="right">6</td></tr>
+    </table>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- 5. ISI UTAMA LAPORAN                                       -->
+  <!-- ========================================================== -->
+  <div class="academic-body">
+    <div class="bab-break"></div>
+    <div class="academic-bab-header" id="bab-i">
+      <div class="bab-title-top">BAB I</div>
+      <div class="bab-title-main">PENDAHULUAN</div>
+      <div class="bab-underline"></div>
+    </div>
+<h3>1.1 Latar Belakang</h3>
+<p>Teknologi pengembangan aplikasi mobile modern berkembang sangat pesat dengan hadirnya kerangka kerja <em>cross-platform</em> seperti React Native dan Expo. Kerangka kerja ini memungkinkan para pengembang membangun aplikasi untuk sistem operasi Android, iOS, dan Web sekaligus hanya dengan menggunakan satu basis kode (<em>single codebase</em>) berbasis TypeScript dan React.</p>
+<p>Dalam konteks pengembangan aplikasi berskala komersial dan akademik, kepatuhan terhadap prinsip arsitektur perangkat lunak, efisiensi konsumsi memori, serta pengalaman pengguna (<em>User Experience</em>) yang responsif menjadi tolok ukur utama keberhasilan sebuah sistem.</p>
+<h3>1.2 Tujuan Penugasan</h3>
+<p>Tujuan utama dari penyusunan laporan dan implementasi sistem ini adalah:</p>
+<ol>
+<li>Memahami siklus hidup navigasi (<em>navigation lifecycle</em>) dan struktur routing berbasis folder (<em>file-based routing</em>).</li>
+<li>Mengelola status global (<em>global state management</em>) menggunakan React Context API secara terpusat.</li>
+<li>Mengimplementasikan penyimpanan lokal persisten (<em>offline storage</em>) dengan SQLite dan AsyncStorage.</li>
+</ol>
+<hr>
+<div class="bab-break"></div>
+    <div class="academic-bab-header" id="bab-ii">
+      <div class="bab-title-top">BAB II</div>
+      <div class="bab-title-main">TINJAUAN PUSTAKA &amp; ARSITEKTUR</div>
+      <div class="bab-underline"></div>
+    </div>
+<h3>2.1 Pola Arsitektur Sistem</h3>
+<p>Aplikasi menerapkan pemisahan tugas (<em>Separation of Concerns</em>) yang tegas antara lapisan antarmuka pengguna (<em>UI Layer</em>), lapisan manajemen status (<em>State Layer</em>), dan lapisan persistensi data lokal (<em>Storage Layer</em>).</p>
+<table>
+<thead>
+<tr>
+<th align="left">Komponen Arsitektur</th>
+<th align="left">Teknologi / Library</th>
+<th align="left">Fungsi Utama</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>User Interface</strong></td>
+<td align="left">React Native + Expo UI</td>
+<td align="left">Menampilkan komponen visual, tata letak dinamis, dan animasi</td>
+</tr>
+<tr>
+<td align="left"><strong>State Management</strong></td>
+<td align="left">Context API (Hooks)</td>
+<td align="left">Mengelola status preferensi tema dan riwayat pencarian</td>
+</tr>
+<tr>
+<td align="left"><strong>Local Persistence</strong></td>
+<td align="left">Expo SQLite Next</td>
+<td align="left">Menyimpan cache data cuaca offline dan pencarian terakhir</td>
+</tr>
+<tr>
+<td align="left"><strong>Network Client</strong></td>
+<td align="left">Fetch API + Async/Await</td>
+<td align="left">Mengambil data cuaca dan indeks kualitas udara secara <em>real-time</em></td>
+</tr>
+</tbody></table>
+<div class="academic-alert alert-note"><div class="alert-label">📌 CATATAN TEKNIS</div><div class="alert-body">Seluruh aliran data dirancang menganut prinsip <em>unidirectional data flow</em> agar status aplikasi mudah diprediksi dan bebas dari efek samping (<em>side effects</em>).</div></div>
+<hr>
+<div class="bab-break"></div>
+    <div class="academic-bab-header" id="bab-iii">
+      <div class="bab-title-top">BAB III</div>
+      <div class="bab-title-main">METODOLOGI &amp; FORMULASI</div>
+      <div class="bab-underline"></div>
+    </div>
+<h3>3.1 Formulasi Matematis Presisi</h3>
+<p>Dalam sistem ini diterapkan algoritma konversi skala suhu dan indeks kualitas udara menggunakan persamaan matematis:</p>
+<p><div class="math-box">
+    <div class="math-tag">📐 PERSAMAAN MATEMATIS:</div>
+    <span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>Suhu (°F)</mtext><mo>=</mo><mtext>round</mtext><mrow><mo fence="true">(</mo><mtext>Suhu (°C)</mtext><mo>×</mo><mfrac><mn>9</mn><mn>5</mn></mfrac><mo>+</mo><mn>32</mn><mo fence="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">\text{Suhu (°F)} = \text{round}\left( \text{Suhu (°C)} \times \frac{9}{5} + 32 \right)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">Suhu (°F)</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:2.4em;vertical-align:-0.95em;"></span><span class="mord text"><span class="mord">round</span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size3">(</span></span><span class="mord text"><span class="mord">Suhu (°C)</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3214em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">5</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">9</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">32</span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size3">)</span></span></span></span></span></span></span>
+  </div></p>
+<p>Sebagai contoh perhitungan riil: suhu kota sebesar <strong><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>32</mn><mo>∘</mo></msup><mtext>C</mtext></mrow><annotation encoding="application/x-tex">32^\circ\text{C}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.6833em;"></span><span class="mord">3</span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6741em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mbin mtight">∘</span></span></span></span></span></span></span></span><span class="mord text"><span class="mord">C</span></span></span></span></span></strong> dikonversi secara akurat menjadi <strong><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>89</mn><mo>∘</mo></msup><mtext>F</mtext></mrow><annotation encoding="application/x-tex">89^\circ\text{F}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.6833em;"></span><span class="mord">8</span><span class="mord"><span class="mord">9</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6741em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mbin mtight">∘</span></span></span></span></span></span></span></span><span class="mord text"><span class="mord">F</span></span></span></span></span></strong> dengan evaluasi:</p>
+<p><div class="math-box">
+    <div class="math-tag">📐 PERSAMAAN MATEMATIS:</div>
+    <span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mn>32</mn><mo>×</mo><mn>1.8</mn><mo>+</mo><mn>32</mn><mo>=</mo><mn>89.6</mn><mo>≈</mo><msup><mn>89</mn><mo>∘</mo></msup><mtext>F</mtext></mrow><annotation encoding="application/x-tex">32 \times 1.8 + 32 = 89.6 \approx 89^\circ\text{F}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">32</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1.8</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">32</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">89.6</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.7241em;"></span><span class="mord">8</span><span class="mord"><span class="mord">9</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7241em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mbin mtight">∘</span></span></span></span></span></span></span></span><span class="mord text"><span class="mord">F</span></span></span></span></span></span>
+  </div></p>
+<div class="academic-alert alert-tip"><div class="alert-label">💡 PETUNJUK & BEST PRACTICE</div><div class="alert-body">Penggunaan fungsi pembulatan <code>round()</code> memastikan nilai suhu yang ditampilkan pada kartu cuaca tetap proporsional dan tidak memunculkan angka desimal panjang.</div></div>
+<hr>
+<div class="bab-break"></div>
+    <div class="academic-bab-header" id="bab-iv">
+      <div class="bab-title-top">BAB IV</div>
+      <div class="bab-title-main">HASIL PENGUJIAN &amp; IMPLEMENTASI</div>
+      <div class="bab-underline"></div>
+    </div>
+<h3>4.1 Potongan Kode Program Utama</h3>
+<p>Berikut adalah implementasi fungsi konversi suhu yang diterapkan pada sistem:</p>
+<div class="code-wrapper">
+      <div class="code-header">
+        <span class="code-dot red"></span><span class="code-dot yellow"></span><span class="code-dot green"></span>
+        <span class="code-title">📄 src/services/konversiSuhu.ts</span>
+      </div>
+      <pre><code>// src/services/konversiSuhu.ts
+export function hitungKonversiSuhu(
+  celsius: number,
+  celciusAktif: boolean
+): number {
+  if (celciusAktif) {
+    return Math.round(celsius);
+  }
+  return Math.round((celsius * 9) / 5 + 32);
+}
+</code></pre>
+    </div>
+<h3>4.2 Bukti Tangkapan Layar Hasil Implementasi</h3>
+<p>Berikut adalah bukti visual hasil uji coba antarmuka sistem pada perangkat:</p>
+<div align="center"><img src="./assets/images/logo.png" width="240" alt="Logo Bukti Implementasi Sistem" /><p><em>Gambar 4.1: Tampilan antarmuka sistem yang telah teruji secara fungsional</em></p>
+</div><hr>
+<div class="bab-break"></div>
+    <div class="academic-bab-header" id="bab-v">
+      <div class="bab-title-top">BAB V</div>
+      <div class="bab-title-main">KESIMPULAN &amp; PENUTUP</div>
+      <div class="bab-underline"></div>
+    </div>
+<h3>5.1 Kesimpulan</h3>
+<p>Berdasarkan hasil analisis, perancangan, dan implementasi yang telah dilakukan, dapat disimpulkan bahwa:</p>
+<ol>
+<li>Seluruh fitur tugas praktikum berhasil diwujudkan sesuai spesifikasi kebutuhan.</li>
+<li>Penggunaan arsitektur penyimpanan lokal offline (<em>offline-first</em>) memberikan keandalan sistem yang tinggi saat perangkat kehilangan koneksi internet.</li>
+<li>Tipografi kustom modern dan palet visual selaras memberikan dampak visual yang profesional dan nyaman bagi pengguna.</li>
+</ol>
+<hr>
+<p><em>Pekalongan, 21 Oktober 2026</em><br><strong>Mahasiswa Penyusun,</strong></p>
+<p><strong>Gathan Hilabi</strong><br>NIM: 60324059</p>
+
+
+  </div>
+
+</body>
+</html>

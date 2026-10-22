@@ -1,0 +1,14 @@
+{
+  "name": "template-laporan-akademik",
+  "version": "1.0.0",
+  "description": "Boilerplate Generator Laporan PDF Berstandar Akademik Resmi",
+  "main": "scripts/build-pdf.js",
+  "scripts": {
+    "build-pdf": "node ./scripts/build-pdf.js"
+  },
+  "devDependencies": {
+    "katex": "^0.19.0",
+    "marked": "^15.0.7",
+    "pdf-parse": "^2.4.5"
+  }
+}
