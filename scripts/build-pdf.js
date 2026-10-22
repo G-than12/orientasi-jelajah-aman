@@ -6,7 +6,26 @@ const fs = require("fs");
 const path = require("path");
 const os = require("os");
 const { execSync, execFileSync } = require("child_process");
-const { PDFParse } = require("pdf-parse");
+let PDFParse;
+try {
+  const mod = require("pdf-parse");
+  PDFParse = mod.PDFParse || mod;
+} catch (e) {
+  PDFParse = null;
+}
+
+let katex;
+try {
+  katex = require("katex");
+} catch (e) {
+  katex = null;
+}
+
+let katexCss = "";
+try {
+  const katexCssPath = require.resolve("katex/dist/katex.min.css");
+  katexCss = fs.readFileSync(katexCssPath, "utf8");
+} catch (e) {}
 
 const rootDir = path.resolve(__dirname, "..");
 const mdFile = path.join(rootDir, "LAPORAN_UTS_PBP_GATHAN_HILABI.md");
@@ -54,32 +73,24 @@ bodyContent = bodyContent
     </div>`;
   })
   // Percantik Alerts
-  .replace(/<blockquote>\s*<p>\[!NOTE\]<br>([\s\S]*?)<\/p>\s*<\/blockquote>/gi, (m, content) => {
+  .replace(/<blockquote>\s*<p>\[!NOTE\](?:<br\s*\/?>|\s+)([\s\S]*?)<\/p>\s*<\/blockquote>/gi, (m, content) => {
     return `<div class="academic-alert alert-note">
       <div class="alert-label">📌 CATATAN TEKNIS</div>
-      <div class="alert-body">${content}</div>
+      <div class="alert-body">${content.trim()}</div>
     </div>`;
   })
-  .replace(/<blockquote>\s*<p>\[!TIP\]<br>([\s\S]*?)<\/p>\s*<\/blockquote>/gi, (m, content) => {
+  .replace(/<blockquote>\s*<p>\[!TIP\](?:<br\s*\/?>|\s+)([\s\S]*?)<\/p>\s*<\/blockquote>/gi, (m, content) => {
     return `<div class="academic-alert alert-tip">
       <div class="alert-label">💡 PETUNJUK & BEST PRACTICE</div>
-      <div class="alert-body">${content}</div>
+      <div class="alert-body">${content.trim()}</div>
     </div>`;
   })
-  .replace(/<blockquote>\s*<p>\[!IMPORTANT\]<br>([\s\S]*?)<\/p>\s*<\/blockquote>/gi, (m, content) => {
+  .replace(/<blockquote>\s*<p>\[!IMPORTANT\](?:<br\s*\/?>|\s+)([\s\S]*?)<\/p>\s*<\/blockquote>/gi, (m, content) => {
     return `<div class="academic-alert alert-important">
       <div class="alert-label">⚠️ PERHATIAN PENTING</div>
-      <div class="alert-body">${content}</div>
+      <div class="alert-body">${content.trim()}</div>
     </div>`;
   })
-  // Formula Matematika
-  .replace(/\$PM_\{2\.5\}\$/g, "PM<sub>2.5</sub>")
-  .replace(/\$PM_\{10\}\$/g, "PM<sub>10</sub>")
-  .replace(/\$\$([\s\S]*?)\$\$/g, (m, formula) => {
-    return `<div class="math-box"><span class="math-tag">Persamaan Matematis:</span> <code>${formula.trim()}</code></div>`;
-  })
-  .replace(/\$32\^\\circ\\text\{C\}\$/g, "32°C")
-  .replace(/\$89\^\\circ\\text\{F\}\$/g, "89°F")
   // Format code blocks dengan wrapper berbingkai rapi
   .replace(/<pre><code class="language-([a-zA-Z0-9_-]+)">([\s\S]*?)<\/code><\/pre>/gi, (m, lang, code) => {
     let filename = lang.toUpperCase();
@@ -98,6 +109,51 @@ bodyContent = bodyContent
     </div>`;
   });
 
+// Simpan blok kode sementara agar karakter $ pada program tidak bentrok dengan parser matematika
+const preservedCodeBlocks = [];
+bodyContent = bodyContent.replace(/<div class="code-wrapper">[\s\S]*?<\/pre>\s*<\/div>/gi, (m) => {
+  preservedCodeBlocks.push(m);
+  return `___PRESERVED_CODE_${preservedCodeBlocks.length - 1}___`;
+});
+bodyContent = bodyContent.replace(/<pre[\s\S]*?<\/pre>/gi, (m) => {
+  preservedCodeBlocks.push(m);
+  return `___PRESERVED_CODE_${preservedCodeBlocks.length - 1}___`;
+});
+
+// Render Formula Matematika Display ($$...$$) menggunakan KaTeX
+bodyContent = bodyContent.replace(/\$\$([\s\S]*?)\$\$/g, (m, formula) => {
+  let rendered = formula.trim();
+  if (katex) {
+    try {
+      rendered = katex.renderToString(rendered, { displayMode: true, throwOnError: false });
+    } catch (e) {
+      console.warn("Peringatan render KaTeX display:", e.message);
+    }
+  }
+  return `<div class="math-box">
+    <div class="math-tag">📐 PERSAMAAN MATEMATIS (FORMULASI KONVERSI SKALA SUHU):</div>
+    ${rendered}
+  </div>`;
+});
+
+// Render Formula Matematika Inline ($...$) menggunakan KaTeX
+bodyContent = bodyContent.replace(/\$([^$\n]+)\$/g, (m, inline) => {
+  const trimmed = inline.trim();
+  if (katex) {
+    try {
+      return katex.renderToString(trimmed, { displayMode: false, throwOnError: false });
+    } catch (e) {
+      console.warn("Peringatan render KaTeX inline:", e.message);
+    }
+  }
+  return trimmed;
+});
+
+// Pulihkan blok kode yang disimpan
+bodyContent = bodyContent.replace(/___PRESERVED_CODE_(\d+)___/g, (m, idx) => {
+  return preservedCodeBlocks[parseInt(idx, 10)];
+});
+
 // 5. Fungsi generator template HTML dengan nomor halaman dinamis
 function generateHtmlDocument(pageMap = {}) {
   const p = (key, defaultPage) => pageMap[key] || defaultPage;
@@ -107,6 +163,7 @@ function generateHtmlDocument(pageMap = {}) {
 <head>
   <meta charset="UTF-8">
   <title>Laporan UTS PBP - Gathan Hilabi (60324059)</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
   <style>
     /* ========================================================== */
     /* KONFIGURASI HALAMAN CETAK STANDAR AKADEMIK INDONESIA       */
@@ -505,15 +562,45 @@ function generateHtmlDocument(pageMap = {}) {
       break-inside: avoid;
     }
 
+    /* Format Teks Miring (Italic) Standar Inline */
     em {
+      font-style: italic;
+    }
+
+    /* Keterangan Gambar (Image Caption) di bawah tangkapan layar */
+    div[align="center"] p {
+      text-indent: 0 !important;
+      text-align: center;
+      margin: 4px 0 0 0;
+    }
+
+    div[align="center"] > p > em,
+    div[align="center"] > em,
+    div[align="center"] table td em {
       font-size: 8.5pt;
       color: #475569;
       font-style: italic;
+      font-weight: 600;
+      line-height: 1.35;
+      text-align: center;
+    }
+
+    div[align="center"] > p > em,
+    div[align="center"] > em {
       display: block;
       margin-top: 5px;
-      line-height: 1.35;
-      font-weight: 600;
     }
+
+    div[align="center"] em code {
+      font-family: inherit !important;
+      font-style: italic !important;
+      color: inherit !important;
+      background: transparent !important;
+      padding: 0 !important;
+      border: none !important;
+      font-weight: inherit !important;
+    }
+
 
     /* Listing Kode Program */
     .code-wrapper {
@@ -551,24 +638,33 @@ function generateHtmlDocument(pageMap = {}) {
     }
     pre {
       margin: 0;
-      padding: 8px 12px;
-      font-family: 'JetBrains Mono', Consolas, monospace;
+      padding: 10px 14px;
+      font-family: 'JetBrains Mono', Consolas, 'Courier New', monospace;
       font-size: 7.2pt;
-      line-height: 1.4;
+      line-height: 1.45;
       color: #0f172a;
-      background: #ffffff !important;
+      background: #f8fafc !important;
       overflow-x: auto;
       white-space: pre-wrap;
       word-break: break-word;
     }
-    code {
-      font-family: 'JetBrains Mono', Consolas, monospace;
-      font-size: 8pt;
-      background: #f1f5f9;
-      color: #4338ca;
-      padding: 1.5px 4px;
-      border-radius: 3px;
+    pre code {
+      background: transparent !important;
+      color: inherit !important;
+      padding: 0 !important;
+      border: none !important;
+      font-size: inherit !important;
+      font-weight: inherit !important;
     }
+    code {
+      font-family: 'JetBrains Mono', Consolas, 'Courier New', monospace;
+      font-size: 8.5pt;
+      color: #0f172a;
+      background: transparent;
+      padding: 0;
+      font-weight: 600;
+    }
+
 
     /* Alerts */
     .academic-alert {
@@ -605,20 +701,33 @@ function generateHtmlDocument(pageMap = {}) {
       line-height: 1.45;
     }
 
+    /* Formula Matematika KaTeX & Kotak Persamaan */
+    ${katexCss}
+
     .math-box {
-      background: #eef2ff;
-      border: 1px dashed #6366f1;
-      border-radius: 6px;
-      padding: 6px 12px;
-      margin: 8px 0 12px 0;
-      font-size: 8.5pt;
-      color: #312e81;
+      background: #f8faff;
+      border: 1.5px solid #818cf8;
+      border-radius: 8px;
+      padding: 10px 18px;
+      margin: 10px 0 14px 0;
+      text-align: center;
       page-break-inside: avoid;
       break-inside: avoid;
     }
     .math-tag {
       font-weight: 700;
-      margin-right: 6px;
+      font-size: 8pt;
+      color: #3730a3;
+      letter-spacing: 0.5px;
+      text-align: left;
+      margin-bottom: 6px;
+    }
+    .katex-display {
+      margin: 8px 0 4px 0 !important;
+    }
+    .katex {
+      font-size: 1.15em !important;
+      color: #1e1b4b;
     }
 
     /* Tanda Tangan */
@@ -878,50 +987,47 @@ function generateHtmlDocument(pageMap = {}) {
       <tr><td><strong>DAFTAR ISI</strong></td><td align="right">iv</td></tr>
       <tr><td colspan="2" style="padding: 4px 0;"><hr style="border: 0; border-top: 1px solid #cbd5e1; margin: 2px 0;"></td></tr>
       <tr><td><strong>BAB I: PENDAHULUAN & GAMBARAN UMUM APLIKASI</strong></td><td align="right">${p('BAB I', 1)}</td></tr>
-      <tr><td style="padding-left: 15px;">1.1 Latar Belakang Masalah</td><td align="right">${p('BAB I', 1)}</td></tr>
-      <tr><td style="padding-left: 15px;">1.2 Tujuan Penyempurnaan UTS</td><td align="right">${p('BAB I', 1)}</td></tr>
-      <tr><td style="padding-left: 15px;">1.3 Ruang Lingkup & Batasan Masalah</td><td align="right">${p('BAB I', 1)}</td></tr>
-      <tr><td style="padding-left: 15px;">1.4 Profil Mahasiswa & Informasi Repositori</td><td align="right">${p('BAB I', 1)}</td></tr>
+      <tr><td style="padding-left: 15px;">1.1 Latar Belakang</td><td align="right">${p('1.1', 1)}</td></tr>
+      <tr><td style="padding-left: 15px;">1.2 Tujuan Penyempurnaan UTS</td><td align="right">${p('1.2', 1)}</td></tr>
       <tr><td><strong>BAB II: STRUKTUR PROYEK & ARSITEKTUR SISTEM</strong></td><td align="right">${p('BAB II', 2)}</td></tr>
-      <tr><td style="padding-left: 15px;">2.1 Pola Arsitektur Folder Expo Router</td><td align="right">${p('BAB II', 2)}</td></tr>
-      <tr><td style="padding-left: 15px;">2.2 Diagram Alur Data & State Terpusat</td><td align="right">${p('BAB II', 2)}</td></tr>
-      <tr><td style="padding-left: 15px;">2.3 Pustaka Kunci & Dependensi</td><td align="right">${p('BAB II', 2)}</td></tr>
-      <tr><td><strong>BAB III: TUGAS 1 – KUSTOMISASI IKON TAB BAR & LABEL NAVIGASI</strong></td><td align="right">${p('BAB III', 3)}</td></tr>
-      <tr><td style="padding-left: 15px;">3.1 Analisis Kebutuhan</td><td align="right">${p('BAB III', 3)}</td></tr>
-      <tr><td style="padding-left: 15px;">3.2 Langkah-Langkah Solusi</td><td align="right">${p('BAB III', 3)}</td></tr>
-      <tr><td style="padding-left: 15px;">3.3 Tangkapan Layar & Potongan Kode (<code>app/(tabs)/_layout.tsx</code>)</td><td align="right">${p('BAB III', 3)}</td></tr>
-      <tr><td style="padding-left: 15px;">3.4 Penjelasan Teknis</td><td align="right">${p('BAB III', 4)}</td></tr>
-      <tr><td style="padding-left: 15px;">3.5 Tangkapan Layar Hasil Implementasi Antarmuka</td><td align="right">${p('BAB III', 5)}</td></tr>
-      <tr><td><strong>BAB IV: TUGAS 2 – FITUR RIWAYAT PENCARIAN TERAKHIR</strong></td><td align="right">${p('BAB IV', 6)}</td></tr>
-      <tr><td style="padding-left: 15px;">4.1 Analisis Kebutuhan</td><td align="right">${p('BAB IV', 6)}</td></tr>
-      <tr><td style="padding-left: 15px;">4.2 Langkah-Langkah Solusi</td><td align="right">${p('BAB IV', 6)}</td></tr>
-      <tr><td style="padding-left: 15px;">4.3 Tangkapan Layar & Potongan Kode State (<code>contexts/RiwayatContext.tsx</code>)</td><td align="right">${p('BAB IV', 7)}</td></tr>
-      <tr><td style="padding-left: 15px;">4.4 Tangkapan Layar & Potongan Kode Layar (<code>app/(tabs)/riwayat.tsx</code>)</td><td align="right">${p('BAB IV', 9)}</td></tr>
-      <tr><td style="padding-left: 15px;">4.5 Tangkapan Layar Hasil Implementasi Antarmuka</td><td align="right">${p('BAB IV', 10)}</td></tr>
-      <tr><td><strong>BAB V: TUGAS 3 – PENGHAPUSAN CACHE KOTA & MODAL KONFIRMASI</strong></td><td align="right">${p('BAB V', 11)}</td></tr>
-      <tr><td style="padding-left: 15px;">5.1 Analisis Kebutuhan</td><td align="right">${p('BAB V', 11)}</td></tr>
-      <tr><td style="padding-left: 15px;">5.2 Langkah-Langkah Solusi</td><td align="right">${p('BAB V', 11)}</td></tr>
-      <tr><td style="padding-left: 15px;">5.3 Tangkapan Layar & Potongan Kode SQLite (<code>src/services/cacheRepository.ts</code>)</td><td align="right">${p('BAB V', 12)}</td></tr>
-      <tr><td style="padding-left: 15px;">5.4 Tangkapan Layar & Potongan Kode Modal (<code>app/(tabs)/index.tsx</code>)</td><td align="right">${p('BAB V', 13)}</td></tr>
-      <tr><td style="padding-left: 15px;">5.5 Tangkapan Layar Hasil Implementasi Antarmuka</td><td align="right">${p('BAB V', 14)}</td></tr>
-      <tr><td><strong>BAB VI: TUGAS 4 – IMPLEMENTASI TEMA GELAP / TERANG / IKUTI SISTEM</strong></td><td align="right">${p('BAB VI', 15)}</td></tr>
-      <tr><td style="padding-left: 15px;">6.1 Analisis Kebutuhan</td><td align="right">${p('BAB VI', 15)}</td></tr>
-      <tr><td style="padding-left: 15px;">6.2 Langkah-Langkah Solusi</td><td align="right">${p('BAB VI', 15)}</td></tr>
-      <tr><td style="padding-left: 15px;">6.3 Tangkapan Layar & Token Palet Tema (<code>constants/theme.ts</code>)</td><td align="right">${p('BAB VI', 16)}</td></tr>
-      <tr><td style="padding-left: 15px;">6.4 Tangkapan Layar & Logika "Ikuti Tema Sistem" (<code>contexts/PengaturanContext.tsx</code>)</td><td align="right">${p('BAB VI', 17)}</td></tr>
-      <tr><td style="padding-left: 15px;">6.5 Tangkapan Layar & Antarmuka Pengaturan (<code>app/(tabs)/pengaturan.tsx</code>)</td><td align="right">${p('BAB VI', 18)}</td></tr>
-      <tr><td style="padding-left: 15px;">6.6 Tombol Sakelar Cepat Header Kanan Atas</td><td align="right">${p('BAB VI', 19)}</td></tr>
-      <tr><td style="padding-left: 15px;">6.7 Tangkapan Layar Hasil Implementasi Antarmuka</td><td align="right">${p('BAB VI', 20)}</td></tr>
-      <tr><td><strong>BAB VII: FITUR TAMBAHAN & NILAI PLUS (KREATIVITAS MAHASISWA)</strong></td><td align="right">${p('BAB VII', 21)}</td></tr>
-      <tr><td style="padding-left: 15px;">7.1 Tangkapan Layar & Konversi Satuan Suhu Dinamis (°C vs °F)</td><td align="right">${p('BAB VII', 21)}</td></tr>
-      <tr><td style="padding-left: 15px;">7.2 Tangkapan Layar & Tipografi Modern (Plus Jakarta Sans)</td><td align="right">${p('BAB VII', 23)}</td></tr>
-      <tr><td style="padding-left: 15px;">7.3 Palet Warna Atmospheric Indigo & Electric Sky</td><td align="right">${p('BAB VII', 24)}</td></tr>
-      <tr><td style="padding-left: 15px;">7.4 Status Data Terpadu Minimalis</td><td align="right">${p('BAB VII', 24)}</td></tr>
-      <tr><td style="padding-left: 15px;">7.5 Penjaminan Mutu & Type-Safety TypeScript</td><td align="right">${p('BAB VII', 25)}</td></tr>
-      <tr><td style="padding-left: 15px;">7.6 Tangkapan Layar Hasil Implementasi Antarmuka</td><td align="right">${p('BAB VII', 25)}</td></tr>
-      <tr><td><strong>BAB VIII: RIWAYAT COMMIT GIT (28++ COMMITS)</strong></td><td align="right">${p('BAB VIII', 26)}</td></tr>
-      <tr><td><strong>BAB IX: KESIMPULAN & PENUTUP</strong></td><td align="right">${p('BAB IX', 29)}</td></tr>
-      <tr><td><strong>BAB X: DAFTAR PUSTAKA</strong></td><td align="right">${p('BAB X', 30)}</td></tr>
+      <tr><td><strong>BAB III: TUGAS 1 – KUSTOMISASI IKON TAB BAR & PERBAIKAN LABEL NAVIGASI</strong></td><td align="right">${p('BAB III', 3)}</td></tr>
+      <tr><td style="padding-left: 15px;">3.1 Analisis Kebutuhan</td><td align="right">${p('3.1', 3)}</td></tr>
+      <tr><td style="padding-left: 15px;">3.2 Langkah-Langkah Solusi</td><td align="right">${p('3.2', 3)}</td></tr>
+      <tr><td style="padding-left: 15px;">3.3 Potongan Kode Program Asli (<code>app/(tabs)/_layout.tsx</code>)</td><td align="right">${p('3.3', 3)}</td></tr>
+      <tr><td style="padding-left: 15px;">3.4 Penjelasan Teknis</td><td align="right">${p('3.4', 6)}</td></tr>
+      <tr><td style="padding-left: 15px;">3.5 Tangkapan Layar Hasil Implementasi (Screenshots)</td><td align="right">${p('3.5', 6)}</td></tr>
+      <tr><td><strong>BAB IV: TUGAS 2 – FITUR RIWAYAT PENCARIAN TERAKHIR (RECENT SEARCH HISTORY)</strong></td><td align="right">${p('BAB IV', 7)}</td></tr>
+      <tr><td style="padding-left: 15px;">4.1 Analisis Kebutuhan</td><td align="right">${p('4.1', 7)}</td></tr>
+      <tr><td style="padding-left: 15px;">4.2 Langkah-Langkah Solusi</td><td align="right">${p('4.2', 7)}</td></tr>
+      <tr><td style="padding-left: 15px;">4.3 Potongan Kode Program Asli State Management (<code>contexts/RiwayatContext.tsx</code>)</td><td align="right">${p('4.3', 7)}</td></tr>
+      <tr><td style="padding-left: 15px;">4.4 Potongan Kode Integrasi & Interaktivitas Klik (<code>app/(tabs)/riwayat.tsx</code>)</td><td align="right">${p('4.4', 10)}</td></tr>
+      <tr><td style="padding-left: 15px;">4.5 Tangkapan Layar Hasil Implementasi (Screenshots)</td><td align="right">${p('4.5', 12)}</td></tr>
+      <tr><td><strong>BAB V: TUGAS 3 – PENGHAPUSAN CACHE KOTA & MODAL KONFIRMASI</strong></td><td align="right">${p('BAB V', 14)}</td></tr>
+      <tr><td style="padding-left: 15px;">5.1 Analisis Kebutuhan</td><td align="right">${p('5.1', 14)}</td></tr>
+      <tr><td style="padding-left: 15px;">5.2 Langkah-Langkah Solusi</td><td align="right">${p('5.2', 14)}</td></tr>
+      <tr><td style="padding-left: 15px;">5.3 Potongan Kode Program Asli SQLite Service (<code>src/services/cacheRepository.ts</code>)</td><td align="right">${p('5.3', 14)}</td></tr>
+      <tr><td style="padding-left: 15px;">5.4 Potongan Kode Modal Konfirmasi Hapus Cache (<code>app/(tabs)/index.tsx</code>)</td><td align="right">${p('5.4', 16)}</td></tr>
+      <tr><td style="padding-left: 15px;">5.5 Tangkapan Layar Hasil Implementasi (Screenshots)</td><td align="right">${p('5.5', 19)}</td></tr>
+      <tr><td><strong>BAB VI: TUGAS 4 – IMPLEMENTASI TEMA GELAP / TERANG / IKUTI SISTEM</strong></td><td align="right">${p('BAB VI', 20)}</td></tr>
+      <tr><td style="padding-left: 15px;">6.1 Analisis Kebutuhan</td><td align="right">${p('6.1', 20)}</td></tr>
+      <tr><td style="padding-left: 15px;">6.2 Langkah-Langkah Solusi</td><td align="right">${p('6.2', 20)}</td></tr>
+      <tr><td style="padding-left: 15px;">6.3 Potongan Kode Program Asli Token Tema (<code>constants/theme.ts</code>)</td><td align="right">${p('6.3', 20)}</td></tr>
+      <tr><td style="padding-left: 15px;">6.4 Cara Kerja & Kode Logika "Ikuti Tema Sistem" (<code>contexts/PengaturanContext.tsx</code>)</td><td align="right">${p('6.4', 23)}</td></tr>
+      <tr><td style="padding-left: 15px;">6.5 Antarmuka Pengaturan & Sakelar Ikuti Sistem (<code>app/(tabs)/pengaturan.tsx</code>)</td><td align="right">${p('6.5', 25)}</td></tr>
+      <tr><td style="padding-left: 15px;">6.6 Tombol Sakelar Cepat di Pojok Kanan Atas Header (<code>AnimatedThemeToggle</code>)</td><td align="right">${p('6.6', 28)}</td></tr>
+      <tr><td style="padding-left: 15px;">6.7 Tangkapan Layar Hasil Implementasi (Screenshots)</td><td align="right">${p('6.7', 28)}</td></tr>
+      <tr><td><strong>BAB VII: FITUR TAMBAHAN & NILAI PLUS (KREATIVITAS MAHASISWA)</strong></td><td align="right">${p('BAB VII', 30)}</td></tr>
+      <tr><td style="padding-left: 15px;">7.1 Fitur Konversi Satuan Suhu Dinamis (°C vs °F)</td><td align="right">${p('7.1', 30)}</td></tr>
+      <tr><td style="padding-left: 15px;">7.2 Tipografi Kustom Modern (Google Fonts: Plus Jakarta Sans)</td><td align="right">${p('7.2', 32)}</td></tr>
+      <tr><td style="padding-left: 15px;">7.3 Palet Warna "Atmospheric Indigo & Electric Sky"</td><td align="right">${p('7.3', 33)}</td></tr>
+      <tr><td style="padding-left: 15px;">7.4 Status Data Terpadu Minimalis</td><td align="right">${p('7.4', 33)}</td></tr>
+      <tr><td style="padding-left: 15px;">7.5 Penjaminan Mutu & Type-Safety</td><td align="right">${p('7.5', 33)}</td></tr>
+      <tr><td style="padding-left: 15px;">7.6 Tangkapan Layar Hasil Implementasi (Screenshots)</td><td align="right">${p('7.6', 33)}</td></tr>
+      <tr><td><strong>BAB VIII: RIWAYAT COMMIT GIT (28++ COMMITS)</strong></td><td align="right">${p('BAB VIII', 35)}</td></tr>
+      <tr><td><strong>BAB IX: KESIMPULAN & PENUTUP</strong></td><td align="right">${p('BAB IX', 37)}</td></tr>
+      <tr><td style="padding-left: 15px;">9.1 Kesimpulan</td><td align="right">${p('9.1', 37)}</td></tr>
+      <tr><td><strong>BAB X: DAFTAR PUSTAKA</strong></td><td align="right">${p('BAB X', 38)}</td></tr>
+
     </table>
   </div>
 
@@ -973,44 +1079,19 @@ fs.writeFileSync(htmlFile, generateHtmlDocument(), "utf8");
 renderPdfFromHtml(htmlFile, pdfFile);
 
 (async () => {
-  const pageMap = {};
+  let pageMap = {};
+  const scanPy = path.join(__dirname, "stamp-academic-pages.py");
+
   try {
-    const parser = new PDFParse({ url: pdfFile });
-    await parser.load();
-    const res = await parser.getText();
-
-    // Query spesifik judul bab di body (menghindari match di dalam TOC)
-    const chapterQueries = [
-      { key: "BAB I", query: "PENDAHULUAN & GAMBARAN UMUM APLIKASI" },
-      { key: "BAB II", query: "STRUKTUR PROYEK & ARSITEKTUR SISTEM" },
-      { key: "BAB III", query: "TUGAS 1 – KUSTOMISASI IKON TAB BAR" },
-      { key: "BAB IV", query: "TUGAS 2 – FITUR RIWAYAT PENCARIAN TERAKHIR" },
-      { key: "BAB V", query: "TUGAS 3 – PENGHAPUSAN CACHE KOTA" },
-      { key: "BAB VI", query: "TUGAS 4 – IMPLEMENTASI TEMA GELAP" },
-      { key: "BAB VII", query: "FITUR TAMBAHAN & NILAI PLUS" },
-      { key: "BAB VIII", query: "RIWAYAT COMMIT GIT" },
-      { key: "BAB IX", query: "KESIMPULAN & PENUTUP" },
-      { key: "BAB X", query: "DAFTAR PUSTAKA" }
-    ];
-
-    console.log(`5. Menganalisis ${res.pages.length} halaman PDF untuk memetakan nomor bab...`);
-    chapterQueries.forEach(item => {
-      // Body dokumen dimulai dari fisik halaman 5 (setelah cover=1, pengesahan=2, pengantar=3, TOC=4)
-      for (let idx = 4; idx < res.pages.length; idx++) {
-        const text = res.pages[idx].text.toUpperCase();
-        // Lewati halaman jika masih ada teks DAFTAR ISI
-        if (text.includes("DAFTAR ISI") && idx < 5) continue;
-        if (text.includes(item.query)) {
-          // Halaman konten: Halaman fisik dikurangi 4 lembar depan
-          const contentPage = idx - 3;
-          pageMap[item.key] = contentPage > 0 ? contentPage : 1;
-          console.log(`   * ${item.key} (${item.query}) -> Fisik Hal ${idx + 1} (Halaman Dokumen: ${pageMap[item.key]})`);
-          break;
-        }
-      }
-    });
+    console.log("5. Menganalisis halaman PDF via PyMuPDF untuk memetakan nomor bab dan sub-bab...");
+    const scanOutput = execSync(`python "${scanPy}" scan "${pdfFile}"`, { encoding: "utf8" });
+    pageMap = JSON.parse(scanOutput.trim());
+    console.log("   * Berhasil memetakan nomor halaman dinamis secara otomatis:");
+    for (const [k, v] of Object.entries(pageMap)) {
+      console.log(`     - ${k} -> Halaman ${v}`);
+    }
   } catch (err) {
-    console.warn("Catatan: Analisis PDFParse mengalami kendala, menggunakan pemetaan baku:", err.message);
+    console.warn("Catatan: Analisis PDF via PyMuPDF mengalami kendala, menggunakan pemetaan baku:", err.message);
   }
 
   // 8. Proses Generasi Pass 2 (Penyusunan Final dengan Nomor Halaman 100% Akurat)
@@ -1018,6 +1099,15 @@ renderPdfFromHtml(htmlFile, pdfFile);
   const finalHtml = generateHtmlDocument(pageMap);
   fs.writeFileSync(htmlFile, finalHtml, "utf8");
   renderPdfFromHtml(htmlFile, pdfFile);
+
+  // 9. Post-Processing: Penomoran Halaman Akademik Resmi (Romawi ii, iii, iv & Angka Arab Bab Halaman 1..N)
+  console.log("7. Menyesuaikan penomoran footer akademik (Romawi untuk halaman awal, Angka Arab untuk Bab)...");
+  try {
+    execSync(`python "${scanPy}" stamp "${pdfFile}"`, { stdio: "inherit" });
+    console.log("   * Footer berhasil disesuaikan dengan format akademik resmi.");
+  } catch (err) {
+    console.error("Gagal menyinkronkan footer via Python:", err.message);
+  }
 
   if (fs.existsSync(pdfFile)) {
     const stats = fs.statSync(pdfFile);
